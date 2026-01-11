@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from '../screen/home/HomeScreen';
 import AuthScreen from '../screen/auth/AuthScreen';
+import BottomTabNavigator from './BottomTabNavigator';
 
 const useIsSignedIn = () => {
   return true;
@@ -13,8 +13,8 @@ const useIsSignedOut = () => {
 const AppStack = createNativeStackNavigator<AppStackParamList>({
   screenOptions: { headerShown: false },
   screens: {
-    Home: {
-      screen: HomeScreen,
+    BottomTabNavigator: {
+      screen: BottomTabNavigator,
     },
     Auth: {
       screen: AuthScreen,
@@ -28,6 +28,6 @@ const AppStack = createNativeStackNavigator<AppStackParamList>({
 export default AppStack;
 
 export type AppStackParamList = {
-  Home: undefined;
+  BottomTabNavigator: undefined;
   Auth: { screen: 'SignIn' | 'SignUp' | 'ForgotPassword' };
 };

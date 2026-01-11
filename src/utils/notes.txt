@@ -1,0 +1,7 @@
+- color pelette tik korte hobe, -done
+- sign in flow fully ready korte hobe. 
+- Sign in flow er color gulo tik
+- Bottom tab bar screen ante hobe.
+- Logo tik korte hobe.
+- profile page e not working button gulo te toast message dite hobe.
+- basic akta home page er design dite hobe placeholder soho
