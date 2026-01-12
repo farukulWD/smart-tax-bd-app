@@ -9,7 +9,6 @@ import { PortalHost } from '@rn-primitives/portal';
 import { StatusBar } from 'expo-status-bar';
 import { MoonStarIcon, SunIcon } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
-import { View } from 'react-native';
 import Navigation from './navigation/Navigation';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { ThemeSync } from '@/lib/ThemeSync';

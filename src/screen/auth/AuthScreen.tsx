@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { NavigatorScreenParams } from '@react-navigation/native';
 import { AppStackParamList } from '@/src/navigation/AppStack';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
 import ForgotPasswordScreen from './ForgotPasswordScreen';
 import VerifyOTPScreen from './VerifyOTPScreen';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-type props = {
-  route: NavigatorScreenParams<AppStackParamList>;
-};
+type Props = NativeStackScreenProps<AppStackParamList, 'Auth'>;
 
-const AuthScreen = ({ route }: props) => {
+const AuthScreen = ({ route }: Props) => {
   const initialScreen = route?.params?.screen;
   const [screen, setScreen] = useState<TAuth>(SCREEN_NAME.SIGNIN);
 

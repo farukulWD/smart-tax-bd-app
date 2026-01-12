@@ -2,37 +2,30 @@
 import React from 'react';
 import { createBottomTabNavigator, type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import type { NavigatorScreenParams } from '@react-navigation/native';
+
 import HomeStack, { type HomeStackParamList } from './HomeStack';
 import CustomTabBar from './CustomTabBar';
-import ProfileStack from './ProfileStack';
+import ProfileStack, { ProfileStackParamList } from './ProfileStack';
 import FAQScreen from '../screen/faq/FAQScreen';
-import DocumentStack from './DocumentStack';
+import DocumentStack, { DocumentStackParamList } from './DocumentStack';
 
-// If you will add other stacks later, type them similarly and use NavigatorScreenParams<ThatStackParamList>
+const Tab = createBottomTabNavigator<BottomTabNavigatorParamList>();
+
+export default function BottomTabNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={{ headerShown: false }}
+      tabBar={(props: BottomTabBarProps) => <CustomTabBar {...props} />}>
+      <Tab.Screen name="HomeStack" component={HomeStack} />
+      <Tab.Screen name="DocumentStack" component={DocumentStack} />
+      <Tab.Screen name="FAQStack" component={FAQScreen} />
+      <Tab.Screen name="ProfileStack" component={ProfileStack} />
+    </Tab.Navigator>
+  );
+}
 export type BottomTabNavigatorParamList = {
   HomeStack: NavigatorScreenParams<HomeStackParamList>;
-  DocumentStack: undefined;
+  DocumentStack: NavigatorScreenParams<DocumentStackParamList>;
   FAQStack: undefined;
-  ProfileStack: undefined;
-  // SearchStack: undefined;
-  // CategoryStack: undefined;
-  // CartStack: undefined;
+  ProfileStack: NavigatorScreenParams<ProfileStackParamList>;
 };
-
-const BottomTabNavigator = createBottomTabNavigator<BottomTabNavigatorParamList>({
-  screenOptions: { headerShown: false },
-  tabBar: (props: BottomTabBarProps) => <CustomTabBar {...props} />,
-  screens: {
-    HomeStack: HomeStack,
-    DocumentStack: DocumentStack,
-    FAQStack: FAQScreen,
-    ProfileStack: ProfileStack,
-
-    // Add these when you create them:
-    // SearchStack: SearchStack,
-    // CategoryStack: CategoryStack,
-    // CartStack: CartStack,
-  },
-});
-
-export default BottomTabNavigator;

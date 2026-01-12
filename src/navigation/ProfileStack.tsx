@@ -2,16 +2,16 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProfileScreen from '../screen/profile/ProfileScreen';
 
-type ParamList = {
+export type ProfileStackParamList = {
   Profile: undefined;
 };
-const ProfileStack = createNativeStackNavigator<ParamList>({
-  screenOptions: {
-    headerShown: false,
-  },
-  screens: {
-    Profile: ProfileScreen,
-  },
-});
 
-export default ProfileStack;
+const Stack = createNativeStackNavigator<ProfileStackParamList>();
+
+export default function ProfileStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+    </Stack.Navigator>
+  );
+}
