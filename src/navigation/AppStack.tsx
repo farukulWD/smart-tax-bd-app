@@ -24,6 +24,7 @@ export default function AppStack() {
         <>
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
           <Stack.Screen name="Packages" component={PackagesScreen} />
+          <Stack.Screen name="Auth" component={AuthScreen} />
         </>
       ) : (
         <Stack.Screen name="Auth" component={AuthScreen} />

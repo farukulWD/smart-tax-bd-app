@@ -3,6 +3,7 @@ import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PackageCard } from '../../components/package/PackageCard';
+import TitleHeader from '@/src/components/global/TitleHeader';
 
 const packages = [
   {
@@ -63,7 +64,8 @@ const packages = [
 
 export default function PackagesScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-gray-50">
+      <TitleHeader title="Packages" />
       <ScrollView className="flex-1 px-4 pt-6">
         <Text className="mb-6 px-2 text-3xl font-bold text-gray-800">Choose Your Package</Text>
 
@@ -71,6 +73,6 @@ export default function PackagesScreen() {
           <PackageCard key={index} {...pkg} onSelect={() => console.log(`${pkg.name} selected`)} />
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

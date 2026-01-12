@@ -4,6 +4,7 @@ import { View, TouchableOpacity } from 'react-native';
 import { Star, ChevronDown, Check } from 'lucide-react-native';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Text } from '@/components/ui/text';
+import { Colors } from '@/lib/theme';
 
 type PackageFeature = string;
 
@@ -35,7 +36,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
 
   return (
     <View
-      className={`mb-5 overflow-hidden rounded-2xl ${
+      className={`overflow-hidden rounded-2xl ${
         isPlatinum
           ? 'border-2 border-amber-500 bg-gradient-to-b from-amber-50 to-white'
           : highlighted
@@ -43,39 +44,42 @@ export const PackageCard: React.FC<PackageCardProps> = ({
             : 'border border-gray-200 bg-white'
       }`}>
       {/* Popular Badge */}
-      {isPlatinum && (
-        <View className="absolute right-4 top-4 z-10 rounded-full bg-amber-500 px-3 py-1.5">
-          <Text className="text-xs font-bold text-white">POPULAR</Text>
-        </View>
-      )}
 
       {/* Header */}
-      <View className="">
-        <Text className="text-2xl font-bold text-gray-900">{name}</Text>
+      <View className="flex-row items-center justify-between px-3 pt-1">
+        <View className="flex-row items-center gap-3">
+          <Text className="text-xl font-bold text-gray-900">{name}</Text>
+          {isPlatinum && (
+            <View className="z-10 rounded-full bg-amber-500 px-3 py-1">
+              <Text className="text-xs font-bold text-white">POPULAR</Text>
+            </View>
+          )}
+        </View>
 
         {/* Price */}
         <View className="">
           {isContactPrice ? (
-            <Text className="text-lg font-semibold text-gray-700">Contact for pricing</Text>
+            <View className="h-12 items-center justify-center">
+              <Text className="text-lg font-semibold text-gray-700">Contact for pricing</Text>
+            </View>
           ) : price ? (
-            <View className="flex-row items-baseline">
-              <Text variant={'h2'}>
+            <View className="mt-2 flex-row">
+              <Text className="text-3xl font-bold">
                 {currency}
                 {typeof price === 'number' ? price.toLocaleString() : price}
               </Text>
             </View>
           ) : null}
         </View>
-
-        <Text className="text-sm text-gray-600">{description}</Text>
       </View>
+      <Text className="px-4 text-sm text-muted-foreground">{description}</Text>
 
       {/* CTA Button - Moved up */}
       <View className="">
         <TouchableOpacity
           onPress={onSelect}
           activeOpacity={0.7}
-          className={`items-center justify-center rounded-xl${
+          className={`m-3 h-12 items-center justify-center rounded-xl bg-primary ${
             isPlatinum ? 'bg-amber-500' : highlighted ? 'bg-emerald-600' : 'bg-gray-900'
           }`}>
           <Text className="text-base font-semibold text-white">{buttonText}</Text>
@@ -85,14 +89,14 @@ export const PackageCard: React.FC<PackageCardProps> = ({
       {/* Collapsible Features */}
       <Collapsible>
         <CollapsibleTrigger onPress={() => setIsOpen(!isOpen)}>
-          <View className="border-t border-gray-200 bg-gray-50">
+          <View className="h-12 justify-center border-t border-gray-200 bg-gray-50 px-3">
             <View className="flex-row items-center justify-between">
-              <Text className="text-sm font-semibold text-gray-700">
+              <Text className="text-sm font-semibold text-foreground">
                 {isOpen ? 'Hide' : 'Show'} features ({features.length})
               </Text>
               <ChevronDown
                 size={20}
-                color="#374151"
+                color={Colors.foreground}
                 strokeWidth={2}
                 style={{
                   transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
@@ -103,11 +107,13 @@ export const PackageCard: React.FC<PackageCardProps> = ({
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-          <View className="border-t border-gray-100 bg-white">
+          <View className="border-t border-gray-100 bg-white p-3">
             {features.map((feature, index) => (
-              <View key={index} className={`flex-row items-start ${index !== 0 ? 'mt-3' : ''}`}>
+              <View
+                key={index}
+                className={`flex-row items-start gap-2 ${index !== 0 ? 'mt-3' : ''}`}>
                 <Check size={18} color="#10b981" strokeWidth={2.5} className="" />
-                <Text className="flex-1 text-sm text-gray-700">{feature}</Text>
+                <Text className="flex-1 text-sm text-muted-foreground">{feature}</Text>
               </View>
             ))}
           </View>
