@@ -13,7 +13,7 @@ import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
 import useAuthInfo from '@/src/hook/useAuthInfo';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BackButton } from '@/src/components/global/BackButton';
-import { Colors } from '@/lib/theme';
+import { Colors } from '@/src/context/ThemeProvider';
 
 const ForgotPasswordScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
   const { authInfo, handleAuthInfo } = useAuthInfo();
@@ -39,7 +39,7 @@ const ForgotPasswordScreen = ({ setScreen }: { setScreen: Dispatch<SetStateActio
           {/* Header */}
           <View className="mb-8">
             <Text className="text-3xl font-bold text-foreground">Forgot Password?</Text>
-            <Text className="text-base leading-6 text-muted-foreground">
+            <Text className="text-mutedForeground text-base leading-6">
               Don't worry! Enter your email address and we'll send you instructions to reset your
               password.
             </Text>
@@ -67,7 +67,7 @@ const ForgotPasswordScreen = ({ setScreen }: { setScreen: Dispatch<SetStateActio
 
           {/* Back to Login */}
           <View className="flex-row items-center justify-center">
-            <Text className="text-sm text-muted-foreground">Reme your password? </Text>
+            <Text className="text-mutedForeground text-sm">Reme your password? </Text>
             <TouchableOpacity
               onPress={() => {
                 setScreen(SCREEN_NAME.SIGNIN);
@@ -83,7 +83,7 @@ const ForgotPasswordScreen = ({ setScreen }: { setScreen: Dispatch<SetStateActio
           <View className="items-center pb-8">
             <View className="flex-row items-center">
               <Mail size={16} color={Colors.mutedForeground} />
-              <Text className="ml-2 text-sm text-muted-foreground">support@smarttaxbd.com.bd</Text>
+              <Text className="text-mutedForeground ml-2 text-sm">support@smarttaxbd.com.bd</Text>
             </View>
           </View>
         </View>

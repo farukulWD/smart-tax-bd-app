@@ -3,7 +3,7 @@ import React from 'react';
 
 const DocumentScreen = () => {
   return (
-    <View>
+    <View className="flex-1 bg-background">
       <Text>DocumentScreen</Text>
     </View>
   );

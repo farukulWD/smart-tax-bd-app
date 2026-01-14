@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { EyeOff, Eye, Home, Mail, Phone } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
+import { Colors } from '@/src/context/ThemeProvider';
 
 const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
   const [email, setEmail] = useState('');
@@ -25,7 +26,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-white">
+      className="flex-1 bg-card">
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
@@ -33,7 +34,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
         <View className="flex-1 px-5">
           {/* Logo Section */}
           <View className="items-center pb-8 pt-16">
-            <View className="h-28 w-28 items-center justify-center">
+            <View className="h-28 w-28 items-center justify-center overflow-hidden rounded-full">
               <Image
                 resizeMode="contain"
                 className="h-full w-full"
@@ -71,9 +72,9 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                 onPress={() => setShowPassword(!showPassword)}
                 className="absolute right-4">
                 {showPassword ? (
-                  <Eye size={20} color="#6B7280" />
+                  <Eye size={20} color={Colors.mutedForeground} />
                 ) : (
-                  <EyeOff size={20} color="#6B7280" />
+                  <EyeOff size={20} color={Colors.mutedForeground} />
                 )}
               </TouchableOpacity>
             </View>
@@ -85,11 +86,11 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                 className="flex-row items-center">
                 <View
                   className={`mr-2 h-6 w-6 items-center justify-center rounded border-2 ${
-                    rememberMe ? 'border-green-600 bg-green-600' : 'border-gray-300 bg-white'
+                    rememberMe ? 'border-green-600 bg-green-600' : 'border-border bg-accent'
                   }`}>
-                  {rememberMe && <Text className="text-xs text-white">✓</Text>}
+                  {rememberMe && <Text className="text-xs text-foreground">✓</Text>}
                 </View>
-                <Text className="text-base text-gray-800">Remember me</Text>
+                <Text className="text-mutedForeground text-base">Remember me</Text>
               </TouchableOpacity>
               {/* Forgot Password Link */}
               <TouchableOpacity
@@ -111,7 +112,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             <View>
               {/* Create Account Link */}
               <View className="flex-row items-center justify-center">
-                <Text className="text-sm text-muted-foreground">New to smarttaxbd? </Text>
+                <Text className="text-mutedForeground text-sm">New to smarttaxbd? </Text>
                 <TouchableOpacity
                   onPress={() => {
                     setScreen(SCREEN_NAME.SIGNUP);
@@ -121,7 +122,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               </View>
 
               {/* 100% Accurate Badge */}
-              <View className="h-20 w-20 self-center rounded-full">
+              <View className="my-1 h-20 w-20 self-center overflow-hidden rounded-full">
                 <Image
                   className="h-full w-full resize"
                   source={require('../../../assets/images/accuracy.jpg')}
@@ -131,19 +132,21 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               {/* Contact Info */}
               <View className="items-center">
                 <View className="flex-row items-center">
-                  <Mail size={16} color="#6B7280" />
-                  <Text className="ml-2 text-sm text-gray-600">support@smarttaxbd.com.bd</Text>
+                  <Mail size={16} color={Colors.mutedForeground} />
+                  <Text className="text-mutedForeground ml-2 text-sm">
+                    support@smarttaxbd.com.bd
+                  </Text>
                 </View>
                 <View className="flex-row items-center">
-                  <Phone size={16} color="#6B7280" />
-                  <Text className="ml-2 text-sm text-gray-600">01409-991225</Text>
+                  <Phone size={16} color={Colors.mutedForeground} />
+                  <Text className="text-mutedForeground ml-2 text-sm">01409-991225</Text>
                 </View>
               </View>
             </View>
 
             {/* Footer Text */}
             <View className="px-2">
-              <Text className="text-center text-xs leading-5 text-gray-500">
+              <Text className="text-mutedForeground text-center text-xs leading-5">
                 Mobile App is developed by Smart Tax BD Technology Ltd. smarttaxbd.com.bd is
                 copyrighted by Bangladesh Copyright and Patent office. Copyright registration number
                 is 14748-COPR.
@@ -152,7 +155,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
 
             {/* Made in Bangladesh */}
             <View className="mb-2 flex-row items-center justify-center">
-              <Text className="mr-2 text-sm text-gray-600">Made in</Text>
+              <Text className="text-mutedForeground mr-2 text-sm">Made in</Text>
               <View className="h-6 w-6 items-center justify-center rounded bg-green-600">
                 <View className="h-3 w-3 rounded-full bg-red-600" />
               </View>

@@ -64,14 +64,19 @@ const packages = [
 
 export default function PackagesScreen() {
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-background">
       <TitleHeader title="Packages" />
-      <ScrollView className="flex-1 px-4 pt-6">
-        <Text className="mb-6 px-2 text-3xl font-bold text-gray-800">Choose Your Package</Text>
-
-        {packages.map((pkg, index) => (
-          <PackageCard key={index} {...pkg} onSelect={() => console.log(`${pkg.name} selected`)} />
-        ))}
+      <ScrollView className="flex-1 px-4">
+        <Text className="my-2 text-3xl font-bold text-foreground">Choose Your Package</Text>
+        <View className="gap-3 pb-6">
+          {packages.map((pkg, index) => (
+            <PackageCard
+              key={index}
+              {...pkg}
+              onSelect={() => console.log(`${pkg.name} selected`)}
+            />
+          ))}
+        </View>
       </ScrollView>
     </View>
   );

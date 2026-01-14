@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import HomeBanner from '@/src/components/global/HomeBanner';
 import Marquee from '@/src/components/global/Marquee';
 import { PackageCard } from '@/src/components/package/PackageCard';
 import { navigate } from '@/src/utils/NavigationUtils';
+import { Text } from '@/components/ui/text';
 
 const data = {
   packages: [
@@ -93,8 +94,8 @@ const HomeScreen = () => {
   return (
     <View className="flex-1 bg-background">
       <Header />
-      <View className="flex-1 px-4 pt-3">
-        <ScrollView contentContainerClassName="gap-3">
+      <View className="flex-1 px-4">
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="gap-3 py-3">
           <Marquee>
             <Text
               className="font-bold uppercase tracking-wider text-foreground"
@@ -122,7 +123,9 @@ const HomeScreen = () => {
               navigate('Packages');
             }}
             variant={'outline'}>
-            <Text>See All Packages</Text>
+            <Text className="" variant={'default'}>
+              See All Packages
+            </Text>
           </Button>
         </ScrollView>
       </View>

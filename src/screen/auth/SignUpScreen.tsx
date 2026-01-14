@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '@/components/ui/text';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
 import useAuthInfo from '@/src/hook/useAuthInfo';
+import { Colors } from '@/src/context/ThemeProvider';
 
 const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
   const { handleAuthInfo } = useAuthInfo();
@@ -38,7 +39,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
           {/* Header */}
           <View className="items-center px-4 pb-6 pt-8">
             <Text variant={'h3'}>#1 Tax Software in Bangladesh</Text>
-            <Text className="text-muted-foreground">Let's Create your smarttaxbd account</Text>
+            <Text className="text-mutedForeground">Let's Create your smarttaxbd account</Text>
           </View>
 
           {/* Form */}
@@ -47,7 +48,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             <Input
               className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-card-foreground"
               placeholder="First Name *"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={Colors.mutedForeground}
               value={formData.firstName}
               onChangeText={(text) => handleInputChange('firstName', text)}
             />
@@ -56,7 +57,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             <Input
               className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-card-foreground"
               placeholder="Last Name *"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={Colors.mutedForeground}
               value={formData.lastName}
               onChangeText={(text) => handleInputChange('lastName', text)}
             />
@@ -65,7 +66,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             <Input
               className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-card-foreground"
               placeholder="ETIN *"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={Colors.mutedForeground}
               value={formData.etin}
               onChangeText={(text) => handleInputChange('etin', text)}
               keyboardType="numeric"
@@ -75,7 +76,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             <Input
               className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-card-foreground"
               placeholder="Email *"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={Colors.mutedForeground}
               value={formData.email}
               onChangeText={(text) => handleInputChange('email', text)}
               keyboardType="email-address"
@@ -86,7 +87,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             <Input
               className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-card-foreground"
               placeholder="Phone *"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={Colors.mutedForeground}
               value={formData.phone}
               onChangeText={(text) => handleInputChange('phone', text)}
               keyboardType="phone-pad"
@@ -96,7 +97,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               <Input
                 className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-card-foreground"
                 placeholder="Password *"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor={Colors.mutedForeground}
                 value={formData.password}
                 onChangeText={(text) => handleInputChange('password', text)}
                 secureTextEntry={!showPassword}
@@ -106,9 +107,9 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                 onPress={() => setShowPassword(!showPassword)}
                 className="absolute right-4">
                 {showPassword ? (
-                  <Eye size={20} color="#6B7280" />
+                  <Eye size={20} color={Colors.mutedForeground} />
                 ) : (
-                  <EyeOff size={20} color="#6B7280" />
+                  <EyeOff size={20} color={Colors.mutedForeground} />
                 )}
               </TouchableOpacity>
             </View>
@@ -118,7 +119,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               <Input
                 className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-card-foreground"
                 placeholder="Confirm Password *"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor={Colors.mutedForeground}
                 value={formData.confirmPassword}
                 onChangeText={(text) => handleInputChange('confirmPassword', text)}
                 secureTextEntry={!showConfirmPassword}
@@ -128,9 +129,9 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                 onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-4">
                 {showConfirmPassword ? (
-                  <Eye size={20} color="#6B7280" />
+                  <Eye size={20} color={Colors.mutedForeground} />
                 ) : (
-                  <EyeOff size={20} color="#6B7280" />
+                  <EyeOff size={20} color={Colors.mutedForeground} />
                 )}
               </TouchableOpacity>
             </View>
@@ -154,20 +155,18 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             {/* Contact Info */}
             <View className="mb-4 items-center space-y-2">
               <View className="flex-row items-center">
-                <Mail size={16} color="#6B7280" />
-                <Text className="ml-2 text-sm text-muted-foreground">
-                  support@smarttaxbd.com.bd
-                </Text>
+                <Mail size={16} color={Colors.mutedForeground} />
+                <Text className="text-mutedForeground ml-2 text-sm">support@smarttaxbd.com.bd</Text>
               </View>
               <View className="flex-row items-center">
-                <Phone size={16} color="#6B7280" />
-                <Text className="ml-2 text-sm text-muted-foreground">01409-991225</Text>
+                <Phone size={16} color={Colors.mutedForeground} />
+                <Text className="text-mutedForeground ml-2 text-sm">01409-991225</Text>
               </View>
             </View>
 
             {/* Footer */}
             <View className="mb-6 px-4">
-              <Text className="text-center text-xs leading-5 text-gray-500">
+              <Text className="text-mutedForeground text-center text-xs leading-5">
                 Mobile App is developed by Smart Tax BD Technology Ltd. smarttaxbd.com.bd is
                 copyrighted by Bangladesh Copyright and Patent office. Copyright registration number
                 is 14748-COPR.

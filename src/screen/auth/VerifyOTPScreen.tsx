@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { ArrowLeft, Mail } from 'lucide-react-native';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
+import { Colors } from '@/src/context/ThemeProvider';
+import { goBack } from '@/src/utils/NavigationUtils';
 
 const VerifyOTPScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -64,23 +66,27 @@ const VerifyOTPScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAu
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-white">
+      className="flex-1 bg-background">
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled">
         <View className="flex-1 px-6">
           {/* Back Button */}
-          <TouchableOpacity className="mb-8 mt-12">
-            <ArrowLeft size={24} color="#1F2937" />
+          <TouchableOpacity
+            onPress={() => {
+              goBack();
+            }}
+            className="mb-8 mt-12">
+            <ArrowLeft size={24} color={Colors.foreground} />
           </TouchableOpacity>
 
           {/* Header */}
           <View className="mb-8">
-            <Text className="mb-3 text-3xl font-bold text-gray-900">Verify OTP</Text>
-            <Text className="text-base leading-6 text-gray-600">
+            <Text className="mb-3 text-3xl font-bold text-foreground">Verify OTP</Text>
+            <Text className="text-mutedForeground text-base leading-6">
               We've sent a 6-digit verification code to{'\n'}
-              <Text className="font-semibold text-gray-800">user@example.com</Text>
+              <Text className="text-mutedForeground font-semibold">user@example.com</Text>
             </Text>
           </View>
 
@@ -91,13 +97,13 @@ const VerifyOTPScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAu
                 <View
                   key={index}
                   className={`h-14 w-14 items-center justify-center rounded-xl border-2 ${
-                    digit ? 'border-green-600 bg-green-50' : 'border-gray-300 bg-gray-50'
+                    digit ? 'border-green-600 bg-green-50' : 'border-border bg-accent'
                   }`}>
                   <TextInput
                     ref={(ref) => {
                       inputRefs.current[index] = ref;
                     }}
-                    className="h-full w-full text-center text-2xl font-bold text-gray-900"
+                    className="h-full w-full text-center text-2xl font-bold text-foreground"
                     value={digit}
                     onChangeText={(text) => handleOtpChange(text, index)}
                     onKeyPress={({ nativeEvent: { key } }) => handleKeyPress(key, index)}
@@ -114,13 +120,13 @@ const VerifyOTPScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAu
           <View className="mb-8">
             {timer > 0 ? (
               <View className="flex-row items-center justify-center">
-                <Text className="text-sm text-gray-600">
+                <Text className="text-mutedForeground text-sm">
                   Resend code in <Text className="font-semibold text-green-600">{timer}s</Text>
                 </Text>
               </View>
             ) : (
               <View className="flex-row items-center justify-center">
-                <Text className="text-sm text-gray-600">Didn't receive the code? </Text>
+                <Text className="text-mutedForeground text-sm">Didn't receive the code? </Text>
                 <TouchableOpacity onPress={handleResend}>
                   <Text className="text-sm font-semibold text-green-600">Resend</Text>
                 </TouchableOpacity>
@@ -132,13 +138,13 @@ const VerifyOTPScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAu
           <TouchableOpacity
             onPress={handleVerify}
             disabled={!isOtpComplete}
-            className={`mb-6 rounded-xl py-4 ${isOtpComplete ? 'bg-green-600' : 'bg-gray-300'}`}>
+            className={`mb-6 rounded-xl py-4 ${isOtpComplete ? 'bg-green-600' : 'bg-accent'}`}>
             <Text className="text-center text-base font-semibold text-white">Verify OTP</Text>
           </TouchableOpacity>
 
           {/* Help Text */}
-          <View className="mb-6 rounded-xl border border-blue-200 bg-blue-50 p-4">
-            <Text className="text-center text-sm leading-5 text-blue-800">
+          <View className="mb-6 rounded-xl border border-border bg-accent p-4">
+            <Text className="text-accentForeground text-center text-sm leading-5">
               💡 Check your email inbox and spam folder for the verification code
             </Text>
           </View>
@@ -149,8 +155,8 @@ const VerifyOTPScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAu
           {/* Bottom Info */}
           <View className="items-center pb-8">
             <View className="mb-2 flex-row items-center">
-              <Mail size={16} color="#6B7280" />
-              <Text className="ml-2 text-sm text-gray-600">support@smarttaxbd.com.bd</Text>
+              <Mail size={16} color={Colors.mutedForeground} />
+              <Text className="text-mutedForeground ml-2 text-sm">support@smarttaxbd.com.bd</Text>
             </View>
           </View>
         </View>

@@ -3,9 +3,9 @@ import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PressableScale } from './PressableScale';
 import { LucideArrowLeft } from 'lucide-react-native';
-import { Colors } from '@/lib/theme';
 import { Text } from '@/components/ui/text';
 import { goBack } from '@/src/utils/NavigationUtils';
+import { Colors } from '@/src/context/ThemeProvider';
 
 const TitleHeader = ({ title, onPress }: { onPress?: () => void; title: string }) => {
   const { top } = useSafeAreaInsets();

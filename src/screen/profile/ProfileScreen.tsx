@@ -5,14 +5,14 @@ import { navigate } from '@/src/utils/NavigationUtils';
 
 const ProfileScreen = () => {
   return (
-    <View className="flex-1 items-center justify-center gap-3">
+    <View className="flex-1 items-center justify-center gap-3 bg-background">
       <Button
         onPress={() => {
           navigate('Auth', { screen: 'SignIn' });
         }}
         className=""
         variant={'outline'}>
-        <Text>Login Screen</Text>
+        <Text className="text-foreground">Login Screen</Text>
       </Button>
       <Button
         onPress={() => {
@@ -20,7 +20,7 @@ const ProfileScreen = () => {
         }}
         className=""
         variant={'outline'}>
-        <Text>SignUp Screen</Text>
+        <Text className="text-foreground">SignUp Screen</Text>
       </Button>
       <Button
         onPress={() => {
@@ -28,7 +28,7 @@ const ProfileScreen = () => {
         }}
         className=""
         variant={'outline'}>
-        <Text>Forgot Password Screen</Text>
+        <Text className="text-foreground">Forgot Password Screen</Text>
       </Button>
       <Button
         onPress={() => {
@@ -36,7 +36,7 @@ const ProfileScreen = () => {
         }}
         className=""
         variant={'outline'}>
-        <Text>Verify User Screen</Text>
+        <Text className="text-foreground">Verify User Screen</Text>
       </Button>
     </View>
   );

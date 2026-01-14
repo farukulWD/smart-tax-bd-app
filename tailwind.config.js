@@ -1,5 +1,3 @@
-const { hairlineWidth } = require('nativewind/theme');
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
@@ -7,62 +5,43 @@ module.exports = {
   presets: [require('nativewind/preset')],
   theme: {
     extend: {
+      fontFamily: {
+        okra: ['Okra-Regular', 'Okra-Medium', 'Okra-ExtraBold', 'Okra-Bold', 'Okra-MediumLight'],
+      },
       colors: {
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
-        },
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
-        },
-      },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-      },
-      borderWidth: {
-        hairline: hairlineWidth(),
-      },
-      keyframes: {
-        'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
-        },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
-        },
-      },
-      animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
+        background: 'var(--color-background)',
+        foreground: 'var(--color-foreground)',
+        card: 'var(--color-card)',
+        cardForeground: 'var(--color-cardForeground)',
+        popover: 'var(--color-popover)',
+        popoverForeground: 'var(--color-popoverForeground)',
+        primary: 'var(--color-primary)',
+        primaryForeground: 'var(--color-primaryForeground)',
+        secondary: 'var(--color-secondary)',
+        secondaryForeground: 'var(--color-secondaryForeground)',
+        muted: 'var(--color-muted)',
+        mutedForeground: 'var(--color-mutedForeground)',
+        accent: 'var(--color-accent)',
+        accentForeground: 'var(--color-accentForeground)',
+        destructive: 'var(--color-destructive)',
+        destructiveForeground: 'var(--color-destructiveForeground)',
+        border: 'var(--color-border)',
+        input: 'var(--color-input)',
+        ring: 'var(--color-ring)',
+        radius: 'var(--color-radius)',
+        chart1: 'var(--color-chart1)',
+        chart2: 'var(--color-chart2)',
+        chart3: 'var(--color-chart3)',
+        chart4: 'var(--color-chart4)',
+        chart5: 'var(--color-chart5)',
+        sidebar: 'var(--color-sidebar)',
+        sidebarForeground: 'var(--color-sidebarForeground)',
+        sidebarPrimary: 'var(--color-sidebarPrimary)',
+        sidebarPrimaryForeground: 'var(--color-sidebarPrimaryForeground)',
+        sidebarAccent: 'var(--color-sidebarAccent)',
+        sidebarAccentForeground: 'var(--color-sidebarAccentForeground)',
+        sidebarBorder: 'var(--color-sidebarBorder)',
+        sidebarRing: 'var(--color-sidebarRing)',
       },
     },
   },

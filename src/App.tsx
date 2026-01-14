@@ -3,8 +3,6 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import '@/global.css';
 
-import { NAV_THEME } from '@/lib/theme';
-import { ThemeProvider } from '@react-navigation/native';
 import { PortalHost } from '@rn-primitives/portal';
 import { StatusBar } from 'expo-status-bar';
 import { MoonStarIcon, SunIcon } from 'lucide-react-native';
@@ -12,13 +10,14 @@ import { useColorScheme } from 'nativewind';
 import Navigation from './navigation/Navigation';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { ThemeSync } from '@/lib/ThemeSync';
+import { ThemeProvider } from './context/ThemeProvider';
 
 export default function App() {
   const { colorScheme } = useColorScheme();
 
   return (
     <KeyboardProvider>
-      <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
+      <ThemeProvider>
         <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
         {/* <ThemeToggle /> */}
         {/* <View className="flex-1 items-center justify-center border bg-background">

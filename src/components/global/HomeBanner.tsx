@@ -11,7 +11,7 @@ import {
 
 import { screenWidth } from '../../utils/Sizes';
 import { TSlide } from '@/src/types/productTypes';
-import { Colors } from '@/lib/theme';
+import { Colors } from '@/src/context/ThemeProvider';
 
 const HORIZONTAL_PADDING = 12;
 const PAGE_WIDTH = screenWidth;

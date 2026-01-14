@@ -12,9 +12,9 @@ import Animated, {
 import { CircleQuestionMark, Home, LayoutGrid, User } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { gGap } from '../utils/Sizes';
-import { Colors, NAV_THEME, THEME } from '@/lib/theme';
-import { cn, getMode } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { useTheme } from '@react-navigation/native';
+import { Colors } from '../context/ThemeProvider';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -24,9 +24,8 @@ interface TabIconProps {
 }
 
 const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
-  const colors = THEME[getMode()];
-  console.log('colors', JSON.stringify(colors, null, 2));
-  const iconColor = isFocused ? colors.primary : colors.mutedForeground;
+  const { colors } = useTheme();
+  const iconColor = isFocused ? Colors.primary : Colors.mutedForeground;
   const getIconContent = () => {
     switch (routeName) {
       case 'HomeStack':

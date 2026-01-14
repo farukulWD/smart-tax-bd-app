@@ -1,4 +1,4 @@
-import { Colors } from '@/lib/theme';
+import { Colors } from '@/src/context/ThemeProvider';
 import { PressableScale } from './PressableScale';
 import { ArrowLeft } from 'lucide-react-native';
 

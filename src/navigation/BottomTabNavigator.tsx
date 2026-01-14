@@ -8,14 +8,11 @@ import CustomTabBar from './CustomTabBar';
 import ProfileStack, { ProfileStackParamList } from './ProfileStack';
 import FAQScreen from '../screen/faq/FAQScreen';
 import DocumentStack, { DocumentStackParamList } from './DocumentStack';
-import { Colors } from '@/lib/theme';
 import { getMode } from '@/lib/utils';
 
 const Tab = createBottomTabNavigator<BottomTabNavigatorParamList>();
 
 export default function BottomTabNavigator() {
-  console.log('BottomTabBar', JSON.stringify(Colors.primary, null, 2));
-  console.log('getMode()', JSON.stringify(getMode(), null, 2));
   return (
     <Tab.Navigator
       key={getMode()}

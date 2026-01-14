@@ -1,10 +1,11 @@
 // components/PackageCard.tsx
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { Star, ChevronDown, Check } from 'lucide-react-native';
+import { ChevronDown, Check } from 'lucide-react-native';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Text } from '@/components/ui/text';
-import { Colors } from '@/lib/theme';
+import { cn } from '@/lib/utils';
+import { Colors } from '@/src/context/ThemeProvider';
 
 type PackageFeature = string;
 
@@ -34,37 +35,48 @@ export const PackageCard: React.FC<PackageCardProps> = ({
   const [isOpen, setIsOpen] = React.useState(false);
   const isContactPrice = typeof price === 'string' && price.includes('Contact');
 
+  // Map “special” states to your palette tokens (no raw grays/emerald/amber)
+  const badgeBg = isPlatinum ? 'bg-primary' : highlighted ? 'bg-primary' : 'bg-muted';
+  const badgeText = isPlatinum || highlighted ? 'text-primaryForeground' : 'text-foreground';
+
+  const ctaBg = isPlatinum || highlighted ? 'bg-primary' : 'bg-foreground';
+  const ctaText = isPlatinum || highlighted ? 'text-primaryForeground' : 'text-background';
+
   return (
     <View
-      className={`overflow-hidden rounded-2xl ${
-        isPlatinum
-          ? 'border-2 border-amber-500 bg-gradient-to-b from-amber-50 to-white'
-          : highlighted
-            ? 'border-2 border-emerald-500 bg-white'
-            : 'border border-gray-200 bg-white'
-      }`}>
-      {/* Popular Badge */}
-
+      className={cn(
+        `overflow-hidden rounded-2xl`,
+        isPlatinum || highlighted
+          ? 'border-2 border-primary bg-accent'
+          : 'border border-border bg-accent'
+      )}>
       {/* Header */}
-      <View className="flex-row items-center justify-between px-3 pt-1">
-        <View className="flex-row items-center gap-3">
-          <Text className="text-xl font-bold text-gray-900">{name}</Text>
-          {isPlatinum && (
-            <View className="z-10 rounded-full bg-amber-500 px-3 py-1">
-              <Text className="text-xs font-bold text-white">POPULAR</Text>
+      <View className="flex-row items-center justify-between px-4 pt-3">
+        <View className="flex-1 flex-row items-center gap-3">
+          <Text className="text-xl font-bold text-foreground" numberOfLines={1}>
+            {name}
+          </Text>
+
+          {(isPlatinum || highlighted) && (
+            <View className={`rounded-full px-3 py-1 ${badgeBg}`}>
+              <Text className={`text-xs font-bold ${badgeText}`}>
+                {isPlatinum ? 'POPULAR' : 'RECOMMENDED'}
+              </Text>
             </View>
           )}
         </View>
 
         {/* Price */}
-        <View className="">
+        <View>
           {isContactPrice ? (
-            <View className="h-12 items-center justify-center">
-              <Text className="text-lg font-semibold text-gray-700">Contact for pricing</Text>
+            <View className="h-12 items-end justify-center">
+              <Text className="text-mutedForeground text-base font-semibold">
+                Contact for pricing
+              </Text>
             </View>
           ) : price ? (
-            <View className="mt-2 flex-row">
-              <Text className="text-3xl font-bold">
+            <View className="flex-row items-end">
+              <Text className="text-3xl font-bold text-foreground">
                 {currency}
                 {typeof price === 'number' ? price.toLocaleString() : price}
               </Text>
@@ -72,24 +84,23 @@ export const PackageCard: React.FC<PackageCardProps> = ({
           ) : null}
         </View>
       </View>
-      <Text className="px-4 text-sm text-muted-foreground">{description}</Text>
 
-      {/* CTA Button - Moved up */}
-      <View className="">
+      <Text className="text-mutedForeground px-4 pt-1 text-sm">{description}</Text>
+
+      {/* CTA */}
+      <View>
         <TouchableOpacity
           onPress={onSelect}
-          activeOpacity={0.7}
-          className={`m-3 h-12 items-center justify-center rounded-xl bg-primary ${
-            isPlatinum ? 'bg-amber-500' : highlighted ? 'bg-emerald-600' : 'bg-gray-900'
-          }`}>
-          <Text className="text-base font-semibold text-white">{buttonText}</Text>
+          activeOpacity={0.8}
+          className={`m-4 h-12 items-center justify-center rounded-xl ${ctaBg}`}>
+          <Text className={`text-base font-semibold ${ctaText}`}>{buttonText}</Text>
         </TouchableOpacity>
       </View>
 
       {/* Collapsible Features */}
       <Collapsible>
         <CollapsibleTrigger onPress={() => setIsOpen(!isOpen)}>
-          <View className="h-12 justify-center border-t border-gray-200 bg-gray-50 px-3">
+          <View className="h-12 justify-center border-t border-border bg-secondary px-4">
             <View className="flex-row items-center justify-between">
               <Text className="text-sm font-semibold text-foreground">
                 {isOpen ? 'Hide' : 'Show'} features ({features.length})
@@ -98,22 +109,20 @@ export const PackageCard: React.FC<PackageCardProps> = ({
                 size={20}
                 color={Colors.foreground}
                 strokeWidth={2}
-                style={{
-                  transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
-                }}
+                style={{ transform: [{ rotate: isOpen ? '180deg' : '0deg' }] }}
               />
             </View>
           </View>
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-          <View className="border-t border-gray-100 bg-white p-3">
+          <View className="border-t border-border bg-card p-4">
             {features.map((feature, index) => (
               <View
                 key={index}
                 className={`flex-row items-start gap-2 ${index !== 0 ? 'mt-3' : ''}`}>
-                <Check size={18} color="#10b981" strokeWidth={2.5} className="" />
-                <Text className="flex-1 text-sm text-muted-foreground">{feature}</Text>
+                <Check size={18} color={Colors.primary} strokeWidth={2.5} />
+                <Text className="text-mutedForeground flex-1 text-sm">{feature}</Text>
               </View>
             ))}
           </View>
