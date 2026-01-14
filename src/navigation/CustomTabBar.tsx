@@ -9,10 +9,12 @@ import Animated, {
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
-import { CircleQuestionMark, Home, LayoutGrid, ShoppingCart, User } from 'lucide-react-native';
+import { CircleQuestionMark, Home, LayoutGrid, User } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { gGap } from '../utils/Sizes';
-import { Colors } from '@/lib/theme';
+import { Colors, NAV_THEME, THEME } from '@/lib/theme';
+import { cn, getMode } from '@/lib/utils';
+import { useTheme } from '@react-navigation/native';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -22,8 +24,9 @@ interface TabIconProps {
 }
 
 const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
-  const iconColor = isFocused ? Colors.primary : Colors.foreground;
-  const contentColor = isFocused ? '#FFFFFF' : '#4B5563'; // white : gray-600
+  const colors = THEME[getMode()];
+  console.log('colors', JSON.stringify(colors, null, 2));
+  const iconColor = isFocused ? colors.primary : colors.mutedForeground;
   const getIconContent = () => {
     switch (routeName) {
       case 'HomeStack':
@@ -50,7 +53,7 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
               style={{
                 width: 12,
                 height: 12,
-                backgroundColor: contentColor,
+                backgroundColor: iconColor,
                 borderRadius: 2,
               }}
             />
@@ -82,10 +85,10 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
       }}>
       {getIconContent()}
       <Text
-        className="font-okra font-semibold"
+        className={cn('font-okra font-semibold', isFocused ? 'text-foreground' : 'text-primary')}
         style={{
           fontSize: 10,
-          color: iconColor || 'white',
+          color: iconColor,
         }}>
         {getTabLabel()}
       </Text>
@@ -100,17 +103,14 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
   const { bottom } = useSafeAreaInsets();
 
   useEffect(() => {
-    // Animate indicator position
     indicatorPosition.value = withSpring(state.index * tabWidth, {
       damping: 60,
       stiffness: 400,
     });
 
-    // Animate indicator opacity
     indicatorOpacity.value = withTiming(1, { duration: 300 });
   }, [indicatorOpacity, indicatorPosition, state.index, tabWidth]);
 
-  // Memoize animated styles
   const indicatorStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: indicatorPosition.value }],
     opacity: indicatorOpacity.value,
@@ -150,7 +150,6 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
-
         const handlePress = () => {
           runOnJS(triggerVibration)();
 
