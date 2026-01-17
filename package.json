@@ -8,7 +8,7 @@
     "ios": "expo start -c --ios",
     "web": "expo start -c --web",
     "clean": "rm -rf .expo node_modules",
-    "apk": "cd android && ./gradlew clean && ./gradlew assembleRelease  && cd .. &&  echo 'APK generated at android/app/build/outputs/apk/release/app-release.apk'",
+    "apk": "cd android && ./gradlew assembleRelease  && cd .. &&  echo 'APK generated at android/app/build/outputs/apk/release/app-release.apk'",
     "expo-apk": "eas build --platform android --profile preview"
   },
   "dependencies": {
