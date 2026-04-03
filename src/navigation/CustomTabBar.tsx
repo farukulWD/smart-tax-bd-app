@@ -13,8 +13,7 @@ import { CircleQuestionMark, Home, LayoutGrid, User } from 'lucide-react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { gGap } from '../utils/Sizes';
 import { cn } from '@/lib/utils';
-import { useTheme } from '@react-navigation/native';
-import { Colors } from '../context/ThemeProvider';
+import { Colors, useTheme } from '../context/ThemeProvider';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -24,8 +23,10 @@ interface TabIconProps {
 }
 
 const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
-  const { colors } = useTheme();
-  const iconColor = isFocused ? Colors.primary : Colors.mutedForeground;
+  useTheme();
+
+  const iconColor = isFocused ? Colors.primary : Colors.foreground;
+
   const getIconContent = () => {
     switch (routeName) {
       case 'HomeStack':
@@ -84,7 +85,7 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
       }}>
       {getIconContent()}
       <Text
-        className={cn('font-okra font-semibold', isFocused ? 'text-foreground' : 'text-primary')}
+        className={cn('font-okra font-semibold')}
         style={{
           fontSize: 10,
           color: iconColor,
@@ -96,6 +97,8 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
 };
 
 const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
+  useTheme();
+
   const tabWidth = screenWidth / state.routes.length;
   const indicatorPosition = useSharedValue(0);
   const indicatorOpacity = useSharedValue(0);
@@ -131,7 +134,6 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
         borderTopWidth: 1,
         borderTopColor: Colors.border,
       }}>
-      {/* Animated Indicator */}
       <Animated.View
         style={[
           indicatorStyle,
@@ -146,9 +148,11 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
           },
         ]}
       />
+
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
+
         const handlePress = () => {
           runOnJS(triggerVibration)();
 

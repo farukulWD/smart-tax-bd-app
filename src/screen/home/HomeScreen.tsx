@@ -10,6 +10,7 @@ import { PackageCard } from '@/src/components/package/PackageCard';
 import { navigate } from '@/src/utils/NavigationUtils';
 import { Text } from '@/components/ui/text';
 import HomeNewsSection from '@/src/components/home/HomeNewsSection';
+import ToggleTheme from '@/src/components/common/ToggleTheme';
 
 const data = {
   packages: [
@@ -100,6 +101,7 @@ const HomeScreen = () => {
         <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="gap-3 py-3">
           <HomeNewsSection />
           <HomeBanner />
+          <ToggleTheme />
           <PackageCard
             name={p.name}
             buttonText="Let's Continue"

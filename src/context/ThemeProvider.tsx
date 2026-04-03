@@ -1,112 +1,112 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Appearance, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useColorScheme as useNWColorScheme, vars } from 'nativewind';
 
 export const COLOR_TOKENS = {
   light: {
-    background: 'hsl(0 0% 98.8235%)',
-    foreground: 'hsl(0 0% 9.0196%)',
-    card: 'hsl(0 0% 98.8235%)',
-    cardForeground: 'hsl(0 0% 9.0196%)',
-    popover: 'hsl(0 0% 98.8235%)',
-    popoverForeground: 'hsl(0 0% 32.1569%)',
-    primary: 'hsl(151.3274 66.8639% 66.8627%)',
-    primaryForeground: 'hsl(153.3333 13.0435% 13.5294%)',
-    secondary: 'hsl(0 0% 99.2157%)',
-    secondaryForeground: 'hsl(0 0% 9.0196%)',
-    muted: 'hsl(0 0% 92.9412%)',
-    mutedForeground: 'hsl(0 0% 12.5490%)',
-    accent: 'hsl(0 0% 92.9412%)',
-    accentForeground: 'hsl(0 0% 12.5490%)',
-    destructive: 'hsl(9.8901 81.9820% 43.5294%)',
-    destructiveForeground: 'hsl(0 100% 99.4118%)',
-    border: 'hsl(0 0% 87.4510%)',
-    input: 'hsl(0 0% 96.4706%)',
-    ring: 'hsl(151.3274 66.8639% 66.8627%)',
-    radius: '0.5rem',
-    chart1: 'hsl(151.3274 66.8639% 66.8627%)',
-    chart2: 'hsl(217.2193 91.2195% 59.8039%)',
-    chart3: 'hsl(258.3117 89.5349% 66.2745%)',
-    chart4: 'hsl(37.6923 92.1260% 50.1961%)',
-    chart5: 'hsl(160.1183 84.0796% 39.4118%)',
-    sidebar: 'hsl(0 0% 98.8235%)',
-    sidebarForeground: 'hsl(0 0% 43.9216%)',
-    sidebarPrimary: 'hsl(151.3274 66.8639% 66.8627%)',
-    sidebarPrimaryForeground: 'hsl(153.3333 13.0435% 13.5294%)',
-    sidebarAccent: 'hsl(0 0% 92.9412%)',
-    sidebarAccentForeground: 'hsl(0 0% 12.5490%)',
-    sidebarBorder: 'hsl(0 0% 87.4510%)',
-    sidebarRing: 'hsl(151.3274 66.8639% 66.8627%)',
+    background: 'hsl(0 0% 100%)',
+    foreground: 'hsl(0 0% 0.3%)',
+    card: 'hsl(0 0% 100%)',
+    cardForeground: 'hsl(0 0% 0.3%)',
+    popover: 'hsl(0 0% 100%)',
+    popoverForeground: 'hsl(0 0% 0.3%)',
+    primary: 'hsl(125 94% 18%)',
+    primaryForeground: 'hsl(0 0% 96%)',
+    secondary: 'hsl(121 38% 87%)',
+    secondaryForeground: 'hsl(0 0% 1%)',
+    muted: 'hsl(0 0% 91%)',
+    mutedForeground: 'hsl(0 0% 17%)',
+    accent: 'hsl(0 0% 91%)',
+    accentForeground: 'hsl(0 0% 1%)',
+    destructive: 'hsl(0 100% 40%)',
+    destructiveForeground: 'hsl(0 0% 96%)',
+    border: 'hsl(0 0% 78%)',
+    input: 'hsl(0 0% 78%)',
+    ring: 'hsl(125 94% 18%)',
+    radius: '0.625rem',
+    chart1: 'hsl(4 100% 46%)',
+    chart2: 'hsl(169 100% 15%)',
+    chart3: 'hsl(205 92% 7%)',
+    chart4: 'hsl(29 100% 50%)',
+    chart5: 'hsl(20 100% 49%)',
+    sidebar: 'hsl(0 0% 96%)',
+    sidebarForeground: 'hsl(0 0% 0.3%)',
+    sidebarPrimary: 'hsl(0 0% 1%)',
+    sidebarPrimaryForeground: 'hsl(0 0% 96%)',
+    sidebarAccent: 'hsl(0 0% 91%)',
+    sidebarAccentForeground: 'hsl(0 0% 1%)',
+    sidebarBorder: 'hsl(0 0% 78%)',
+    sidebarRing: 'hsl(0 0% 36%)',
   },
   dark: {
-    background: 'hsl(0 0% 7.0588%)',
-    foreground: 'hsl(214.2857 31.8182% 91.3725%)',
-    card: 'hsl(0 0% 9.0196%)',
-    cardForeground: 'hsl(214.2857 31.8182% 91.3725%)',
-    popover: 'hsl(0 0% 14.1176%)',
-    popoverForeground: 'hsl(0 0% 66.2745%)',
-    primary: 'hsl(154.8980 100.0000% 19.2157%)',
-    primaryForeground: 'hsl(152.7273 19.2982% 88.8235%)',
-    secondary: 'hsl(0 0% 14.1176%)',
-    secondaryForeground: 'hsl(0 0% 98.0392%)',
-    muted: 'hsl(0 0% 12.1569%)',
-    mutedForeground: 'hsl(0 0% 63.5294%)',
-    accent: 'hsl(0 0% 19.2157%)',
-    accentForeground: 'hsl(0 0% 98.0392%)',
-    destructive: 'hsl(6.6667 60.0000% 20.5882%)',
-    destructiveForeground: 'hsl(12.0000 12.1951% 91.9608%)',
-    border: 'hsl(0 0% 16.0784%)',
-    input: 'hsl(0 0% 14.1176%)',
-    ring: 'hsl(141.8919 69.1589% 58.0392%)',
-    radius: '0.5rem',
-    chart1: 'hsl(141.8919 69.1589% 58.0392%)',
-    chart2: 'hsl(213.1169 93.9024% 67.8431%)',
-    chart3: 'hsl(255.1351 91.7355% 76.2745%)',
-    chart4: 'hsl(43.2558 96.4126% 56.2745%)',
-    chart5: 'hsl(172.4551 66.0079% 50.3922%)',
-    sidebar: 'hsl(9.8901 81.9820% 43.5294%)',
-    sidebarForeground: 'hsl(0 0% 53.7255%)',
-    sidebarPrimary: 'hsl(154.8980 100.0000% 19.2157%)',
-    sidebarPrimaryForeground: 'hsl(152.7273 19.2982% 88.8235%)',
-    sidebarAccent: 'hsl(0 0% 19.2157%)',
-    sidebarAccentForeground: 'hsl(0 0% 98.0392%)',
-    sidebarBorder: 'hsl(0 0% 16.0784%)',
-    sidebarRing: 'hsl(141.8919 69.1589% 58.0392%)',
+    background: 'hsl(0 0% 0.3%)',
+    foreground: 'hsl(0 0% 96%)',
+    card: 'hsl(0 0% 1%)',
+    cardForeground: 'hsl(0 0% 96%)',
+    popover: 'hsl(0 0% 1%)',
+    popoverForeground: 'hsl(0 0% 96%)',
+    primary: 'hsl(125 70% 33%)',
+    primaryForeground: 'hsl(0 0% 1%)',
+    secondary: 'hsl(0 0% 4%)',
+    secondaryForeground: 'hsl(0 0% 96%)',
+    muted: 'hsl(0 0% 4%)',
+    mutedForeground: 'hsl(0 0% 36%)',
+    accent: 'hsl(0 0% 4%)',
+    accentForeground: 'hsl(0 0% 96%)',
+    destructive: 'hsl(0 83% 49%)',
+    destructiveForeground: 'hsl(0 0% 96%)',
+    border: 'hsla(0 0% 100% / 0.1)',
+    input: 'hsla(0 0% 100% / 0.15)',
+    ring: 'hsl(125 70% 33%)',
+    radius: '0.625rem',
+    chart1: 'hsl(264 100% 31%)',
+    chart2: 'hsl(161 100% 34%)',
+    chart3: 'hsl(20 100% 49%)',
+    chart4: 'hsl(304 100% 36%)',
+    chart5: 'hsl(16 100% 41%)',
+    sidebar: 'hsl(0 0% 1%)',
+    sidebarForeground: 'hsl(0 0% 96%)',
+    sidebarPrimary: 'hsl(264 100% 31%)',
+    sidebarPrimaryForeground: 'hsl(0 0% 96%)',
+    sidebarAccent: 'hsl(0 0% 4%)',
+    sidebarAccentForeground: 'hsl(0 0% 96%)',
+    sidebarBorder: 'hsla(0 0% 100% / 0.1)',
+    sidebarRing: 'hsl(0 0% 17%)',
   },
 } as const;
 
 export type ThemeName = keyof typeof COLOR_TOKENS;
 export type ThemePreference = ThemeName | 'system';
+export type AppColors = typeof COLOR_TOKENS.light;
 
-let currentTheme: ThemeName = Appearance.getColorScheme() === 'dark' ? 'dark' : 'light';
-const setGlobalTheme = (t: ThemeName) => {
-  currentTheme = t;
-};
+const STORAGE_KEY = 'theme_preference';
 
-export const Colors = new Proxy({} as (typeof COLOR_TOKENS)['light'], {
+let activeTheme: ThemeName = Appearance.getColorScheme() === 'dark' ? 'dark' : 'light';
+
+export const Colors = new Proxy({} as AppColors, {
   get(_target, prop: string) {
-    return (COLOR_TOKENS as any)[currentTheme][prop];
+    return COLOR_TOKENS[activeTheme][prop as keyof AppColors];
   },
-}) as (typeof COLOR_TOKENS)['light'];
-
-const toVars = (t: (typeof COLOR_TOKENS)[ThemeName]) =>
-  vars(
-    Object.fromEntries(Object.entries(t).map(([k, v]) => [`--color-${k}`, v])) as Record<
-      string,
-      string
-    >
-  );
+});
 
 const themeVars = {
-  light: toVars(COLOR_TOKENS.light),
-  dark: toVars(COLOR_TOKENS.dark),
-} satisfies Record<ThemeName, ReturnType<typeof vars>>;
+  light: vars(
+    Object.fromEntries(
+      Object.entries(COLOR_TOKENS.light).map(([k, v]) => [`--color-${k}`, v])
+    ) as Record<string, string>
+  ),
+  dark: vars(
+    Object.fromEntries(
+      Object.entries(COLOR_TOKENS.dark).map(([k, v]) => [`--color-${k}`, v])
+    ) as Record<string, string>
+  ),
+};
 
 type ThemeContextType = {
   theme: ThemeName;
   preference: ThemePreference;
-  setPreference: (p: ThemePreference) => void;
+  setPreference: (value: ThemePreference) => void;
   toggleTheme: () => void;
 };
 
@@ -117,15 +117,13 @@ const ThemeContext = createContext<ThemeContextType>({
   toggleTheme: () => {},
 });
 
-const STORAGE_KEY = 'theme_preference';
-
-export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { setColorScheme } = useNWColorScheme() as {
-    setColorScheme: (t: ThemeName | 'system') => void;
+    setColorScheme: (theme: ThemePreference) => void;
   };
 
+  const [theme, setTheme] = useState<ThemeName>(activeTheme);
   const [preference, setPreferenceState] = useState<ThemePreference>('system');
-  const [theme, setTheme] = useState<ThemeName>(currentTheme);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -144,42 +142,56 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     const sub = Appearance.addChangeListener(({ colorScheme }) => {
       if (preference !== 'system') return;
-      const next: ThemeName = colorScheme === 'dark' ? 'dark' : 'light';
-      setTheme(next);
-    });
-    return () => sub.remove();
-  }, [preference]);
 
-  useEffect(() => {
-    if (preference === 'system') {
-      const sys = Appearance.getColorScheme();
-      const effective: ThemeName = sys === 'dark' ? 'dark' : 'light';
-      setTheme(effective);
+      const nextTheme: ThemeName = colorScheme === 'dark' ? 'dark' : 'light';
+      activeTheme = nextTheme;
+      setTheme(nextTheme);
       setColorScheme('system');
-      setGlobalTheme(effective);
-    } else {
-      setTheme(preference);
-      setColorScheme(preference);
-      setGlobalTheme(preference);
-    }
+    });
+
+    return () => sub.remove();
   }, [preference, setColorScheme]);
 
-  const setPreference = React.useCallback((p: ThemePreference) => {
-    setPreferenceState(p);
-    AsyncStorage.setItem(STORAGE_KEY, p).catch(() => {});
+  useEffect(() => {
+    const nextTheme: ThemeName =
+      preference === 'system'
+        ? Appearance.getColorScheme() === 'dark'
+          ? 'dark'
+          : 'light'
+        : preference;
+
+    activeTheme = nextTheme;
+    setTheme(nextTheme);
+    setColorScheme(preference === 'system' ? 'system' : nextTheme);
+  }, [preference, setColorScheme]);
+
+  const setPreference = useCallback((value: ThemePreference) => {
+    setPreferenceState(value);
+    AsyncStorage.setItem(STORAGE_KEY, value).catch(() => {});
   }, []);
 
-  const toggleTheme = React.useCallback(() => {
-    const next: ThemeName = theme === 'light' ? 'dark' : 'light';
-    setPreference(next);
-  }, [theme, setPreference]);
+  const toggleTheme = useCallback(() => {
+    const nextTheme: ThemeName = theme === 'dark' ? 'light' : 'dark';
+    activeTheme = nextTheme;
+    setTheme(nextTheme);
+    setPreferenceState(nextTheme);
+    setColorScheme(nextTheme);
+    AsyncStorage.setItem(STORAGE_KEY, nextTheme).catch(() => {});
+  }, [theme, setColorScheme]);
 
   const value = useMemo(
-    () => ({ theme, preference, setPreference, toggleTheme }),
+    () => ({
+      theme,
+      preference,
+      setPreference,
+      toggleTheme,
+    }),
     [theme, preference, setPreference, toggleTheme]
   );
 
-  if (loading) return <ActivityIndicator size="large" />;
+  if (loading) {
+    return <ActivityIndicator size="large" />;
+  }
 
   return (
     <ThemeContext.Provider value={value}>
