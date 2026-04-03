@@ -11,6 +11,8 @@ import Navigation from './navigation/Navigation';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { ThemeSync } from '@/lib/ThemeSync';
 import { ThemeProvider } from './context/ThemeProvider';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
 
 export default function App() {
   const { colorScheme } = useColorScheme();
@@ -26,9 +28,11 @@ export default function App() {
           <Text>Hello</Text>
         </Button>
       </View> */}
-        <Navigation />
-        <PortalHost />
-        <ThemeSync />
+        <Provider store={store}>
+          <Navigation />
+          <PortalHost />
+          <ThemeSync />
+        </Provider>
       </ThemeProvider>
     </KeyboardProvider>
   );

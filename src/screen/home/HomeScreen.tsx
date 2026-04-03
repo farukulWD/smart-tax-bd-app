@@ -1,4 +1,4 @@
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Image } from 'react-native';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
@@ -9,6 +9,7 @@ import Marquee from '@/src/components/global/Marquee';
 import { PackageCard } from '@/src/components/package/PackageCard';
 import { navigate } from '@/src/utils/NavigationUtils';
 import { Text } from '@/components/ui/text';
+import HomeNewsSection from '@/src/components/home/HomeNewsSection';
 
 const data = {
   packages: [
@@ -72,6 +73,7 @@ const data = {
 
 const HomeScreen = () => {
   const navigation = useNavigation<NavigationProp<AppStackParamList>>();
+
   let p = {
     name: 'Standard',
     price: 550,
@@ -94,19 +96,9 @@ const HomeScreen = () => {
   return (
     <View className="flex-1 bg-background">
       <Header />
-      <View className="flex-1 px-4">
+      <View className="flex-1">
         <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="gap-3 py-3">
-          <Marquee>
-            <Text
-              className="font-bold uppercase tracking-wider text-foreground"
-              style={{
-                textAlign: 'center',
-              }}
-              numberOfLines={1}>
-              Smart Tax BD
-              {'       '}
-            </Text>
-          </Marquee>
+          <HomeNewsSection />
           <HomeBanner />
           <PackageCard
             name={p.name}
