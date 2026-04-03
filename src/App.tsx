@@ -12,7 +12,8 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { ThemeSync } from '@/lib/ThemeSync';
 import { ThemeProvider } from './context/ThemeProvider';
 import { Provider } from 'react-redux';
-import { store } from './redux/store';
+import { persistor, store } from './redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 export default function App() {
   const { colorScheme } = useColorScheme();
@@ -21,37 +22,14 @@ export default function App() {
     <KeyboardProvider>
       <ThemeProvider>
         <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-        {/* <ThemeToggle /> */}
-        {/* <View className="flex-1 items-center justify-center border bg-background">
-        <View className="h-10 w-10 bg-emerald-600" />
-        <Button variant={'outline'} size={'lg'}>
-          <Text>Hello</Text>
-        </Button>
-      </View> */}
         <Provider store={store}>
-          <Navigation />
-          <PortalHost />
-          <ThemeSync />
+          <PersistGate loading={null} persistor={persistor}>
+            <Navigation />
+            <PortalHost />
+            <ThemeSync />
+          </PersistGate>
         </Provider>
       </ThemeProvider>
     </KeyboardProvider>
-  );
-}
-const THEME_ICONS = {
-  light: SunIcon,
-  dark: MoonStarIcon,
-};
-
-function ThemeToggle() {
-  const { colorScheme, toggleColorScheme } = useColorScheme();
-  console.log('colorScheme', JSON.stringify(colorScheme, null, 2));
-  return (
-    <Button
-      onPressIn={toggleColorScheme}
-      size="icon"
-      variant="ghost"
-      className="ios:size-9 rounded-full web:mx-4">
-      <Icon as={THEME_ICONS[colorScheme ?? 'light']} className="size-5" />
-    </Button>
   );
 }

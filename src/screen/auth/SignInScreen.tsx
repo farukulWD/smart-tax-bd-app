@@ -6,23 +6,46 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Alert,
 } from 'react-native';
 import { Input } from '@/components/ui/input';
 import { EyeOff, Eye, Home, Mail, Phone } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
 import { Colors } from '@/src/context/ThemeProvider';
+import { useLoginMutation } from '@/src/services/auth';
+import { useAppDispatch } from '@/src/redux/hooks';
+import { setCredentials } from '@/src/redux/slices/authSlice';
+import { goBack } from '@/src/utils/NavigationUtils';
 
 const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
-  const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-  const handleLogin = () => {
-    console.log('Login pressed');
-  };
+  const [login, { isLoading }] = useLoginMutation();
 
+  const dispatch = useAppDispatch();
+
+  const handleLogin = async () => {
+    try {
+      const res = await login({
+        mobile,
+        password,
+      }).unwrap();
+
+      dispatch(
+        setCredentials({
+          token: res.data.accessToken,
+          user: res.data.user,
+        })
+      );
+      goBack();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -46,23 +69,24 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
 
           {/* Form Section */}
           <View className="gap-3">
-            {/* Email Input */}
+            {/* Mobile Input */}
 
             <Input
-              placeholder="Enter your email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
+              placeholder="Enter your mobile number..."
+              value={mobile}
+              onChangeText={setMobile}
+              keyboardType="number-pad"
+              placeholderClassName="text-mutedForeground"
               autoCapitalize="none"
-              className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-card-foreground"
+              className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-foreground"
             />
 
             {/* Password Input */}
             <View className="relative justify-center">
               <Input
-                className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-card-foreground"
+                className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-foreground"
                 placeholder="Password *"
-                placeholderTextColor="#9CA3AF"
+                placeholderClassName="text-mutedForeground"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
@@ -90,7 +114,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                   }`}>
                   {rememberMe && <Text className="text-xs text-foreground">✓</Text>}
                 </View>
-                <Text className="text-mutedForeground text-base">Remember me</Text>
+                <Text className="text-base text-mutedForeground">Remember me</Text>
               </TouchableOpacity>
               {/* Forgot Password Link */}
               <TouchableOpacity
@@ -107,12 +131,14 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               onPress={handleLogin}
               className="h-12 flex-row items-center justify-center rounded-xl bg-green-600">
               <Home size={20} color="white" />
-              <Text className="ml-2 text-center text-base font-semibold text-white">Log In</Text>
+              <Text className="ml-2 text-center text-base font-semibold text-white">
+                {isLoading ? 'Signing...' : 'Log In'}
+              </Text>
             </TouchableOpacity>
             <View>
               {/* Create Account Link */}
               <View className="flex-row items-center justify-center">
-                <Text className="text-mutedForeground text-sm">New to smarttaxbd? </Text>
+                <Text className="text-sm text-mutedForeground">New to Smart Tax BD? </Text>
                 <TouchableOpacity
                   onPress={() => {
                     setScreen(SCREEN_NAME.SIGNUP);
@@ -133,20 +159,20 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               <View className="items-center">
                 <View className="flex-row items-center">
                   <Mail size={16} color={Colors.mutedForeground} />
-                  <Text className="text-mutedForeground ml-2 text-sm">
+                  <Text className="ml-2 text-sm text-mutedForeground">
                     support@smarttaxbd.com.bd
                   </Text>
                 </View>
                 <View className="flex-row items-center">
                   <Phone size={16} color={Colors.mutedForeground} />
-                  <Text className="text-mutedForeground ml-2 text-sm">01409-991225</Text>
+                  <Text className="ml-2 text-sm text-mutedForeground">01409-991225</Text>
                 </View>
               </View>
             </View>
 
             {/* Footer Text */}
             <View className="px-2">
-              <Text className="text-mutedForeground text-center text-xs leading-5">
+              <Text className="text-center text-xs leading-5 text-mutedForeground">
                 Mobile App is developed by Smart Tax BD Technology Ltd. smarttaxbd.com.bd is
                 copyrighted by Bangladesh Copyright and Patent office. Copyright registration number
                 is 14748-COPR.
@@ -155,7 +181,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
 
             {/* Made in Bangladesh */}
             <View className="mb-2 flex-row items-center justify-center">
-              <Text className="text-mutedForeground mr-2 text-sm">Made in</Text>
+              <Text className="mr-2 text-sm text-mutedForeground">Made in</Text>
               <View className="h-6 w-6 items-center justify-center rounded bg-green-600">
                 <View className="h-3 w-3 rounded-full bg-red-600" />
               </View>

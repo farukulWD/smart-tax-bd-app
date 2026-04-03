@@ -10,8 +10,6 @@ import { Colors } from '@/src/context/ThemeProvider';
 const Header = () => {
   const { top } = useSafeAreaInsets();
 
-  console.log('Colors.mutedForeground', JSON.stringify(Colors.mutedForeground, null, 2));
-
   return (
     <View
       style={{ paddingTop: top }}

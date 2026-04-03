@@ -1,3 +1,6 @@
+import { useAppSelector } from '@/src/redux/hooks';
+import { logout } from '@/src/redux/slices/authSlice';
+import { store } from '@/src/redux/store';
 import { navigate } from '@/src/utils/NavigationUtils';
 import React from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
@@ -7,17 +10,7 @@ type ProfileStat = { label: string; value: string };
 type ProfileLink = { label: string; hint?: string; onPress?: () => void };
 
 const ProfileScreen = () => {
-  // Toggle this based on auth state
-  const isLoggedIn = false;
-
-  const user = {
-    name: 'Mahmud Hasan',
-    phone: '+880 1XXXXXXXXX',
-    email: 'mahmud@example.com',
-    tin: '12XXXXXXXXX',
-    location: 'Dhaka, Bangladesh',
-    plan: 'Free',
-  };
+  const { isLoggedIn, user } = useAppSelector((state) => state.auth);
 
   const stats: ProfileStat[] = [
     { label: 'Returns', value: '0' },
@@ -56,7 +49,7 @@ const ProfileScreen = () => {
                 {/* Avatar */}
                 <View className="roundedFull h-12 w-12 items-center justify-center bg-muted">
                   <Text className="text-base font-bold text-foreground">
-                    {user.name
+                    {user?.name
                       .split(' ')
                       .slice(0, 2)
                       .map((w) => w[0])
@@ -66,14 +59,14 @@ const ProfileScreen = () => {
                 </View>
 
                 <View className="ml-3 flex-1">
-                  <Text className="text-base font-semibold text-foreground">{user.name}</Text>
-                  <Text className="mt-1 text-xs text-mutedForeground">{user.email}</Text>
-                  <Text className="mt-1 text-xs text-mutedForeground">{user.phone}</Text>
+                  <Text className="text-base font-semibold text-foreground">{user?.name}</Text>
+                  <Text className="mt-1 text-xs text-mutedForeground">{user?.email}</Text>
+                  <Text className="mt-1 text-xs text-mutedForeground">{user?.mobile}</Text>
                 </View>
 
                 {/* Plan */}
                 <View className="roundedFull bg-muted px-3 py-1">
-                  <Text className="text-xs font-semibold text-foreground">{user.plan}</Text>
+                  <Text className="text-xs font-semibold text-foreground">{user?.status}</Text>
                 </View>
               </View>
 
@@ -81,11 +74,11 @@ const ProfileScreen = () => {
               <View className="mt-3 rounded-xl bg-muted px-3 py-2">
                 <View className="flex-row justify-between">
                   <Text className="text-xs text-mutedForeground">E-TIN</Text>
-                  <Text className="text-xs font-semibold text-foreground">{user.tin}</Text>
+                  <Text className="text-xs font-semibold text-foreground">{user?.role}</Text>
                 </View>
                 <View className="mt-2 flex-row justify-between">
                   <Text className="text-xs text-mutedForeground">Location</Text>
-                  <Text className="text-xs font-semibold text-foreground">{user.location}</Text>
+                  <Text className="text-xs font-semibold text-foreground">Not available</Text>
                 </View>
               </View>
 
@@ -170,7 +163,11 @@ const ProfileScreen = () => {
 
           {isLoggedIn ? (
             <>
-              <Pressable className="mt-3 rounded-xl bg-muted px-3 py-3" onPress={() => {}}>
+              <Pressable
+                className="mt-3 rounded-xl bg-muted px-3 py-3"
+                onPress={() => {
+                  store.dispatch(logout());
+                }}>
                 <View className="flex-row items-center justify-between">
                   <Text className="text-sm font-semibold text-foreground">Sign out</Text>
                   <Text className="text-base text-mutedForeground">›</Text>

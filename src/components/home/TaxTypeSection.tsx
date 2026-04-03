@@ -59,7 +59,6 @@ const TaxTypeSection = () => {
       </View>
     );
   }
-  console.log('Colors', JSON.stringify(Colors.primary, null, 2));
   return (
     <View className="bg-background px-4 py-3">
       <View

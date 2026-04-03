@@ -5,6 +5,7 @@ import AuthScreen from '../screen/auth/AuthScreen';
 import BottomTabNavigator from './BottomTabNavigator';
 import PackagesScreen from '../screen/home/PackageScreen';
 import NewsDetailsScreen from '../screen/home/NewsDetailsScreen';
+import { useAppSelector } from '../redux/hooks';
 
 export type AppStackParamList = {
   BottomTabNavigator: undefined;
@@ -15,14 +16,11 @@ export type AppStackParamList = {
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
-const useIsSignedIn = () => true; // replace with real auth state
-
 export default function AppStack() {
-  const isSignedIn = useIsSignedIn();
-
+  const { isLoggedIn } = useAppSelector((state) => state.auth);
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {isSignedIn ? (
+      {isLoggedIn ? (
         <>
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
           <Stack.Screen name="Packages" component={PackagesScreen} />
