@@ -13,3 +13,9 @@ export type GetAllNewsResponse = {
   message: string;
   data: NewsItem[];
 };
+
+export type GetSingleNewsResponse = {
+  success: boolean;
+  message: string;
+  data: NewsItem;
+};
