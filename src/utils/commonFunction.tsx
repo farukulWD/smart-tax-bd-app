@@ -119,3 +119,47 @@ export const formatDate = (date: string) => {
   const dateTime = dayjs(date).format('MMM DD, YYYY hh:mm A');
   return dateTime;
 };
+export function withOpacity(hslColor: string, opacityPercent: number): string {
+  const match = hslColor.match(/^hsl\(\s*([\d.]+)\s+([\d.]+)%\s+([\d.]+)%\s*\)$/i);
+
+  if (!match) return hslColor;
+
+  let [, h, s, l] = match;
+
+  const hue = Number(h);
+  const sat = Number(s) / 100;
+  const light = Number(l) / 100;
+
+  const c = (1 - Math.abs(2 * light - 1)) * sat;
+  const x = c * (1 - Math.abs(((hue / 60) % 2) - 1));
+  const m = light - c / 2;
+
+  let r = 0;
+  let g = 0;
+  let b = 0;
+
+  if (hue >= 0 && hue < 60) {
+    [r, g, b] = [c, x, 0];
+  } else if (hue < 120) {
+    [r, g, b] = [x, c, 0];
+  } else if (hue < 180) {
+    [r, g, b] = [0, c, x];
+  } else if (hue < 240) {
+    [r, g, b] = [0, x, c];
+  } else if (hue < 300) {
+    [r, g, b] = [x, 0, c];
+  } else {
+    [r, g, b] = [c, 0, x];
+  }
+
+  const toHex = (value: number): string =>
+    Math.round((value + m) * 255)
+      .toString(16)
+      .padStart(2, '0');
+
+  const alpha = Math.round((Math.max(0, Math.min(100, opacityPercent)) / 100) * 255)
+    .toString(16)
+    .padStart(2, '0');
+
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}${alpha}`;
+}
