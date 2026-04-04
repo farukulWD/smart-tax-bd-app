@@ -67,7 +67,7 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
       case 'HomeStack':
         return 'Home';
       case 'DocumentStack':
-        return 'Docs';
+        return 'News';
       case 'FAQStack':
         return 'FAQ';
       case 'ProfileStack':

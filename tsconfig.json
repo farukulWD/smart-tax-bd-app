@@ -6,7 +6,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["*"]
-    }
+    },
+    "noUnusedLocals": true, // Set to false to hide errors for unused variables
+    "noUnusedParameters": true // Set to false to hide errors for unused parameters
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"]
 }

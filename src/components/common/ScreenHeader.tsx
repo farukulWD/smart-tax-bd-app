@@ -9,7 +9,6 @@ interface ScreenHeaderProps {
   description?: string;
   onPress?: () => void;
   showBack?: boolean;
-  icon?: React.ReactNode;
   className?: string;
 }
 
@@ -18,7 +17,6 @@ const ScreenHeader = ({
   description,
   onPress,
   showBack = true,
-  icon,
   className,
 }: ScreenHeaderProps) => {
   const navigation = useNavigation();

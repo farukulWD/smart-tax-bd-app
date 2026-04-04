@@ -1,9 +1,9 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import DocumentScreen from '../screen/document/DocumentScreen';
+import NewsScreen from '../screen/document/NewsScreen';
 
 export type DocumentStackParamList = {
-  Document: undefined;
+  News: undefined;
 };
 
 const Stack = createNativeStackNavigator<DocumentStackParamList>();
@@ -11,7 +11,7 @@ const Stack = createNativeStackNavigator<DocumentStackParamList>();
 export default function DocumentStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Document" component={DocumentScreen} />
+      <Stack.Screen name="News" component={NewsScreen} />
     </Stack.Navigator>
   );
 }
