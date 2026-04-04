@@ -1,15 +1,16 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
 import React from 'react';
 import { useTheme } from '@/src/context/ThemeProvider';
 import LucideIcon from './LucideIcon';
 
 const ToggleTheme = () => {
-  const { toggleTheme } = useTheme();
+  const { toggleTheme, theme } = useTheme();
+  const isDark = theme === 'dark';
 
   return (
     <View>
       <Pressable onPress={toggleTheme}>
-        <LucideIcon name="Moon" className="text-lg text-destructive" />
+        <LucideIcon name={isDark ? 'Sun' : 'Moon'} className="text-lg text-foreground" />
       </Pressable>
     </View>
   );

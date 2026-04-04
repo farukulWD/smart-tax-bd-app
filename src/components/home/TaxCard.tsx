@@ -2,8 +2,6 @@ import { TaxTypeItem } from '@/src/types/publicTypes';
 import { Pressable, Text, View } from 'react-native';
 import LucideIcon from '../common/LucideIcon';
 import { ArrowRight } from 'lucide-react-native';
-import { withOpacity } from '@/src/utils/commonFunction';
-import { Colors } from '@/src/context/ThemeProvider';
 import { navigate } from '@/src/utils/NavigationUtils';
 
 const getTaxIconName = (value: string) => {
@@ -60,13 +58,7 @@ const TaxCard = ({ item }: { item: TaxTypeItem }) => {
         <View className="absolute right-0 top-0 opacity-[0.06]">
           <LucideIcon name={IconName} size={88} className="text-foreground" strokeWidth={1.5} />
         </View>
-        <View
-          style={{
-            backgroundColor: withOpacity(Colors.primary, 15),
-            borderWidth: 1,
-            borderColor: withOpacity(Colors.primary, 30),
-          }}
-          className="mb-2 h-12 w-12 items-center justify-center rounded-2xl border">
+        <View className="mb-2 h-12 w-12 items-center justify-center rounded-2xl border border-[#3ca34d79] bg-[#3ca34d1f]">
           <LucideIcon name={IconName} size={22} className="text-foreground" strokeWidth={2} />
         </View>
 

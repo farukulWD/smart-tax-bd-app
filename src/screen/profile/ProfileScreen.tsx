@@ -172,8 +172,8 @@ const ProfileScreen = () => {
                   </View>
 
                   {/* Status badge */}
-                  <View className="rounded-full border bg-primary px-3 py-1">
-                    <Text className="text-xs font-bold capitalize text-primaryForeground">
+                  <View className="rounded-full border border-[#3ca34d79] bg-[#3ca34d1f] px-3 py-1">
+                    <Text className="text-xs font-bold capitalize text-primary">
                       {user?.status}
                     </Text>
                   </View>

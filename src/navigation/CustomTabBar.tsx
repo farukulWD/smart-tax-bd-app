@@ -25,7 +25,7 @@ interface TabIconProps {
 const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
   useTheme();
 
-  const iconColor = isFocused ? Colors.primary : Colors.foreground;
+  const iconColor = isFocused ? Colors.primary : Colors.mutedForeground;
 
   const getIconContent = () => {
     switch (routeName) {

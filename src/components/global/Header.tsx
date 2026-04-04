@@ -2,10 +2,8 @@ import { View, Image } from 'react-native';
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@/components/ui/text';
-import { PressableScale } from './PressableScale';
-import { Bell, MessageCircle } from 'lucide-react-native';
 import { Images } from '@/src/utils/Images';
-import { Colors } from '@/src/context/ThemeProvider';
+import ToggleTheme from '../common/ToggleTheme';
 
 const Header = () => {
   const { top } = useSafeAreaInsets();
@@ -28,7 +26,7 @@ const Header = () => {
         </View>
       </View>
 
-      <View className="flex-row items-center gap-3">
+      {/* <View className="flex-row items-center gap-3">
         <PressableScale className="h-12 w-12 items-center justify-center rounded-full border border-border bg-secondary">
           <Bell size={25} color={Colors.mutedForeground} />
         </PressableScale>
@@ -36,7 +34,8 @@ const Header = () => {
         <PressableScale className="h-12 w-12 items-center justify-center rounded-full border border-border bg-secondary">
           <MessageCircle size={25} color={Colors.mutedForeground} />
         </PressableScale>
-      </View>
+      </View> */}
+      <ToggleTheme />
     </View>
   );
 };

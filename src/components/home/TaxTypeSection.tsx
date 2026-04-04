@@ -1,11 +1,7 @@
 import React from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
-import { ArrowRight } from 'lucide-react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { useGetAllTaxTypesQuery } from '@/src/services/publicApi';
-import LucideIcon from '../common/LucideIcon';
 import TaxCard from './TaxCard';
-import { Colors } from '@/src/context/ThemeProvider';
-import { withOpacity } from '@/src/utils/commonFunction';
 
 type TaxTypeItem = {
   _id: string;
@@ -60,11 +56,9 @@ const TaxTypeSection = () => {
     );
   }
   return (
-    <View className="bg-background px-4 py-3">
-      <View
-        style={{ backgroundColor: withOpacity(Colors.primary, 30) }}
-        className="self-start rounded-full border border-border px-3 py-2">
-        <Text className="text-[12px] font-bold text-[#3ca34d]">Expert Compliance</Text>
+    <View className="bg-background px-4">
+      <View className="self-start rounded-full border border-[#3ca34d6d] bg-[#3ca34d1f] px-3 py-2">
+        <Text className="text-[12px] font-bold text-primary">Expert Compliance</Text>
       </View>
 
       <Text className="text-[34px] font-extrabold leading-[40px] text-foreground">

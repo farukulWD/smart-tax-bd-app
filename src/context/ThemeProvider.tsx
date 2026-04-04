@@ -5,13 +5,13 @@ import { useColorScheme as useNWColorScheme, vars } from 'nativewind';
 
 export const COLOR_TOKENS = {
   light: {
-    background: 'hsl(0 0% 100%)',
-    foreground: 'hsl(0 0% 0.3%)',
+    background: 'hsl(0 0% 98%)',
+    foreground: 'hsl(0 0% 10%)',
     card: 'hsl(0 0% 100%)',
     cardForeground: 'hsl(0 0% 0.3%)',
     popover: 'hsl(0 0% 100%)',
     popoverForeground: 'hsl(0 0% 0.3%)',
-    primary: 'hsl(125 94% 18%)',
+    primary: 'hsl(145, 100%, 25%)',
     primaryForeground: 'hsl(0 0% 96%)',
     secondary: 'hsl(121 38% 87%)',
     secondaryForeground: 'hsl(0 0% 1%)',
@@ -23,7 +23,7 @@ export const COLOR_TOKENS = {
     destructiveForeground: 'hsl(0 0% 96%)',
     border: 'hsl(0 0% 90%)',
     input: 'hsl(0 0% 78%)',
-    ring: 'hsl(125 94% 18%)',
+    ring: 'hsl(145, 100%, 25%)',
     radius: '0.625rem',
     chart1: 'hsl(4 100% 46%)',
     chart2: 'hsl(169 100% 15%)',
