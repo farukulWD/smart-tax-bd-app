@@ -13,7 +13,7 @@ import { AppStackParamList } from '@/src/navigation/AppStack';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Sharing from 'expo-sharing';
 import { File, Directory, Paths } from 'expo-file-system';
-import { AlertCircle, CheckCircle2 } from 'lucide-react-native';
+import { AlertCircle, ArrowLeft, CheckCircle2 } from 'lucide-react-native';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DocumentCard from '@/src/components/order/DocumentCard';
@@ -152,8 +152,7 @@ const RequireDocumentsScreen = () => {
 
     try {
       await uploadTaxStepTwoDocuments({ taxId, documentIds }).unwrap();
-      Alert.alert('Success', 'Step 2 completed successfully');
-      navigation.navigate('Payment', { taxId });
+      navigation.navigate('OrderPaymentStatus', { taxId });
       await refetchOrder();
     } catch (error: any) {
       const message =
@@ -258,6 +257,15 @@ const RequireDocumentsScreen = () => {
                 )}
                 <Text className="text-base font-bold text-white">
                   {isSubmittingStepTwo ? 'Submitting…' : 'Go To Payment'}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                activeOpacity={0.7}
+                className="flex-row items-center justify-center gap-2 py-3">
+                <ArrowLeft size={15} color="#6366f1" />
+                <Text className="text-sm font-semibold text-indigo-600">
+                  Back to Create Tax Order
                 </Text>
               </TouchableOpacity>
             </View>

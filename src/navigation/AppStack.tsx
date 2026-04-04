@@ -7,6 +7,8 @@ import PackagesScreen from '../screen/home/PackageScreen';
 import NewsDetailsScreen from '../screen/home/NewsDetailsScreen';
 import CreateTaxOrderScreen from '../screen/order/CreateTaxOrderScreen';
 import RequireDocumentsScreen from '../screen/order/RequireDocumentsScreen';
+import OrderPaymentStatusScreen from '../screen/order/OrderPaymentStatusScreen';
+import OrderPaymentScreen from '../screen/order/OrderPaymentScreen';
 
 export type AppStackParamList = {
   BottomTabNavigator: undefined;
@@ -21,6 +23,8 @@ export type AppStackParamList = {
   NewsDetails: { newsId: string };
   CreateTaxOrder: { taxTypeId: string; redirectTo: { stack: string; screen: string } };
   RequireDocuments: { taxId: string; redirectTo?: { stack: string; screen: string } };
+  OrderPaymentStatus: { taxId: string; redirectTo?: { stack: string; screen: string } };
+  OrderPayment: { gatewayUrl: string; redirectTo?: { stack: string; screen: string } };
 };
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
@@ -33,6 +37,8 @@ export default function AppStack() {
       <Stack.Screen name="NewsDetails" component={NewsDetailsScreen} />
       <Stack.Screen name="CreateTaxOrder" component={CreateTaxOrderScreen} />
       <Stack.Screen name="RequireDocuments" component={RequireDocumentsScreen} />
+      <Stack.Screen name="OrderPaymentStatus" component={OrderPaymentStatusScreen} />
+      <Stack.Screen name="OrderPayment" component={OrderPaymentScreen} />
       <Stack.Screen name="Auth" component={AuthScreen} />
     </Stack.Navigator>
   );
