@@ -5,7 +5,8 @@ import AuthScreen from '../screen/auth/AuthScreen';
 import BottomTabNavigator from './BottomTabNavigator';
 import PackagesScreen from '../screen/home/PackageScreen';
 import NewsDetailsScreen from '../screen/home/NewsDetailsScreen';
-import CreateTaxOrderScreen from '../screen/protected/CreateTaxOrderScreen';
+import CreateTaxOrderScreen from '../screen/order/CreateTaxOrderScreen';
+import RequireDocumentsScreen from '../screen/order/RequireDocumentsScreen';
 
 export type AppStackParamList = {
   BottomTabNavigator: undefined;
@@ -19,6 +20,7 @@ export type AppStackParamList = {
   Packages: undefined;
   NewsDetails: { newsId: string };
   CreateTaxOrder: { taxTypeId: string; redirectTo: { stack: string; screen: string } };
+  RequireDocuments: { taxId: string; redirectTo?: { stack: string; screen: string } };
 };
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
@@ -30,6 +32,7 @@ export default function AppStack() {
       <Stack.Screen name="Packages" component={PackagesScreen} />
       <Stack.Screen name="NewsDetails" component={NewsDetailsScreen} />
       <Stack.Screen name="CreateTaxOrder" component={CreateTaxOrderScreen} />
+      <Stack.Screen name="RequireDocuments" component={RequireDocumentsScreen} />
       <Stack.Screen name="Auth" component={AuthScreen} />
     </Stack.Navigator>
   );

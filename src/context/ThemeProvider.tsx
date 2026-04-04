@@ -41,7 +41,7 @@ export const COLOR_TOKENS = {
   },
   dark: {
     background: 'hsl(0 0% 0.3%)',
-    foreground: 'hsl(0 0% 80%)',
+    foreground: 'hsl(0 0% 90%)',
     card: 'hsl(0 0% 5%)',
     cardForeground: 'hsl(0 0% 96%)',
     popover: 'hsl(0 0% 1%)',

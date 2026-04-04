@@ -18,7 +18,7 @@ import { IncomeSource } from '@/src/services/orderApi';
 import { useGetUserInfoQuery } from '@/src/services/auth';
 import { useCreateTaxStepOneMutation } from '@/src/services/orderApi';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
-import { CURRENT_YEAR } from '@/src/utils/commonFunction';
+import { CURRENT_YEAR, showToast } from '@/src/utils/commonFunction';
 import TaxYearPicker from '@/src/components/order/TaxYearPicker';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { cn } from '@/lib/utils';
@@ -190,13 +190,14 @@ const CreateTaxOrderScreen = () => {
         income_from_partnership_firm: values.income_from_partnership_firm,
         are_you_get_notice_from_tax_office: values.are_you_get_notice_from_tax_office,
       }).unwrap();
-
       const orderId = res?.data?.tax_order?._id;
       if (!orderId) {
-        navigation.navigate('Orders');
+        showToast({ message: 'Order Not Found' });
         return;
       }
-      navigation.navigate('UploadDocuments', { orderId });
+
+      navigation.navigate('RequireDocuments', { taxId: orderId });
+      // navigation.navigate('UploadDocuments', { orderId });
     } catch (error: any) {
       globalErrorHandler(error);
     }

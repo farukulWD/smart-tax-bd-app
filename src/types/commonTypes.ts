@@ -12,3 +12,9 @@ export type TResponse<T> = {
   pagination?: TPagination;
   data: T;
 };
+
+export type PreviewFile = {
+  url: string;
+  name?: string;
+  type: 'image' | 'pdf' | 'other';
+};

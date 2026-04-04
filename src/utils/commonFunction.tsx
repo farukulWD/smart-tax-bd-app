@@ -169,3 +169,5 @@ export const TAX_YEARS = Array.from({ length: 10 }, (_, i) => {
   const year = CURRENT_YEAR - i;
   return `${year}-${year + 1}`;
 });
+export const isPdfUrl = (url: string) => /\.pdf$/i.test(url);
+export const isImageUrl = (url: string) => /\.(jpe?g|png|gif|webp|svg)$/i.test(url);
