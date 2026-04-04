@@ -120,11 +120,8 @@ const ResultModal = ({
   );
 };
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
-
 const OrderPaymentScreen = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'OrderPayment'>>();
-  const navigation = useNavigation<any>();
   const gatewayUrl = route.params?.gatewayUrl;
   const { top } = useSafeAreaInsets();
 
