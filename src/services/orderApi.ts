@@ -45,6 +45,7 @@ export interface IOrder {
   is_fee_due_amount_paid: boolean;
   tax_paid_date?: string;
   createdAt?: string;
+  total_amount: number;
 }
 
 export interface ICreateTaxStepOnePayload {

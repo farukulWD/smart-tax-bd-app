@@ -10,7 +10,7 @@ interface ScreenHeaderProps {
   onPress?: () => void;
   showBack?: boolean;
   icon?: React.ReactNode;
-  className: string;
+  className?: string;
 }
 
 const ScreenHeader = ({

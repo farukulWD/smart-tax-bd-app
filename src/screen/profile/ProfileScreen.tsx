@@ -151,6 +151,14 @@ const ProfileScreen = () => {
                 Account, security, and app preferences
               </Text>
             </Pressable>
+            <Pressable
+              onPress={() => {
+                navigate('MyOrders');
+              }}
+              className="border-t border-t-border px-3 py-3">
+              <Text className="text-sm font-semibold text-foreground">Orders</Text>
+              <Text className="mt-1 text-xs text-mutedForeground">See all of your orders</Text>
+            </Pressable>
 
             <View className="h-[1px] bg-border" />
 
