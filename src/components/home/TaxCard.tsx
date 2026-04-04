@@ -42,7 +42,7 @@ const getTaxIconName = (value: string) => {
 const TaxCard = ({ item }: { item: TaxTypeItem }) => {
   const IconName = getTaxIconName(item.value);
   const handleNavigation = () => {
-    navigate('CreateTaxOrder');
+    navigate('CreateTaxOrder', { taxType: item.value });
   };
 
   return (

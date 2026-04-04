@@ -7,7 +7,17 @@ export type NewsItem = {
   updatedAt: string;
   __v: number;
 };
-
+export interface TaxType {
+  _id: string;
+  title: string;
+  rate: number;
+  value: string;
+  icon?: string;
+  description: string;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 export type GetAllNewsResponse = {
   success: boolean;
   message: string;

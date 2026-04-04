@@ -17,7 +17,7 @@ import { useAppDispatch } from '@/src/redux/hooks';
 import { setCredentials } from '@/src/redux/slices/authSlice';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { AppStackParamList } from '@/src/navigation/AppStack';
-import { replace } from '@/src/utils/NavigationUtils';
+import { navigateToStack, replace } from '@/src/utils/NavigationUtils';
 
 const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
   const route = useRoute<RouteProp<AppStackParamList, 'Auth'>>();
@@ -26,7 +26,6 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const navigation = useNavigation();
-  console.log('route', JSON.stringify(route, null, 2));
 
   const [login, { isLoading }] = useLoginMutation();
 
@@ -46,8 +45,13 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
         })
       );
       route?.params?.shouldGoBack && navigation.goBack();
+
       if (route.params?.redirectTo) {
-        replace(route.params.redirectTo.screen);
+        if (route.params?.redirectTo.stack) {
+          navigateToStack(route.params.redirectTo.stack, { screen: route.params.redirectTo.stack });
+        } else {
+          replace(route.params.redirectTo.screen);
+        }
       }
     } catch (error) {
       console.log(error);

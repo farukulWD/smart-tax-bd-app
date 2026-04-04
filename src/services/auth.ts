@@ -1,7 +1,7 @@
 import { ILoginResponse } from '../types/authTypes';
-import { apiService } from './api';
+import { baseApi } from './baseApi';
 
-export const authApi = apiService.injectEndpoints({
+export const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     login: build.mutation<ILoginResponse, { mobile: string; password: string }>({
       query: (body) => ({
@@ -12,11 +12,15 @@ export const authApi = apiService.injectEndpoints({
     }),
 
     getUserFiles: build.query<any, void>({
-      query: () => '/files/get-user-files',
+      query: () => ({
+        url: '/files/get-user-files',
+      }),
     }),
 
     getUserInfo: build.query<any, void>({
-      query: () => '/users/get-me',
+      query: () => ({
+        url: '/users/get-me',
+      }),
     }),
   }),
   overrideExisting: false,

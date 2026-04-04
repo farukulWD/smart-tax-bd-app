@@ -3,18 +3,18 @@ import {
   GetAllTaxTypesResponse,
   GetSingleNewsResponse,
 } from '../types/publicTypes';
-import { apiService } from './api';
+import { baseApi } from './baseApi';
 
-const publicApi = apiService.injectEndpoints({
+const publicApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getAllNews: build.query<GetAllNewsResponse, void>({
-      query: () => '/update-news/get-all-news',
+      query: () => ({ url: '/update-news/get-all-news' }),
     }),
     getSingleNews: build.query<GetSingleNewsResponse, string>({
-      query: (id) => `/update-news/get-news/${id}`,
+      query: (id) => ({ url: `/update-news/get-news/${id}` }),
     }),
     getAllTaxTypes: build.query<GetAllTaxTypesResponse, void>({
-      query: () => '/tax-types/get-all-tax-types',
+      query: () => ({ url: '/tax-types/get-all-tax-types' }),
     }),
   }),
   overrideExisting: false,

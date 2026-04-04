@@ -163,3 +163,9 @@ export function withOpacity(hslColor: string, opacityPercent: number): string {
 
   return `#${toHex(r)}${toHex(g)}${toHex(b)}${alpha}`;
 }
+export const CURRENT_YEAR = new Date().getFullYear();
+
+export const TAX_YEARS = Array.from({ length: 10 }, (_, i) => {
+  const year = CURRENT_YEAR - i;
+  return `${year}-${year + 1}`;
+});

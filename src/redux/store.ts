@@ -1,3 +1,5 @@
+//src/redux/store.ts
+
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,7 +14,7 @@ import {
   REGISTER,
 } from 'redux-persist';
 import { rootReducer } from './rootReducer';
-import { apiService } from '../services/api';
+import { baseApi } from '../services/baseApi';
 
 const persistConfig = {
   key: 'root',
@@ -29,7 +31,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(apiService.middleware),
+    }).concat(baseApi.middleware),
 });
 
 export const persistor = persistStore(store);

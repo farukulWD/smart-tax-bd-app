@@ -47,7 +47,7 @@ export const COLOR_TOKENS = {
     popover: 'hsl(0 0% 1%)',
     popoverForeground: 'hsl(0 0% 96%)',
     primary: 'hsl(125 70% 33%)',
-    primaryForeground: 'hsl(0 0% 1%)',
+    primaryForeground: 'hsl(0 0% 100%)',
     secondary: 'hsl(0 0% 4%)',
     secondaryForeground: 'hsl(0 0% 96%)',
     muted: 'hsl(0 0% 4%)',
