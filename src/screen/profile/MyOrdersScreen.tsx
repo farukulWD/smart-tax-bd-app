@@ -353,6 +353,7 @@ const MyOrdersScreen = () => {
   const handleOrderPress = (order: IOrder) => {
     // Navigate to order detail — adjust screen name to match your stack
     // navigation.navigate('TaxOrderDetail', { taxId: order._id });
+    console.log(order);
     showToast({ message: 'Coming soon...' });
   };
 
