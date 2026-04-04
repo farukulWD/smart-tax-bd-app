@@ -6,7 +6,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
-  Alert,
 } from 'react-native';
 import { Input } from '@/components/ui/input';
 import { EyeOff, Eye, Home, Mail, Phone } from 'lucide-react-native';
@@ -16,13 +15,18 @@ import { Colors } from '@/src/context/ThemeProvider';
 import { useLoginMutation } from '@/src/services/auth';
 import { useAppDispatch } from '@/src/redux/hooks';
 import { setCredentials } from '@/src/redux/slices/authSlice';
-import { goBack } from '@/src/utils/NavigationUtils';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { AppStackParamList } from '@/src/navigation/AppStack';
+import { replace } from '@/src/utils/NavigationUtils';
 
 const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
-  const [mobile, setMobile] = useState('');
-  const [password, setPassword] = useState('');
+  const route = useRoute<RouteProp<AppStackParamList, 'Auth'>>();
+  const [mobile, setMobile] = useState('01991002474');
+  const [password, setPassword] = useState('123456aA@');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const navigation = useNavigation();
+  console.log('route', JSON.stringify(route, null, 2));
 
   const [login, { isLoading }] = useLoginMutation();
 
@@ -41,7 +45,10 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
           user: res.data.user,
         })
       );
-      goBack();
+      route?.params?.shouldGoBack && navigation.goBack();
+      if (route.params?.redirectTo) {
+        replace(route.params.redirectTo.screen);
+      }
     } catch (error) {
       console.log(error);
     }

@@ -4,6 +4,7 @@ import LucideIcon from '../common/LucideIcon';
 import { ArrowRight } from 'lucide-react-native';
 import { withOpacity } from '@/src/utils/commonFunction';
 import { Colors } from '@/src/context/ThemeProvider';
+import { navigate } from '@/src/utils/NavigationUtils';
 
 const getTaxIconName = (value: string) => {
   switch (value) {
@@ -40,9 +41,13 @@ const getTaxIconName = (value: string) => {
 
 const TaxCard = ({ item }: { item: TaxTypeItem }) => {
   const IconName = getTaxIconName(item.value);
+  const handleNavigation = () => {
+    navigate('CreateTaxOrder');
+  };
 
   return (
     <Pressable
+      onPress={handleNavigation}
       className="mb-2 overflow-hidden rounded-[22px] border border-border bg-card p-4"
       style={{
         shadowColor: '#000',

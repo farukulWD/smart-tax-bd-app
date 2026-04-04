@@ -1,9 +1,14 @@
-import { RootStackParamList } from "@/navigation/AppStack";
-import { createNavigationContainerRef, CommonActions, StackActions, useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {
+  createNavigationContainerRef,
+  CommonActions,
+  StackActions,
+  useNavigation,
+} from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppStackParamList } from '../navigation/AppStack';
 
 export const navigationRef = createNavigationContainerRef();
-export const useAppNavigation = () => useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+export const useAppNavigation = () => useNavigation<NativeStackNavigationProp<AppStackParamList>>();
 
 export async function navigate(routeName: string, params?: object) {
   navigationRef.isReady();
@@ -37,7 +42,7 @@ type StackParams = {
 };
 
 export function navigateToStack(stackName: string, options?: StackParams) {
-  navigate("BottomTabNavigator", {
+  navigate('BottomTabNavigator', {
     screen: stackName,
     params: options?.screen
       ? {
@@ -57,13 +62,13 @@ export async function goBack() {
       // Fallback: Navigate to default screen (e.g., Drawer > BottomTabNavigator > HomeStack)
       navigationRef.dispatch(
         CommonActions.navigate({
-          name: "BottomTabNavigator",
-          params: { screen: "HomeStack", params: { screen: "Home" } },
+          name: 'BottomTabNavigator',
+          params: { screen: 'HomeStack', params: { screen: 'Home' } },
         })
       );
     }
   } else {
-    console.warn("Navigation ref is not ready");
+    console.warn('Navigation ref is not ready');
   }
 }
 

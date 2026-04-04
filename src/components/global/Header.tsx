@@ -15,7 +15,7 @@ const Header = () => {
       style={{ paddingTop: top }}
       className="flex-row items-center justify-between border-b border-b-border bg-card px-4 pb-2">
       <View className="flex-1 flex-row items-center gap-3">
-        <Image className="h-16 w-16 rounded-full border border-border" source={Images.LOGO_SMALL} />
+        <Image className="h-10 w-10 rounded-full border border-border" source={Images.LOGO_SMALL} />
 
         <View className="flex-1">
           <Text numberOfLines={1} className="text-foreground" variant="large">

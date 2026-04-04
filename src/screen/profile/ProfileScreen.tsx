@@ -47,7 +47,7 @@ const ProfileScreen = () => {
             <>
               <View className="flex-row items-center">
                 {/* Avatar */}
-                <View className="roundedFull h-12 w-12 items-center justify-center bg-muted">
+                <View className="h-12 w-12 items-center justify-center rounded-full border border-border bg-secondary">
                   <Text className="text-base font-bold text-foreground">
                     {user?.name
                       .split(' ')
@@ -65,7 +65,7 @@ const ProfileScreen = () => {
                 </View>
 
                 {/* Plan */}
-                <View className="roundedFull bg-muted px-3 py-1">
+                <View className="rounded-full bg-muted px-3 py-1">
                   <Text className="text-xs font-semibold text-foreground">{user?.status}</Text>
                 </View>
               </View>
@@ -99,7 +99,7 @@ const ProfileScreen = () => {
               <Pressable
                 className="mt-3 items-center rounded-xl bg-primary px-3 py-3"
                 onPress={() => {
-                  navigate('Auth', { screen: 'SignIn' });
+                  navigate('Auth', { screen: 'SignIn', shouldGoBack: true });
                 }}>
                 <Text className="text-primary-foreground text-sm font-semibold">Sign in</Text>
               </Pressable>
