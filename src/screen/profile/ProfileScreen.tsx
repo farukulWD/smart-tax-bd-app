@@ -19,6 +19,8 @@ import {
   User,
   ShieldCheck,
   Info,
+  Phone,
+  BookOpen,
 } from 'lucide-react-native';
 import { useGetMyFilesQuery } from '@/src/services/fileApi';
 
@@ -262,6 +264,26 @@ const ProfileScreen = () => {
               label="Uploaded Documents"
               description="Manage your uploaded files"
               onPress={() => navigate('UploadedDocuments')}
+            />
+          </View>
+
+          {/* ── Info & Support ────────────────────────────────────────────── */}
+          <SectionLabel label="Info & Support" />
+          <View className="mx-4 overflow-hidden rounded-2xl border border-border bg-card">
+            <MenuItem
+              isFirst
+              icon={<BookOpen size={16} color="hsl(217, 91%, 55%)" />}
+              accent="bg-blue-500/15"
+              label="About Us"
+              description="Learn more about Smart Tax BD"
+              onPress={() => navigate('AboutUs')}
+            />
+            <MenuItem
+              icon={<Phone size={16} color="hsl(125, 70%, 33%)" />}
+              accent="bg-primary/15"
+              label="Contact Us"
+              description="Get in touch with our support team"
+              onPress={() => navigate('ContactUs')}
             />
           </View>
 
