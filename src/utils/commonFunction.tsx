@@ -49,6 +49,23 @@ export const showAlert = ({ message, color, background, type }: ToastOptions): v
     props: { color, background, type: type || 'default' },
   });
 };
+interface ToastOptions {
+  color?: string;
+  background?: string;
+}
+
+export const toast = {
+  success: (message: string): void =>
+    Toast.show({ type: 'success', text1: message, position: 'bottom' }),
+
+  error: (message: string): void =>
+    Toast.show({ type: 'error', text1: message, position: 'bottom' }),
+
+  warning: (message: string): void =>
+    Toast.show({ type: 'info', text1: message, position: 'bottom' }),
+
+  info: (message: string): void => Toast.show({ type: 'info', text1: message, position: 'bottom' }),
+};
 
 export const maskEmail = (email: string): string => {
   const [local, domain] = email.split('@');

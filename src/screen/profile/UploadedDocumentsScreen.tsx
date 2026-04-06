@@ -12,7 +12,6 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useGetUserFilesQuery } from '@/src/services/auth';
 import { Directory, File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import {
@@ -28,6 +27,7 @@ import {
   AlertCircle,
 } from 'lucide-react-native';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
+import { useGetMyFilesQuery } from '@/src/services/fileApi';
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
@@ -356,7 +356,7 @@ const UploadedDocumentsScreen = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
-  const { data, isLoading, error, refetch, isFetching } = useGetUserFilesQuery();
+  const { data, isLoading, error, refetch, isFetching } = useGetMyFilesQuery(undefined);
   const files: IFile[] = data?.data ?? [];
 
   // ── download ────────────────────────────────────────────────────────────────

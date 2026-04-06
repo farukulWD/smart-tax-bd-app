@@ -1,23 +1,45 @@
+import { RegisterFormValues } from '../screen/auth/SignUpScreen';
 import { ILoginResponse } from '../types/authTypes';
+import { TResponse } from '../types/commonTypes';
 import { baseApi } from './baseApi';
 
 export const authApi = baseApi.injectEndpoints({
-  endpoints: (build) => ({
-    login: build.mutation<ILoginResponse, { mobile: string; password: string }>({
-      query: (body) => ({
+  endpoints: (builder) => ({
+    register: builder.mutation<TResponse<any>, Omit<RegisterFormValues, 'confirmPassword'>>({
+      query: (data) => ({
+        url: '/users/register',
+        method: 'POST',
+        data,
+      }),
+    }),
+    login: builder.mutation<ILoginResponse, { mobile: string; password: string }>({
+      query: (data) => ({
         url: '/auth/login',
         method: 'POST',
-        body,
+        data,
       }),
     }),
-
-    getUserFiles: build.query<any, void>({
+    resetPassword: builder.mutation<TResponse<any>, any>({
+      query: (data) => ({
+        url: '/auth/reset-password',
+        method: 'POST',
+        data,
+      }),
+    }),
+    forgotPassword: builder.mutation<TResponse<any>, any>({
+      query: (data) => ({
+        url: '/auth/forgot-password',
+        method: 'POST',
+        data,
+      }),
+    }),
+    logout: builder.mutation<TResponse<any>, any>({
       query: () => ({
-        url: '/files/get-user-files',
+        url: '/auth/logout',
+        method: 'POST',
       }),
     }),
-
-    getUserInfo: build.query<any, void>({
+    getUserInfo: builder.query<any, void>({
       query: () => ({
         url: '/users/get-me',
       }),
@@ -26,4 +48,12 @@ export const authApi = baseApi.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useLoginMutation, useGetUserFilesQuery, useGetUserInfoQuery } = authApi;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useGetUserInfoQuery,
+  useForgotPasswordMutation,
+  useLogoutMutation,
+  useResetPasswordMutation,
+  useLazyGetUserInfoQuery,
+} = authApi;

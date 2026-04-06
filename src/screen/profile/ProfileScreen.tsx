@@ -3,7 +3,6 @@ import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { useAppSelector } from '@/src/redux/hooks';
 import { logout } from '@/src/redux/slices/authSlice';
 import { store } from '@/src/redux/store';
-import { useGetUserFilesQuery } from '@/src/services/auth';
 import { useGetMyOrdersQuery } from '@/src/services/orderApi';
 import { useGetMyPaymentsQuery } from '@/src/services/paymentApi';
 import { navigate } from '@/src/utils/NavigationUtils';
@@ -21,6 +20,7 @@ import {
   ShieldCheck,
   Info,
 } from 'lucide-react-native';
+import { useGetMyFilesQuery } from '@/src/services/fileApi';
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
@@ -83,7 +83,7 @@ const SectionLabel = ({ label }: { label: string }) => (
 const ProfileScreen = () => {
   const { isLoggedIn, user } = useAppSelector((state) => state.auth);
 
-  const { data: filesResponse } = useGetUserFilesQuery(undefined);
+  const { data: filesResponse } = useGetMyFilesQuery(undefined);
   const { data: orderResponse } = useGetMyOrdersQuery(undefined);
   const { data: paymentResponse } = useGetMyPaymentsQuery(undefined);
 

@@ -32,6 +32,9 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
   const dispatch = useAppDispatch();
 
   const handleLogin = async () => {
+    console.log('Sending payload:', JSON.stringify(mobile)); // check this
+    console.log('Sending payload:', JSON.stringify(password)); // check this
+
     try {
       const res = await login({
         mobile,
