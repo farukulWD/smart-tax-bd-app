@@ -7,16 +7,26 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
-import { ArrowLeft, Mail } from 'lucide-react-native';
+import { ArrowLeft, Phone } from 'lucide-react-native';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
 import { Colors } from '@/src/context/ThemeProvider';
 import { goBack } from '@/src/utils/NavigationUtils';
+import { toast } from '@/src/utils/commonFunction';
+import { useForgotPasswordMutation } from '@/src/services/auth';
 
-const VerifyOTPScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
+const VerifyOTPScreen = ({
+  setScreen,
+  mobile,
+}: {
+  setScreen: Dispatch<SetStateAction<TAuth>>;
+  mobile: string;
+}) => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [timer, setTimer] = useState(60);
   const inputRefs = useRef<(TextInput | null)[]>([]);
+  const [forgotPassword, { isLoading: isResending }] = useForgotPasswordMutation();
 
   useEffect(() => {
     if (timer > 0) {
@@ -55,10 +65,23 @@ const VerifyOTPScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAu
   };
 
   const handleResend = () => {
-    setTimer(60);
-    setOtp(['', '', '', '', '', '']);
-    inputRefs.current[0]?.focus();
-    console.log('Resend OTP');
+    if (!mobile) {
+      toast.error('Mobile number is missing. Please try again.');
+      setScreen(SCREEN_NAME.FORGOT_PASSWORD);
+      return;
+    }
+
+    forgotPassword({ mobile })
+      .unwrap()
+      .then((res) => {
+        setTimer(60);
+        setOtp(['', '', '', '', '', '']);
+        inputRefs.current[0]?.focus();
+        toast.success(res?.message ?? 'OTP resent to your mobile number');
+      })
+      .catch((error: { data?: { message?: string } }) => {
+        toast.error(error?.data?.message ?? 'Failed to resend OTP. Please try again.');
+      });
   };
 
   const isOtpComplete = otp.every((digit) => digit !== '');
@@ -86,7 +109,7 @@ const VerifyOTPScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAu
             <Text className="mb-3 text-3xl font-bold text-foreground">Verify OTP</Text>
             <Text className="text-mutedForeground text-base leading-6">
               We've sent a 6-digit verification code to{'\n'}
-              <Text className="text-mutedForeground font-semibold">user@example.com</Text>
+              <Text className="text-mutedForeground font-semibold">{mobile || 'your mobile number'}</Text>
             </Text>
           </View>
 
@@ -127,8 +150,12 @@ const VerifyOTPScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAu
             ) : (
               <View className="flex-row items-center justify-center">
                 <Text className="text-mutedForeground text-sm">Didn't receive the code? </Text>
-                <TouchableOpacity onPress={handleResend}>
-                  <Text className="text-sm font-semibold text-green-600">Resend</Text>
+                <TouchableOpacity onPress={handleResend} disabled={isResending}>
+                  {isResending ? (
+                    <ActivityIndicator color={Colors.primary} size="small" />
+                  ) : (
+                    <Text className="text-sm font-semibold text-green-600">Resend</Text>
+                  )}
                 </TouchableOpacity>
               </View>
             )}
@@ -145,7 +172,7 @@ const VerifyOTPScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAu
           {/* Help Text */}
           <View className="mb-6 rounded-xl border border-border bg-accent p-4">
             <Text className="text-accentForeground text-center text-sm leading-5">
-              💡 Check your email inbox and spam folder for the verification code
+              Enter the 6-digit code sent to your mobile number to continue.
             </Text>
           </View>
 
@@ -155,7 +182,7 @@ const VerifyOTPScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAu
           {/* Bottom Info */}
           <View className="items-center pb-8">
             <View className="mb-2 flex-row items-center">
-              <Mail size={16} color={Colors.mutedForeground} />
+              <Phone size={16} color={Colors.mutedForeground} />
               <Text className="text-mutedForeground ml-2 text-sm">support@smarttaxbd.com.bd</Text>
             </View>
           </View>

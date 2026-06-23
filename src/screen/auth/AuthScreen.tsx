@@ -12,6 +12,7 @@ type Props = NativeStackScreenProps<AppStackParamList, 'Auth'>;
 const AuthScreen = ({ route }: Props) => {
   const initialScreen = route?.params?.screen;
   const [screen, setScreen] = useState<TAuth>(SCREEN_NAME.SIGNIN);
+  const [authMobile, setAuthMobile] = useState('');
 
   useEffect(() => {
     if (initialScreen) {
@@ -31,10 +32,10 @@ const AuthScreen = ({ route }: Props) => {
   }
 
   if (screen === SCREEN_NAME.FORGOT_PASSWORD) {
-    return <ForgotPasswordScreen setScreen={setScreen} />;
+    return <ForgotPasswordScreen setScreen={setScreen} setAuthMobile={setAuthMobile} />;
   }
   if (screen === SCREEN_NAME.VERIFY_USER) {
-    return <VerifyOTPScreen setScreen={setScreen} />;
+    return <VerifyOTPScreen setScreen={setScreen} mobile={authMobile} />;
   }
 
   return <SignInScreen setScreen={setScreen} />;
