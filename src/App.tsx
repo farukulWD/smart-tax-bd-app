@@ -1,4 +1,5 @@
 import '@/global.css';
+import './localization/i18n';
 
 import { PortalHost } from '@rn-primitives/portal';
 import { StatusBar } from 'expo-status-bar';

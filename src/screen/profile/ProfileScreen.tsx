@@ -9,6 +9,8 @@ import { navigate } from '@/src/utils/NavigationUtils';
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import LanguageToggle from '@/src/components/global/LanguageToggle';
+import { useTranslation } from 'react-i18next';
 import {
   CreditCard,
   ClipboardList,
@@ -83,6 +85,7 @@ const SectionLabel = ({ label }: { label: string }) => (
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 const ProfileScreen = () => {
+  const { t } = useTranslation();
   const { isLoggedIn, user } = useAppSelector((state) => state.auth);
 
   const { data: filesResponse } = useGetMyFilesQuery(undefined);
@@ -91,19 +94,19 @@ const ProfileScreen = () => {
 
   const stats: ProfileStat[] = [
     {
-      label: 'Orders',
+      label: t('profile.orders'),
       value: orderResponse?.data?.length ?? 0,
       icon: <ClipboardList size={17} color="hsl(125, 70%, 33%)" />,
       accent: 'bg-primary/15',
     },
     {
-      label: 'Payments',
+      label: t('profile.payments'),
       value: paymentResponse?.data?.length ?? 0,
       icon: <CreditCard size={17} color="hsl(48, 96%, 53%)" />,
       accent: 'bg-yellow-500/15',
     },
     {
-      label: 'Documents',
+      label: t('profile.documents'),
       value: filesResponse?.data?.length ?? 0,
       icon: <FolderOpen size={17} color="hsl(0, 83%, 49%)" />,
       accent: 'bg-destructive/15',
@@ -111,10 +114,10 @@ const ProfileScreen = () => {
   ];
 
   const handleLogout = () => {
-    Alert.alert('Sign out', 'Are you sure you want to sign out?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('profile.signOut'), t('profile.signOutConfirm'), [
+      { text: t('common.cancel'), style: 'cancel' },
       {
-        text: 'Sign out',
+        text: t('profile.signOut'),
         style: 'destructive',
         onPress: () => store.dispatch(logout()),
       },
@@ -122,14 +125,10 @@ const ProfileScreen = () => {
   };
 
   const handleDeleteAccount = () => {
-    Alert.alert(
-      'Delete account',
-      "This action is permanent and can't be undone. All your data will be removed.",
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: () => {} },
-      ]
-    );
+    Alert.alert(t('profile.deleteAccount'), t('profile.deleteAccountDesc'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('profile.deleteConfirm'), style: 'destructive', onPress: () => {} },
+    ]);
   };
 
   const initials = user?.name
@@ -149,10 +148,14 @@ const ProfileScreen = () => {
           contentContainerStyle={{ paddingBottom: 32 }}
           showsVerticalScrollIndicator={false}>
           <ScreenHeader
-            title="Profile"
-            description="Manage your account and preferences"
+            title={t('profile.headerTitle')}
+            description={t('profile.headerDescription')}
             showBack={false}
           />
+
+          <View className="mx-4 mb-4 flex-row items-center justify-between">
+            <LanguageToggle />
+          </View>
 
           {/* ── User Card ─────────────────────────────────────────────────── */}
           {isLoggedIn ? (
@@ -184,7 +187,7 @@ const ProfileScreen = () => {
                 {/* Info row */}
                 <View className="mt-4 gap-2 rounded-2xl border border-border bg-muted px-4 py-3">
                   <View className="flex-row items-center justify-between">
-                    <Text className="text-xs text-mutedForeground">Role</Text>
+                    <Text className="text-xs text-mutedForeground">{t('profile.role')}</Text>
                     <View className="flex-row items-center gap-1">
                       <ShieldCheck size={12} color="hsl(125, 70%, 33%)" />
                       <Text className="text-xs font-semibold capitalize text-foreground">
@@ -193,9 +196,9 @@ const ProfileScreen = () => {
                     </View>
                   </View>
                   <View className="flex-row items-center justify-between border-t border-border pt-2">
-                    <Text className="text-xs text-mutedForeground">Location</Text>
+                    <Text className="text-xs text-mutedForeground">{t('profile.location')}</Text>
                     <Text className="text-xs font-semibold text-mutedForeground">
-                      Not available
+                      {t('profile.locationNA')}
                     </Text>
                   </View>
                 </View>
@@ -207,23 +210,29 @@ const ProfileScreen = () => {
               <View className="mb-3 h-14 w-14 items-center justify-center rounded-full border border-border bg-muted">
                 <User size={24} color="hsl(0, 0%, 60%)" />
               </View>
-              <Text className="text-base font-bold text-foreground">You're not signed in</Text>
+              <Text className="text-base font-bold text-foreground">
+                {t('profile.notSignedIn')}
+              </Text>
               <Text className="mt-1 text-xs leading-5 text-mutedForeground">
-                Sign in to sync your data, save drafts, and manage tax info.
+                {t('profile.notSignedInDesc')}
               </Text>
 
               <TouchableOpacity
                 className="mt-4 items-center rounded-2xl bg-primary py-3.5"
                 activeOpacity={0.85}
                 onPress={() => navigate('Auth', { screen: 'SignIn', shouldGoBack: true })}>
-                <Text className="text-sm font-bold text-primaryForeground">Sign In</Text>
+                <Text className="text-sm font-bold text-primaryForeground">
+                  {t('profile.signIn')}
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 className="mt-2.5 items-center rounded-2xl border border-border bg-muted py-3.5"
                 activeOpacity={0.8}
                 onPress={() => navigate('Auth', { screen: 'SignUp' })}>
-                <Text className="text-sm font-semibold text-foreground">Create Account</Text>
+                <Text className="text-sm font-semibold text-foreground">
+                  {t('profile.createAccount')}
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -231,7 +240,7 @@ const ProfileScreen = () => {
           {/* ── Stats ─────────────────────────────────────────────────────── */}
           {isLoggedIn && (
             <>
-              <SectionLabel label="Overview" />
+              <SectionLabel label={t('profile.overview')} />
               <View className="mx-4 flex-row gap-3">
                 {stats.map((s) => (
                   <StatCard key={s.label} stat={s} />
@@ -241,54 +250,54 @@ const ProfileScreen = () => {
           )}
 
           {/* ── Activity ──────────────────────────────────────────────────── */}
-          <SectionLabel label="Activity" />
+          <SectionLabel label={t('profile.activity')} />
           <View className="mx-4 overflow-hidden rounded-2xl border border-border bg-card">
             <MenuItem
               isFirst
               icon={<CreditCard size={16} color="hsl(48, 96%, 53%)" />}
               accent="bg-yellow-500/15"
-              label="Payments"
-              description="View all your payment history"
+              label={t('profile.payments')}
+              description={t('profile.paymentHistory')}
               onPress={() => navigate('MyPayments')}
             />
             <MenuItem
               icon={<ClipboardList size={16} color="hsl(125, 70%, 33%)" />}
               accent="bg-primary/15"
-              label="Orders"
-              description="See all of your tax orders"
+              label={t('profile.orders')}
+              description={t('profile.taxOrders')}
               onPress={() => navigate('MyOrders')}
             />
             <MenuItem
               icon={<FolderOpen size={16} color="hsl(0, 83%, 49%)" />}
               accent="bg-destructive/15"
-              label="Uploaded Documents"
-              description="Manage your uploaded files"
+              label={t('profile.documents')}
+              description={t('profile.uploadedFiles')}
               onPress={() => navigate('UploadedDocuments')}
             />
           </View>
 
           {/* ── Info & Support ────────────────────────────────────────────── */}
-          <SectionLabel label="Info & Support" />
+          <SectionLabel label={t('profile.infoSupport')} />
           <View className="mx-4 overflow-hidden rounded-2xl border border-border bg-card">
             <MenuItem
               isFirst
               icon={<BookOpen size={16} color="hsl(217, 91%, 55%)" />}
               accent="bg-blue-500/15"
-              label="About Us"
-              description="Learn more about Smart Tax BD"
+              label={t('profile.aboutUs')}
+              description={t('profile.aboutUsDesc')}
               onPress={() => navigate('AboutUs')}
             />
             <MenuItem
               icon={<Phone size={16} color="hsl(125, 70%, 33%)" />}
               accent="bg-primary/15"
-              label="Contact Us"
-              description="Get in touch with our support team"
+              label={t('profile.contactUs')}
+              description={t('profile.contactUsDesc')}
               onPress={() => navigate('ContactUs')}
             />
           </View>
 
           {/* ── Account Actions ───────────────────────────────────────────── */}
-          <SectionLabel label="Account" />
+          <SectionLabel label={t('profile.account')} />
           <View className="mx-4 overflow-hidden rounded-2xl border border-border bg-card">
             {isLoggedIn ? (
               <>
@@ -299,7 +308,9 @@ const ProfileScreen = () => {
                   <View className="h-9 w-9 items-center justify-center rounded-xl bg-muted">
                     <LogOut size={16} color="hsl(0, 0%, 60%)" />
                   </View>
-                  <Text className="flex-1 text-sm font-semibold text-foreground">Sign out</Text>
+                  <Text className="flex-1 text-sm font-semibold text-foreground">
+                    {t('profile.signOut')}
+                  </Text>
                   <ChevronRight size={15} color="hsl(0, 0%, 60%)" />
                 </TouchableOpacity>
 
@@ -311,9 +322,11 @@ const ProfileScreen = () => {
                     <Trash2 size={16} color="hsl(0, 83%, 49%)" />
                   </View>
                   <View className="flex-1">
-                    <Text className="text-sm font-semibold text-destructive">Delete account</Text>
+                    <Text className="text-sm font-semibold text-destructive">
+                      {t('profile.deleteAccount')}
+                    </Text>
                     <Text className="mt-0.5 text-xs text-mutedForeground">
-                      This can't be undone.
+                      {t('profile.deleteAccountDesc')}
                     </Text>
                   </View>
                   <ChevronRight size={15} color="hsl(0, 83%, 49%)" />
@@ -327,7 +340,9 @@ const ProfileScreen = () => {
                 <View className="bg-primary/15 h-9 w-9 items-center justify-center rounded-xl">
                   <User size={16} color="hsl(125, 70%, 33%)" />
                 </View>
-                <Text className="flex-1 text-sm font-semibold text-foreground">Sign in</Text>
+                <Text className="flex-1 text-sm font-semibold text-foreground">
+                  {t('profile.signIn')}
+                </Text>
                 <ChevronRight size={15} color="hsl(0, 0%, 60%)" />
               </TouchableOpacity>
             )}

@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, FlatList, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useGetAllTaxTypesQuery } from '@/src/services/publicApi';
 import TaxCard from './TaxCard';
 import { TaxTypeItem } from '@/src/types/publicTypes';
@@ -13,6 +14,7 @@ const getPaddedData = (data: TaxTypeItem[], columns: number): (TaxTypeItem | nul
 };
 
 const TaxTypeSection = () => {
+  const { t } = useTranslation();
   const { data, isLoading, error } = useGetAllTaxTypesQuery();
   const types = data?.data || [];
 
@@ -32,7 +34,7 @@ const TaxTypeSection = () => {
     return (
       <View className="items-center justify-center px-5 py-14">
         <ActivityIndicator size="large" color="#3ca34d" />
-        <Text className="mt-3 text-sm text-mutedForeground">Loading tax types...</Text>
+        <Text className="mt-3 text-sm text-mutedForeground">{t('home.loading')}</Text>
       </View>
     );
   }
@@ -40,9 +42,7 @@ const TaxTypeSection = () => {
   if (error) {
     return (
       <View className="px-5 py-14">
-        <Text className="text-center text-base font-semibold text-red-500">
-          Failed to load tax categories
-        </Text>
+        <Text className="text-center text-base font-semibold text-red-500">{t('home.error')}</Text>
       </View>
     );
   }
@@ -50,14 +50,14 @@ const TaxTypeSection = () => {
   if (!types.length) {
     return (
       <View className="bg-background px-4 py-10">
-        <Text className="text-center text-sm text-mutedForeground">No tax categories found</Text>
+        <Text className="text-center text-sm text-mutedForeground">{t('home.notFound')}</Text>
       </View>
     );
   }
 
   return (
     <View className="bg-background px-4">
-      <Text className="text-lg font-semibold text-foreground">Services</Text>
+      <Text className="text-lg font-semibold text-foreground">{t('home.taxTypes')}</Text>
       <FlatList
         data={paddedTypes}
         renderItem={renderItem}
