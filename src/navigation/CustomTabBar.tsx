@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { gGap } from '../utils/Sizes';
 import { cn } from '@/lib/utils';
 import { Colors, useTheme } from '../context/ThemeProvider';
+import { useTranslation } from 'react-i18next';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -23,6 +24,7 @@ interface TabIconProps {
 }
 
 const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
+  const { t } = useTranslation();
   useTheme();
 
   const iconColor = isFocused ? Colors.primary : Colors.mutedForeground;
@@ -65,13 +67,13 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
   const getTabLabel = () => {
     switch (routeName) {
       case 'HomeStack':
-        return 'Home';
+        return t('common.tabHome');
       case 'DocumentStack':
-        return 'News';
+        return t('common.tabNews');
       case 'FAQStack':
-        return 'FAQ';
+        return t('common.tabFaq');
       case 'ProfileStack':
-        return 'Profile';
+        return t('common.tabProfile');
       default:
         return routeName;
     }

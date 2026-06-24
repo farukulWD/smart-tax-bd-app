@@ -15,6 +15,7 @@ import { Colors } from '@/src/context/ThemeProvider';
 import { goBack } from '@/src/utils/NavigationUtils';
 import { toast } from '@/src/utils/commonFunction';
 import { useForgotPasswordMutation } from '@/src/services/auth';
+import { useTranslation } from 'react-i18next';
 
 const VerifyOTPScreen = ({
   setScreen,
@@ -23,6 +24,7 @@ const VerifyOTPScreen = ({
   setScreen: Dispatch<SetStateAction<TAuth>>;
   mobile: string;
 }) => {
+  const { t } = useTranslation();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [timer, setTimer] = useState(60);
   const inputRefs = useRef<(TextInput | null)[]>([]);
@@ -106,10 +108,15 @@ const VerifyOTPScreen = ({
 
           {/* Header */}
           <View className="mb-8">
-            <Text className="mb-3 text-3xl font-bold text-foreground">Verify OTP</Text>
-            <Text className="text-mutedForeground text-base leading-6">
-              We've sent a 6-digit verification code to{'\n'}
-              <Text className="text-mutedForeground font-semibold">{mobile || 'your mobile number'}</Text>
+            <Text className="mb-3 text-3xl font-bold text-foreground">
+              {t('auth.verifyOtpTitle')}
+            </Text>
+            <Text className="text-base leading-6 text-mutedForeground">
+              {t('auth.verifyOtpDesc')}
+              {'\n'}
+              <Text className="font-semibold text-mutedForeground">
+                {mobile || t('auth.mobileNumberDefault')}
+              </Text>
             </Text>
           </View>
 
@@ -143,18 +150,19 @@ const VerifyOTPScreen = ({
           <View className="mb-8">
             {timer > 0 ? (
               <View className="flex-row items-center justify-center">
-                <Text className="text-mutedForeground text-sm">
-                  Resend code in <Text className="font-semibold text-green-600">{timer}s</Text>
+                <Text className="text-sm text-mutedForeground">
+                  {t('auth.resendCodeIn')}{' '}
+                  <Text className="font-semibold text-green-600">{timer}s</Text>
                 </Text>
               </View>
             ) : (
               <View className="flex-row items-center justify-center">
-                <Text className="text-mutedForeground text-sm">Didn't receive the code? </Text>
+                <Text className="text-sm text-mutedForeground">{t('auth.didNotReceiveCode')} </Text>
                 <TouchableOpacity onPress={handleResend} disabled={isResending}>
                   {isResending ? (
                     <ActivityIndicator color={Colors.primary} size="small" />
                   ) : (
-                    <Text className="text-sm font-semibold text-green-600">Resend</Text>
+                    <Text className="text-sm font-semibold text-green-600">{t('auth.resend')}</Text>
                   )}
                 </TouchableOpacity>
               </View>
@@ -166,13 +174,15 @@ const VerifyOTPScreen = ({
             onPress={handleVerify}
             disabled={!isOtpComplete}
             className={`mb-6 rounded-xl py-4 ${isOtpComplete ? 'bg-green-600' : 'bg-accent'}`}>
-            <Text className="text-center text-base font-semibold text-white">Verify OTP</Text>
+            <Text className="text-center text-base font-semibold text-white">
+              {t('auth.verifyOtpButton')}
+            </Text>
           </TouchableOpacity>
 
           {/* Help Text */}
           <View className="mb-6 rounded-xl border border-border bg-accent p-4">
-            <Text className="text-accentForeground text-center text-sm leading-5">
-              Enter the 6-digit code sent to your mobile number to continue.
+            <Text className="text-center text-sm leading-5 text-accentForeground">
+              {t('auth.verifyOtpHelp')}
             </Text>
           </View>
 
@@ -183,7 +193,7 @@ const VerifyOTPScreen = ({
           <View className="items-center pb-8">
             <View className="mb-2 flex-row items-center">
               <Phone size={16} color={Colors.mutedForeground} />
-              <Text className="text-mutedForeground ml-2 text-sm">support@smarttaxbd.com.bd</Text>
+              <Text className="ml-2 text-sm text-mutedForeground">support@smarttaxbd.com.bd</Text>
             </View>
           </View>
         </View>

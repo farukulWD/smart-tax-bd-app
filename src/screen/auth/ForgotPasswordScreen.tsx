@@ -12,6 +12,7 @@ import { useForm, Controller, Control, FieldPath, FieldValues } from 'react-hook
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForgotPasswordMutation } from '@/src/services/auth';
 import { toast } from '@/src/utils/commonFunction';
+import { useTranslation } from 'react-i18next';
 
 const forgotPasswordSchema = z.object({
   mobile: z.string().min(1, { message: 'Mobile number is required' }),
@@ -67,6 +68,7 @@ const ForgotPasswordScreen = ({
   setScreen: Dispatch<SetStateAction<TAuth>>;
   setAuthMobile: Dispatch<SetStateAction<string>>;
 }) => {
+  const { t } = useTranslation();
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
 
   const form = useForm<ForgotPasswordFormValues>({
@@ -103,10 +105,11 @@ const ForgotPasswordScreen = ({
 
           {/* Header */}
           <View className="mb-8">
-            <Text className="text-3xl font-bold text-foreground">Forgot Password?</Text>
+            <Text className="text-3xl font-bold text-foreground">
+              {t('auth.forgotPasswordTitle')}
+            </Text>
             <Text className="text-base leading-6 text-mutedForeground">
-              Enter your mobile number and we&apos;ll send you an OTP to continue resetting your
-              password.
+              {t('auth.forgotPasswordDesc')}
             </Text>
           </View>
 
@@ -116,10 +119,10 @@ const ForgotPasswordScreen = ({
             name="mobile"
             render={({ field }) => (
               <FormItem>
-                <Text className="text-sm font-medium text-foreground">Mobile Number</Text>
+                <Text className="text-sm font-medium text-foreground">{t('auth.mobileLabel')}</Text>
                 <FormControl>
                   <Input
-                    placeholder="Enter your mobile number"
+                    placeholder={t('auth.mobilePlaceholder')}
                     value={field.value as string}
                     onChangeText={field.onChange}
                     onBlur={field.onBlur}
@@ -127,7 +130,7 @@ const ForgotPasswordScreen = ({
                     className="text-card-foreground h-12 rounded-lg border border-border bg-card px-4 text-base"
                   />
                 </FormControl>
-                <FormMessage message={form.formState.errors.mobile?.message} />
+                <FormMessage message={t(form.formState.errors.mobile?.message || '')} />
               </FormItem>
             )}
           />
@@ -141,15 +144,17 @@ const ForgotPasswordScreen = ({
             {isLoading ? (
               <ActivityIndicator color="#ffffff" />
             ) : (
-              <Text className="text-center text-base font-semibold text-white">Send OTP</Text>
+              <Text className="text-center text-base font-semibold text-white">
+                {t('auth.sendOtpButton')}
+              </Text>
             )}
           </TouchableOpacity>
 
           {/* Back to Login */}
           <View className="flex-row items-center justify-center">
-            <Text className="text-sm text-mutedForeground">Remember your password? </Text>
+            <Text className="text-sm text-mutedForeground">{t('auth.rememberPassword')} </Text>
             <TouchableOpacity onPress={() => setScreen(SCREEN_NAME.SIGNIN)}>
-              <Text className="text-sm font-semibold text-green-600">Log In</Text>
+              <Text className="text-sm font-semibold text-green-600">{t('auth.signInTitle')}</Text>
             </TouchableOpacity>
           </View>
 

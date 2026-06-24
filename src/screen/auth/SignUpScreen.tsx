@@ -14,6 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRegisterMutation } from '@/src/services/auth';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { showToast } from '@/src/utils/commonFunction';
+import { useTranslation } from 'react-i18next';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
@@ -88,6 +89,7 @@ const FormMessage = ({ message }: { message?: string }): React.ReactElement | nu
 // ─── SignUpScreen ─────────────────────────────────────────────────────────────
 
 const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -132,8 +134,8 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
         <View className="flex-1 bg-background">
           {/* Header */}
           <View className="items-center px-4 pb-6 pt-8">
-            <Text variant="h3">#1 Tax Software in Bangladesh</Text>
-            <Text className="text-mutedForeground">Let's Create your Smart Tax BD account</Text>
+            <Text variant="h3">{t('auth.softwareSlogan')}</Text>
+            <Text className="text-mutedForeground">{t('auth.createAccountSlogan')}</Text>
           </View>
 
           {/* Form */}
@@ -147,7 +149,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                   <FormControl>
                     <Input
                       className={inputClass}
-                      placeholder="Full Name *"
+                      placeholder={t('auth.fullNamePlaceholder')}
                       placeholderTextColor={Colors.mutedForeground}
                       value={field.value as string}
                       onChangeText={field.onChange}
@@ -155,7 +157,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       autoCapitalize="words"
                     />
                   </FormControl>
-                  <FormMessage message={form.formState.errors.name?.message} />
+                  <FormMessage message={t(form.formState.errors.name?.message || '')} />
                 </FormItem>
               )}
             />
@@ -169,7 +171,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                   <FormControl>
                     <Input
                       className={inputClass}
-                      placeholder="Phone Number *"
+                      placeholder={t('auth.mobilePlaceholder')}
                       placeholderTextColor={Colors.mutedForeground}
                       value={field.value as string}
                       onChangeText={field.onChange}
@@ -177,7 +179,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       keyboardType="phone-pad"
                     />
                   </FormControl>
-                  <FormMessage message={form.formState.errors.mobile?.message} />
+                  <FormMessage message={t(form.formState.errors.mobile?.message || '')} />
                 </FormItem>
               )}
             />
@@ -191,7 +193,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                   <FormControl>
                     <Input
                       className={inputClass}
-                      placeholder="Email Address"
+                      placeholder={t('auth.emailPlaceholder')}
                       placeholderTextColor={Colors.mutedForeground}
                       value={field.value as string}
                       onChangeText={field.onChange}
@@ -200,7 +202,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       autoCapitalize="none"
                     />
                   </FormControl>
-                  <FormMessage message={form.formState.errors.email?.message} />
+                  <FormMessage message={t(form.formState.errors.email?.message || '')} />
                 </FormItem>
               )}
             />
@@ -215,7 +217,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                     <View className="relative justify-center">
                       <Input
                         className={inputClass}
-                        placeholder="Password *"
+                        placeholder={t('auth.passwordPlaceholder')}
                         placeholderTextColor={Colors.mutedForeground}
                         value={field.value as string}
                         onChangeText={field.onChange}
@@ -235,7 +237,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       </TouchableOpacity>
                     </View>
                   </FormControl>
-                  <FormMessage message={form.formState.errors.password?.message} />
+                  <FormMessage message={t(form.formState.errors.password?.message || '')} />
                 </FormItem>
               )}
             />
@@ -250,7 +252,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                     <View className="relative justify-center">
                       <Input
                         className={inputClass}
-                        placeholder="Confirm Password *"
+                        placeholder={t('auth.confirmPasswordPlaceholder')}
                         placeholderTextColor={Colors.mutedForeground}
                         value={field.value as string}
                         onChangeText={field.onChange}
@@ -270,7 +272,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       </TouchableOpacity>
                     </View>
                   </FormControl>
-                  <FormMessage message={form.formState.errors.confirmPassword?.message} />
+                  <FormMessage message={t(form.formState.errors.confirmPassword?.message || '')} />
                 </FormItem>
               )}
             />
@@ -290,12 +292,10 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       />
                     </FormControl>
                     <Text className="flex-1 text-sm leading-5 text-slate-600">
-                      I agree to the{' '}
-                      <Text className="font-semibold text-green-600">Terms of Service</Text> and{' '}
-                      <Text className="font-semibold text-green-600">Privacy Policy</Text>
+                      {t('auth.termsAndConditions')}
                     </Text>
                   </View>
-                  <FormMessage message={form.formState.errors.terms?.message} />
+                  <FormMessage message={t(form.formState.errors.terms?.message || '')} />
                 </FormItem>
               )}
             />
@@ -309,15 +309,19 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               {isLoading ? (
                 <ActivityIndicator color="#ffffff" />
               ) : (
-                <Text className="text-center text-base font-bold text-white">Create Account</Text>
+                <Text className="text-center text-base font-bold text-white">
+                  {t('auth.createAccountButton')}
+                </Text>
               )}
             </TouchableOpacity>
 
             {/* Login Link */}
             <View className="mb-6 flex-row items-center justify-center">
-              <Text className="text-sm text-gray-600">Already have an account? </Text>
+              <Text className="text-sm text-gray-600">{t('auth.signUpLink')} </Text>
               <TouchableOpacity onPress={() => setScreen(SCREEN_NAME.SIGNIN)}>
-                <Text className="text-sm font-semibold text-green-600">Log In here</Text>
+                <Text className="text-sm font-semibold text-green-600">
+                  {t('auth.signUpLinkAction')}
+                </Text>
               </TouchableOpacity>
             </View>
 
@@ -336,9 +340,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             {/* Footer */}
             <View className="mb-6 px-4">
               <Text className="text-center text-xs leading-5 text-mutedForeground">
-                Mobile App is developed by Smart Tax BD Technology Ltd. smarttaxbd.com.bd is
-                copyrighted by Bangladesh Copyright and Patent office. Copyright registration number
-                is 14748-COPR.
+                {t('auth.copyright')}
               </Text>
             </View>
           </View>

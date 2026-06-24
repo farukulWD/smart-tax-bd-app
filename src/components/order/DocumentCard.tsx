@@ -1,6 +1,7 @@
 import { isImageUrl, isPdfUrl } from '@/src/utils/commonFunction';
 import { AlertCircle, Eye, FileText } from 'lucide-react-native';
 import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const DocumentCard = ({
   doc,
@@ -17,6 +18,7 @@ const DocumentCard = ({
   onPress: () => void;
   onView: () => void;
 }) => {
+  const { t } = useTranslation();
   const fileUrl = file?.file;
   const uploaded = !!file;
   const isImg = uploaded && isImageUrl(fileUrl);
@@ -43,19 +45,19 @@ const DocumentCard = ({
             <View className="items-center gap-1">
               <FileText size={32} color="#ef4444" />
               <Text className="text-center text-xs text-foreground" numberOfLines={2}>
-                {file?.name || 'Document'}
+                {file?.name || t('common.docDefault')}
               </Text>
             </View>
           ) : (
             <View className="items-center gap-1">
               <FileText size={28} color="#6b7280" />
-              <Text className="text-xs text-mutedForeground">File uploaded</Text>
+              <Text className="text-xs text-mutedForeground">{t('common.fileUploaded')}</Text>
             </View>
           )
         ) : (
           <View className="items-center gap-1">
             <AlertCircle size={28} color="#f59e0b" />
-            <Text className="text-xs text-amber-600">No file yet</Text>
+            <Text className="text-xs text-amber-600">{t('common.noFileYet')}</Text>
           </View>
         )}
       </View>
@@ -65,7 +67,7 @@ const DocumentCard = ({
         {doc}
       </Text>
       <Text className="mb-2 text-xs text-mutedForeground">
-        {uploaded ? 'Tap to replace' : 'Tap to upload'}
+        {uploaded ? t('common.tapToReplace') : t('common.tapToUpload')}
       </Text>
 
       {/* Status / View button */}
@@ -77,11 +79,11 @@ const DocumentCard = ({
           }}
           className="flex-row items-center justify-center gap-1 rounded-lg bg-green-200/10 py-1.5">
           <Eye size={14} color="#16a34a" />
-          <Text className="text-xs font-semibold text-green-700">View</Text>
+          <Text className="text-xs font-semibold text-green-700">{t('common.view')}</Text>
         </TouchableOpacity>
       ) : (
         <View className="items-center rounded-lg bg-amber-100 py-1.5">
-          <Text className="text-xs font-semibold text-amber-600">Missing</Text>
+          <Text className="text-xs font-semibold text-amber-600">{t('common.missing')}</Text>
         </View>
       )}
 

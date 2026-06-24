@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 type NoDataProps = {
   title?: string;
@@ -7,11 +8,9 @@ type NoDataProps = {
   compact?: boolean; // tighter spacing if used inside cards/sheets
 };
 
-const NoData: React.FC<NoDataProps> = ({
-  title = 'No data available',
-  message = 'Try again later or adjust your filters.',
-  compact = false,
-}) => {
+const NoData: React.FC<NoDataProps> = ({ title, message, compact = false }) => {
+  const { t } = useTranslation();
+
   return (
     <View
       className={[
@@ -24,8 +23,12 @@ const NoData: React.FC<NoDataProps> = ({
       </View>
 
       {/* Text */}
-      <Text className="mt-2 text-2xl font-semibold text-foreground">{title}</Text>
-      <Text className="mt-1 text-center text-[12px] leading-4 text-mutedForeground">{message}</Text>
+      <Text className="mt-2 text-2xl font-semibold text-foreground">
+        {title || t('common.noDataTitle')}
+      </Text>
+      <Text className="mt-1 text-center text-[12px] leading-4 text-mutedForeground">
+        {message || t('common.noDataMessage')}
+      </Text>
     </View>
   );
 };

@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 // ─── Preview Modal ────────────────────────────────────────────────────────────
 
@@ -27,6 +28,7 @@ const PreviewModal = ({
   onDownload: () => void;
   isDownloading: boolean;
 }) => {
+  const { t } = useTranslation();
   if (!file) return null;
 
   return (
@@ -40,12 +42,12 @@ const PreviewModal = ({
         <View className="flex-row items-center justify-between border-b border-border px-4 pb-3 pt-5">
           <View className="mr-3 flex-1">
             <Text className="text-base font-bold text-foreground" numberOfLines={1}>
-              {file.name || 'Preview'}
+              {file.name || t('common.preview')}
             </Text>
             <Text className="mt-0.5 text-xs text-mutedForeground">
-              {file.type === 'image' && 'Preview the image below'}
-              {file.type === 'pdf' && 'PDF document'}
-              {file.type === 'other' && 'Download to view this file'}
+              {file.type === 'image' && t('common.previewImage')}
+              {file.type === 'pdf' && t('common.previewPdf')}
+              {file.type === 'other' && t('common.previewOther')}
             </Text>
           </View>
           <TouchableOpacity
@@ -63,19 +65,21 @@ const PreviewModal = ({
             <View className="items-center gap-4 p-6">
               <FileText size={56} color="#ef4444" />
               <Text className="text-center text-sm text-mutedForeground">
-                PDF preview is not supported in-app.
+                {t('common.pdfNotSupported')}
               </Text>
               <TouchableOpacity
                 onPress={() => Linking.openURL(file.url)}
                 className="rounded-xl bg-indigo-600 px-5 py-3">
-                <Text className="text-sm font-semibold text-white">Open PDF in Browser</Text>
+                <Text className="text-sm font-semibold text-white">
+                  {t('common.openPdfBrowser')}
+                </Text>
               </TouchableOpacity>
             </View>
           ) : (
             <View className="items-center gap-3 p-6">
               <FileText size={48} color="#9ca3af" />
               <Text className="text-center text-sm text-mutedForeground">
-                Preview not available.{'\n'}Download to view.
+                {t('common.previewNotAvailable')}
               </Text>
             </View>
           )}
@@ -86,7 +90,7 @@ const PreviewModal = ({
           <TouchableOpacity
             onPress={onClose}
             className="flex-1 items-center rounded-xl border border-gray-200 py-3">
-            <Text className="text-sm font-semibold text-gray-600">Close</Text>
+            <Text className="text-sm font-semibold text-gray-600">{t('common.close')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={onDownload}
@@ -101,7 +105,7 @@ const PreviewModal = ({
               <Download size={16} color="#fff" />
             )}
             <Text className="text-sm font-semibold text-white">
-              {isDownloading ? 'Downloading…' : 'Download'}
+              {isDownloading ? t('common.downloading') : t('common.download')}
             </Text>
           </TouchableOpacity>
         </View>

@@ -1,5 +1,4 @@
-import { View, Text } from 'react-native';
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { TAuth } from '../types/authTypes';
 
 const useAuthInfo = () => {

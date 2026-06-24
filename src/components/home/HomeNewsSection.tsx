@@ -3,10 +3,12 @@ import React from 'react';
 import Marquee from '../global/Marquee';
 import { useGetAllNewsQuery } from '@/src/services/publicApi';
 import { navigate } from '@/src/utils/NavigationUtils';
+import { useTranslation } from 'react-i18next';
 
 const SEPARATOR = '          ◆          ';
 
 const HomeNewsSection = () => {
+  const { t } = useTranslation();
   const { data, isLoading } = useGetAllNewsQuery();
 
   const marqueeContent = data?.data?.map((item) => item.title).join(SEPARATOR);
@@ -17,12 +19,12 @@ const HomeNewsSection = () => {
   return (
     <View className="flex-row items-center bg-muted">
       <View className="bg-destructive px-2 py-1">
-        <Text className="text-white">News</Text>
+        <Text className="text-white">{t('home.news')}</Text>
       </View>
 
       <Marquee speed={40} style={{}}>
         {isLoading || !marqueeContent ? (
-          <Text className="text-foreground">Loading news...</Text>
+          <Text className="text-foreground">{t('home.loadingNews')}</Text>
         ) : (
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {data?.data?.map((item, index) => (

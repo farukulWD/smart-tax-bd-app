@@ -18,8 +18,10 @@ import { setCredentials } from '@/src/redux/slices/authSlice';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { AppStackParamList } from '@/src/navigation/AppStack';
 import { navigateToStack, replace } from '@/src/utils/NavigationUtils';
+import { useTranslation } from 'react-i18next';
 
 const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
+  const { t } = useTranslation();
   const route = useRoute<RouteProp<AppStackParamList, 'Auth'>>();
   const [mobile, setMobile] = useState('01991002474');
   const [password, setPassword] = useState('123456aA@');
@@ -86,7 +88,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             {/* Mobile Input */}
 
             <Input
-              placeholder="Enter your mobile number..."
+              placeholder={t('auth.mobilePlaceholder')}
               value={mobile}
               onChangeText={setMobile}
               keyboardType="number-pad"
@@ -99,7 +101,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             <View className="relative justify-center">
               <Input
                 className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-foreground"
-                placeholder="Password *"
+                placeholder={t('auth.passwordPlaceholder')}
                 placeholderClassName="text-mutedForeground"
                 value={password}
                 onChangeText={setPassword}
@@ -128,7 +130,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                   }`}>
                   {rememberMe && <Text className="text-xs text-foreground">✓</Text>}
                 </View>
-                <Text className="text-base text-mutedForeground">Remember me</Text>
+                <Text className="text-base text-mutedForeground">{t('auth.rememberMe')}</Text>
               </TouchableOpacity>
               {/* Forgot Password Link */}
               <TouchableOpacity
@@ -136,7 +138,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                   setScreen(SCREEN_NAME.FORGOT_PASSWORD);
                 }}
                 className="items-center">
-                <Text className="text-sm text-green-600">Forgot password?</Text>
+                <Text className="text-sm text-green-600">{t('auth.forgotPasswordLink')}</Text>
               </TouchableOpacity>
             </View>
 
@@ -146,18 +148,20 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               className="h-12 flex-row items-center justify-center rounded-xl bg-green-600">
               <Home size={20} color="white" />
               <Text className="ml-2 text-center text-base font-semibold text-white">
-                {isLoading ? 'Signing...' : 'Log In'}
+                {isLoading ? t('auth.signingIn') : t('auth.signInButton')}
               </Text>
             </TouchableOpacity>
             <View>
               {/* Create Account Link */}
               <View className="flex-row items-center justify-center">
-                <Text className="text-sm text-mutedForeground">New to Smart Tax BD? </Text>
+                <Text className="text-sm text-mutedForeground">{t('auth.signUpLink')} </Text>
                 <TouchableOpacity
                   onPress={() => {
                     setScreen(SCREEN_NAME.SIGNUP);
                   }}>
-                  <Text className="text-sm font-semibold text-green-600">Create Account</Text>
+                  <Text className="text-sm font-semibold text-green-600">
+                    {t('auth.signUpLinkAction')}
+                  </Text>
                 </TouchableOpacity>
               </View>
 
@@ -187,15 +191,13 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             {/* Footer Text */}
             <View className="px-2">
               <Text className="text-center text-xs leading-5 text-mutedForeground">
-                Mobile App is developed by Smart Tax BD Technology Ltd. smarttaxbd.com.bd is
-                copyrighted by Bangladesh Copyright and Patent office. Copyright registration number
-                is 14748-COPR.
+                {t('auth.copyright')}
               </Text>
             </View>
 
             {/* Made in Bangladesh */}
             <View className="mb-2 flex-row items-center justify-center">
-              <Text className="mr-2 text-sm text-mutedForeground">Made in</Text>
+              <Text className="mr-2 text-sm text-mutedForeground">{t('auth.madeIn')}</Text>
               <View className="h-6 w-6 items-center justify-center rounded bg-green-600">
                 <View className="h-3 w-3 rounded-full bg-red-600" />
               </View>

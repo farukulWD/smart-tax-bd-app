@@ -1,4 +1,3 @@
-// components/PackageCard.tsx
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { ChevronDown, Check } from 'lucide-react-native';
@@ -6,6 +5,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { Colors } from '@/src/context/ThemeProvider';
+import { useTranslation } from 'react-i18next';
 
 type PackageFeature = string;
 
@@ -32,6 +32,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
   onSelect,
   highlighted = false,
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = React.useState(false);
   const isContactPrice = typeof price === 'string' && price.includes('Contact');
 
@@ -60,7 +61,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
           {(isPlatinum || highlighted) && (
             <View className={`rounded-full px-3 py-1 ${badgeBg}`}>
               <Text className={`text-xs font-bold ${badgeText}`}>
-                {isPlatinum ? 'POPULAR' : 'RECOMMENDED'}
+                {isPlatinum ? t('common.popular') : t('common.recommended')}
               </Text>
             </View>
           )}
@@ -70,8 +71,8 @@ export const PackageCard: React.FC<PackageCardProps> = ({
         <View>
           {isContactPrice ? (
             <View className="h-12 items-end justify-center">
-              <Text className="text-mutedForeground text-base font-semibold">
-                Contact for pricing
+              <Text className="text-base font-semibold text-mutedForeground">
+                {t('common.contactForPricing')}
               </Text>
             </View>
           ) : price ? (
@@ -85,7 +86,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
         </View>
       </View>
 
-      <Text className="text-mutedForeground px-4 pt-1 text-sm">{description}</Text>
+      <Text className="px-4 pt-1 text-sm text-mutedForeground">{description}</Text>
 
       {/* CTA */}
       <View>
@@ -103,7 +104,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
           <View className="h-12 justify-center border-t border-border bg-secondary px-4">
             <View className="flex-row items-center justify-between">
               <Text className="text-sm font-semibold text-foreground">
-                {isOpen ? 'Hide' : 'Show'} features ({features.length})
+                {isOpen ? t('common.hideFeatures') : t('common.showFeatures')} ({features.length})
               </Text>
               <ChevronDown
                 size={20}
@@ -122,7 +123,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
                 key={index}
                 className={`flex-row items-start gap-2 ${index !== 0 ? 'mt-3' : ''}`}>
                 <Check size={18} color={Colors.primary} strokeWidth={2.5} />
-                <Text className="text-mutedForeground flex-1 text-sm">{feature}</Text>
+                <Text className="flex-1 text-sm text-mutedForeground">{feature}</Text>
               </View>
             ))}
           </View>
