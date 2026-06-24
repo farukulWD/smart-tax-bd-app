@@ -129,7 +129,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
       className="bg-background"
       style={{
         flexDirection: 'row',
-        paddingBottom: gGap(bottom / 2) + gGap(5),
+        paddingBottom: gGap(bottom / 1.5) + gGap(5),
         paddingTop: gGap(5),
         borderTopWidth: 1,
         borderTopColor: Colors.border,
@@ -139,7 +139,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
           indicatorStyle,
           {
             position: 'absolute',
-            bottom: gGap(bottom / 2),
+            bottom: gGap(bottom / 1.5),
             width: tabWidth * 0.6,
             marginLeft: tabWidth * 0.2,
             height: 3,

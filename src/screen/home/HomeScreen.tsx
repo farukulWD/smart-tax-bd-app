@@ -1,38 +1,19 @@
 import { View, ScrollView } from 'react-native';
 import React from 'react';
-import Header from '@/src/components/global/Header';
-import HomeBanner from '@/src/components/global/HomeBanner';
 
 import HomeNewsSection from '@/src/components/home/HomeNewsSection';
 import TaxTypeSection from '@/src/components/home/TaxTypeSection';
+import HomeHeader from '@/src/components/home/HomeHeader';
 
 const HomeScreen = () => {
-  // let p = {
-  //   name: 'Standard',
-  //   price: 550,
-  //   currency: 'BDT',
-  //   description: 'Prepare tax return, download & submit return by yourself',
-  //   features: [
-  //     'Available in all over Bangladesh',
-  //     'Complete your return by quick & easy step-by-step process',
-  //     'Receive 100% accurate & automatic tax calculation',
-  //     'Get unlimited data revisions & unlimited PDF (tax return file) downloads',
-  //     'Get easy download & print',
-  //     'Submit tax return at your local NBR office',
-  //     'Get 24/7 support from our online BDTTax specialists',
-  //     'Store your return related documents securely',
-  //     'Bank-level data encryption and protection',
-  //     'VAT Included',
-  //   ],
-  //   button_text: 'Select',
-  // };
   return (
     <View className="flex-1 bg-background">
-      <Header />
+      <HomeHeader />
+      {/* <Header /> */}
+      <HomeNewsSection />
       <View className="flex-1">
         <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="gap-3 py-3">
-          <HomeNewsSection />
-          <HomeBanner />
+          {/* <HomeBanner /> */}
           <TaxTypeSection />
           {/* <PackageCard
             name={p.name}

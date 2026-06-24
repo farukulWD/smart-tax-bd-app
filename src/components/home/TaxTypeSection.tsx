@@ -1,41 +1,32 @@
-import React from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
+import React, { useCallback, useMemo } from 'react';
+import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import { useGetAllTaxTypesQuery } from '@/src/services/publicApi';
 import TaxCard from './TaxCard';
+import { TaxTypeItem } from '@/src/types/publicTypes';
 
-type TaxTypeItem = {
-  _id: string;
-  title: string;
-  rate: number;
-  value: string;
-  tax_orders_id: string[];
-  description: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-};
+const NUM_COLUMNS = 4;
 
-const splitIntoColumns = (items: TaxTypeItem[]) => {
-  const left: TaxTypeItem[] = [];
-  const right: TaxTypeItem[] = [];
-
-  items.forEach((item, index) => {
-    if (index % 2 === 0) {
-      left.push(item);
-    } else {
-      right.push(item);
-    }
-  });
-
-  return { left, right };
+const getPaddedData = (data: TaxTypeItem[], columns: number): (TaxTypeItem | null)[] => {
+  const remainder = data.length % columns;
+  if (remainder === 0) return data;
+  return [...data, ...Array(columns - remainder).fill(null)];
 };
 
 const TaxTypeSection = () => {
   const { data, isLoading, error } = useGetAllTaxTypesQuery();
   const types = data?.data || [];
 
-  const { left, right } = splitIntoColumns(types);
+  const paddedTypes = useMemo(() => getPaddedData(types, NUM_COLUMNS), [types]);
+
+  const renderItem = useCallback(({ item }: { item: TaxTypeItem | null }) => {
+    if (!item) return <View style={{ flex: 1 }} />;
+    return <TaxCard item={item} />;
+  }, []);
+
+  const keyExtractor = useCallback(
+    (item: TaxTypeItem | null, index: number) => item?._id ?? `spacer-${index}`,
+    []
+  );
 
   if (isLoading) {
     return (
@@ -55,40 +46,28 @@ const TaxTypeSection = () => {
       </View>
     );
   }
+
+  if (!types.length) {
+    return (
+      <View className="bg-background px-4 py-10">
+        <Text className="text-center text-sm text-mutedForeground">No tax categories found</Text>
+      </View>
+    );
+  }
+
   return (
     <View className="bg-background px-4">
-      <View className="self-start rounded-full border border-[#3ca34d6d] bg-[#3ca34d1f] px-3 py-2">
-        <Text className="text-[12px] font-bold text-primary">Expert Compliance</Text>
-      </View>
-
-      <Text className="text-[34px] font-extrabold leading-[40px] text-foreground">
-        Tax Services <Text className="text-[#3ca34d]">&amp; Categories</Text>
-      </Text>
-
-      <Text className="text-[15px] leading-7 text-mutedForeground">
-        Navigate the complexities of Bangladeshi tax law with our specialized services. We provide
-        accurate, timely, and compliant solutions for every tax category.
-      </Text>
-
-      {!types.length ? (
-        <View className="py-10">
-          <Text className="text-center text-sm text-mutedForeground">No tax categories found</Text>
-        </View>
-      ) : (
-        <View className="mt-2 flex-row justify-between">
-          <View className="w-[49%]">
-            {left.map((item) => (
-              <TaxCard key={item._id} item={item} />
-            ))}
-          </View>
-
-          <View className="w-[49%]">
-            {right.map((item) => (
-              <TaxCard key={item._id} item={item} />
-            ))}
-          </View>
-        </View>
-      )}
+      <Text className="text-lg font-semibold text-foreground">Services</Text>
+      <FlatList
+        data={paddedTypes}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        numColumns={NUM_COLUMNS}
+        contentContainerClassName="gap-1"
+        columnWrapperClassName="gap-3 items-start"
+        scrollEnabled={false}
+        removeClippedSubviews
+      />
     </View>
   );
 };

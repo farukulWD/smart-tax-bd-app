@@ -1,7 +1,6 @@
 import { TaxTypeItem } from '@/src/types/publicTypes';
 import { Pressable, Text, View } from 'react-native';
 import LucideIcon from '../common/LucideIcon';
-import { ArrowRight } from 'lucide-react-native';
 import { navigate } from '@/src/utils/NavigationUtils';
 
 const getTaxIconName = (value: string) => {
@@ -44,43 +43,14 @@ const TaxCard = ({ item }: { item: TaxTypeItem }) => {
   };
 
   return (
-    <Pressable
-      onPress={handleNavigation}
-      className="mb-2 overflow-hidden rounded-[22px] border border-border bg-card p-4"
-      style={{
-        shadowColor: '#000',
-        shadowOpacity: 0.06,
-        shadowRadius: 10,
-        shadowOffset: { width: 0, height: 4 },
-        elevation: 2,
-      }}>
-      <View className="relative">
-        <View className="absolute right-0 top-0 opacity-[0.06]">
-          <LucideIcon name={IconName} size={88} className="text-foreground" strokeWidth={1.5} />
-        </View>
-        <View className="mb-2 h-12 w-12 items-center justify-center rounded-2xl border border-[#3ca34d79] bg-[#3ca34d1f]">
-          <LucideIcon name={IconName} size={22} className="text-foreground" strokeWidth={2} />
-        </View>
-
-        <Text
-          className="mb-1 pr-4 text-[18px] font-bold leading-6 text-foreground"
-          numberOfLines={2}>
-          {item.title}
-        </Text>
-        <Text className="text-[13px] leading-5 text-mutedForeground" numberOfLines={4}>
-          {item.description}
-        </Text>
-        <View className="mt-1">
-          <View className="mb-2 h-[1px] bg-border" />
-
-          <View className="flex-row items-center gap-2">
-            <Text className="text-[12px] font-semibold uppercase tracking-[1.2px] text-[#3ca34d]">
-              Explore Details
-            </Text>
-            <ArrowRight size={14} color="#3ca34d" />
-          </View>
-        </View>
+    <Pressable onPress={handleNavigation} className="mb-2 flex-1 items-center">
+      <View className="mb-1 h-[80px] w-[80px] items-center justify-center rounded-2xl border border-[#3ca34d79] bg-[#3ca34d1f]">
+        <LucideIcon name={IconName} size={45} className="text-primary" strokeWidth={2} />
       </View>
+
+      <Text className="text-center font-medium text-foreground" numberOfLines={2}>
+        {item.title}
+      </Text>
     </Pressable>
   );
 };
