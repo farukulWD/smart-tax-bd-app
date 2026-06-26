@@ -1,6 +1,5 @@
 // screens/PackagesScreen.tsx
 import { ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { PackageCard } from '../../components/package/PackageCard';
 import TitleHeader from '@/src/components/global/TitleHeader';
 

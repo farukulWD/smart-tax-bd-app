@@ -14,7 +14,7 @@ import {
   useInitTaxStepThreePaymentMutation,
 } from '@/src/services/orderApi';
 import { AppStackParamList } from '@/src/navigation/AppStack';
-import { CheckCircle2, AlertCircle, RefreshCw, ArrowLeft, CreditCard } from 'lucide-react-native';
+import { CheckCircle2, AlertCircle, ArrowLeft, CreditCard } from 'lucide-react-native';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LucideIcon from '@/src/components/common/LucideIcon';
