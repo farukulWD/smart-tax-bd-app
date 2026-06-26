@@ -27,7 +27,7 @@ export interface IOrder {
   userId?: string;
   is_self: boolean;
   for_other_person: boolean;
-  personal_iformation: IPersonalInformation;
+  personal_information: IPersonalInformation;
   status: string;
   current_step: 1 | 2 | 3;
   are_you_get_notice_from_tax_office: boolean;
@@ -49,7 +49,7 @@ export interface IOrder {
 }
 
 export interface ICreateTaxStepOnePayload {
-  personal_iformation: IPersonalInformation;
+  personal_information: IPersonalInformation;
   tax_year: string;
   source_of_income: IncomeSource[];
   income_from_ldt_company?: boolean;

@@ -177,7 +177,7 @@ const CreateTaxOrderScreen = () => {
   const onSubmit = async (values: FormValues) => {
     try {
       const res = await createTaxStepOne({
-        personal_iformation: {
+        personal_information: {
           name: values.name,
           email: values.email,
           phone: values.mobile,

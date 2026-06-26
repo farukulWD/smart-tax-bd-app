@@ -230,7 +230,7 @@ const OrderCard = ({ item, onPress }: { item: IOrder; onPress: () => void }) => 
         <View className="mb-3 flex-row items-start justify-between">
           <View className="mr-3 flex-1">
             <Text className="mb-0.5 text-sm font-bold text-cardForeground" numberOfLines={1}>
-              {item.personal_iformation?.name}
+              {item.personal_information?.name}
             </Text>
             <Text className="text-xs text-mutedForeground" numberOfLines={1}>
               #{item._id ? shortenId(item._id) : '—'} · {item.tax_year}
