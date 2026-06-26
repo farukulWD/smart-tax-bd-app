@@ -6,8 +6,8 @@ set -e
 
 TARGET_REPO="shuvajitmaitra/apk"
 FIXED_RELEASE_TAG="SmartTaxBD"
+VERSION="0.0.2"
 
-VERSION=$(node -p "require('./package.json').version")
 
 echo "🚀 Starting automated upload for version: $VERSION..."
 echo "🎯 Target Release: https://github.com/$TARGET_REPO/releases/tag/$FIXED_RELEASE_TAG"
@@ -34,4 +34,5 @@ gh release upload "$FIXED_RELEASE_TAG" "$NEW_APK_NAME" \
   --repo "$TARGET_REPO" \
   --clobber
 
-echo "🎉 Done! SmartTaxBD-$VERSION.apk সফলভাবে আপলোড হয়েছে। Download Link: https://github.com/shuvajitmaitra/apk/releases/download/SmartTaxBD/SmartTaxBD-1.0.0.apk"
+echo "🎉 Done! SmartTaxBD-$VERSION.apk সফলভাবে আপলোড হয়েছে।" 
+echo "Download Link: https://github.com/shuvajitmaitra/apk/releases/download/SmartTaxBD/SmartTaxBD-$VERSION.apk"
