@@ -22,7 +22,7 @@ import {
   CircleDot,
 } from 'lucide-react-native';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
-import { showToast } from '@/src/utils/commonFunction';
+import { toast } from '@/src/utils/ToastConfig';
 import { Button } from '@/components/ui/button';
 import { navigate } from '@/src/utils/NavigationUtils';
 
@@ -354,7 +354,7 @@ const MyOrdersScreen = () => {
     // Navigate to order detail — adjust screen name to match your stack
     // navigation.navigate('TaxOrderDetail', { taxId: order._id });
     console.log(order);
-    showToast({ message: 'Coming soon...' });
+    toast.warning('Coming soon...');
   };
 
   return (

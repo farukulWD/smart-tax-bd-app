@@ -17,7 +17,8 @@ import { IncomeSource } from '@/src/services/orderApi';
 import { useGetUserInfoQuery } from '@/src/services/auth';
 import { useCreateTaxStepOneMutation } from '@/src/services/orderApi';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
-import { CURRENT_YEAR, showToast } from '@/src/utils/commonFunction';
+import { CURRENT_YEAR } from '@/src/utils/commonFunction';
+import { toast } from '@/src/utils/ToastConfig';
 import TaxYearPicker from '@/src/components/order/TaxYearPicker';
 import { BackButton } from '@/src/components/global/BackButton';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
@@ -190,10 +191,9 @@ const CreateTaxOrderScreen = () => {
         income_from_partnership_firm: values.income_from_partnership_firm,
         are_you_get_notice_from_tax_office: values.are_you_get_notice_from_tax_office,
       }).unwrap();
-      console.log('res.data', JSON.stringify(res.data, null, 2));
       const orderId = res?.data?.tax_order?._id;
       if (!orderId) {
-        showToast({ message: 'Order Not Found' });
+        toast.error('Order Not Found');
         return;
       }
 

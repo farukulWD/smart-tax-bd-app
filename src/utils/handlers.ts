@@ -1,5 +1,4 @@
-import { Colors } from "@/context/ThemeProvider";
-import { showToast } from "./commonFunction";
+import { toast } from "./ToastConfig";
 
 export interface FieldError {
   message: string;
@@ -15,10 +14,7 @@ export const handleErrorResponse = (response: any, source: string) => {
       field: err.field,
       message: err.message,
     })) || [];
-  showToast({
-    message: response.response.data.message || response.response.data.error,
-    background: Colors.error,
-  });
+  toast.error(response.response.data.message || response.response.data.error);
   console.log("error.response.data", JSON.stringify(response.response.data, null, 2));
   console.log({
     success: false,

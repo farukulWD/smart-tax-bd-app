@@ -13,7 +13,7 @@ import { useForm, Controller, Control, FieldPath, FieldValues } from 'react-hook
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRegisterMutation } from '@/src/services/auth';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
-import { showToast } from '@/src/utils/commonFunction';
+import { toast } from '@/src/utils/ToastConfig';
 import { useTranslation } from 'react-i18next';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
@@ -115,7 +115,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
       // sending an empty string causes a server-side Zod validation error.
       const res = await register(payload).unwrap();
       if (res) {
-        showToast({ message: 'Your account created successfully' });
+        toast.success('Your account created successfully');
         form.reset();
         setScreen(SCREEN_NAME.SIGNIN);
       }

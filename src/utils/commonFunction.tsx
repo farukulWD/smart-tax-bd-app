@@ -9,14 +9,6 @@ interface ToastOptions {
   type?: 'default' | 'success' | 'warning' | 'error';
 }
 
-export const showToast = ({ message, color, background, type }: ToastOptions): void => {
-  Toast.show({
-    type: 'tomatoToast',
-    text1: message,
-    position: 'bottom',
-    props: { color, background, type: type || 'default' },
-  });
-};
 export const showSuccessAlert = ({ message, color, background, type }: ToastOptions): void => {
   Toast.show({
     type: 'successToast',
@@ -49,10 +41,7 @@ export const showAlert = ({ message, color, background, type }: ToastOptions): v
     props: { color, background, type: type || 'default' },
   });
 };
-interface ToastOptions {
-  color?: string;
-  background?: string;
-}
+
 
 export const toast = {
   success: (message: string): void =>

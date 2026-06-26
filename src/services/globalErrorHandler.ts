@@ -1,4 +1,4 @@
-import { showToast } from '../utils/commonFunction';
+import { toast } from '../utils/ToastConfig';
 
 export interface TErrorSourse {
   path: string | number;
@@ -17,8 +17,8 @@ export const globalErrorHandler = (error: unknown) => {
   const typeError = error as { data: TGenericErrorResponse };
 
   if (typeError?.data?.errorSources?.length > 0) {
-    showToast({ message: typeError.data?.errorSources[0]?.message });
+    toast.error(typeError.data?.errorSources[0]?.message);
   } else {
-    showToast({ message: 'An unknown error occurred' });
+    toast.error('An unknown error occurred');
   }
 };
