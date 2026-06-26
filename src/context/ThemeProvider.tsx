@@ -195,7 +195,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <ThemeContext.Provider value={value}>
-      <View style={[themeVars[theme], { flex: 1 }]}>{children}</View>
+      <View style={[themeVars[theme], { flex: 1, backgroundColor: COLOR_TOKENS[theme].background }]}>{children}</View>
     </ThemeContext.Provider>
   );
 };

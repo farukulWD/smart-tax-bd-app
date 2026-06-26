@@ -19,6 +19,7 @@ import { useCreateTaxStepOneMutation } from '@/src/services/orderApi';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { CURRENT_YEAR, showToast } from '@/src/utils/commonFunction';
 import TaxYearPicker from '@/src/components/order/TaxYearPicker';
+import { BackButton } from '@/src/components/global/BackButton';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { cn } from '@/lib/utils';
 
@@ -189,6 +190,7 @@ const CreateTaxOrderScreen = () => {
         income_from_partnership_firm: values.income_from_partnership_firm,
         are_you_get_notice_from_tax_office: values.are_you_get_notice_from_tax_office,
       }).unwrap();
+      console.log('res.data', JSON.stringify(res.data, null, 2));
       const orderId = res?.data?.tax_order?._id;
       if (!orderId) {
         showToast({ message: 'Order Not Found' });
@@ -198,6 +200,7 @@ const CreateTaxOrderScreen = () => {
       navigation.navigate('RequireDocuments', { taxId: orderId });
       // navigation.navigate('UploadDocuments', { orderId });
     } catch (error: any) {
+      console.log('error', JSON.stringify(error, null, 2));
       globalErrorHandler(error);
     }
   };
@@ -207,11 +210,7 @@ const CreateTaxOrderScreen = () => {
       <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
         {/* Header */}
         <View className="flex-row items-start gap-3 px-4 py-4">
-          <Pressable
-            className="mt-1 h-10 w-10 items-center justify-center rounded-xl border border-border bg-card shadow-sm"
-            onPress={() => navigation.goBack()}>
-            <Text className="text-xl text-foreground">←</Text>
-          </Pressable>
+          <BackButton />
 
           <View className="flex-1">
             <View className="mb-1.5 self-start rounded-full border border-green-100 bg-green-50 px-3 py-0.5">

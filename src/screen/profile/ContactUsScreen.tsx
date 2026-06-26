@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { Mail, MapPin, PhoneCall } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';

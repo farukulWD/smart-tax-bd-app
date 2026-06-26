@@ -1,5 +1,5 @@
 // src/navigation/BottomTabNavigator.tsx
-import React from 'react';
+import { View } from 'react-native';
 import { createBottomTabNavigator, type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import type { NavigatorScreenParams } from '@react-navigation/native';
 
@@ -14,15 +14,17 @@ const Tab = createBottomTabNavigator<BottomTabNavigatorParamList>();
 
 export default function BottomTabNavigator() {
   return (
-    <Tab.Navigator
-      key={getMode()}
-      screenOptions={{ headerShown: false }}
-      tabBar={(props: BottomTabBarProps) => <CustomTabBar {...props} />}>
+    <View className="flex-1 bg-background">
+      <Tab.Navigator
+        key={getMode()}
+        screenOptions={{ headerShown: false }}
+        tabBar={(props: BottomTabBarProps) => <CustomTabBar {...props} />}>
       <Tab.Screen name="HomeStack" component={HomeStack} />
       <Tab.Screen name="DocumentStack" component={DocumentStack} />
       <Tab.Screen name="FAQStack" component={FAQScreen} />
       <Tab.Screen name="ProfileStack" component={ProfileStack} />
     </Tab.Navigator>
+    </View>
   );
 }
 export type BottomTabNavigatorParamList = {

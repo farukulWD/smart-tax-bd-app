@@ -1,5 +1,4 @@
 import { View, Image } from 'react-native';
-import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@/components/ui/text';
 import { Images } from '@/src/utils/Images';

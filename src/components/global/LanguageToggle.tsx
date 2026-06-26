@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useLocale } from '@/src/localization/useLocale';
 import { cn } from '@/src/utils/cn';

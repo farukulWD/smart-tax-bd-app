@@ -1,5 +1,4 @@
 import { View, ScrollView } from 'react-native';
-import React from 'react';
 
 import HomeNewsSection from '@/src/components/home/HomeNewsSection';
 import TaxTypeSection from '@/src/components/home/TaxTypeSection';

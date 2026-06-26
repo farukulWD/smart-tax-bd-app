@@ -1,5 +1,4 @@
 import { View, Text, Pressable } from 'react-native';
-import React from 'react';
 import Marquee from '../global/Marquee';
 import { useGetAllNewsQuery } from '@/src/services/publicApi';
 import { navigate } from '@/src/utils/NavigationUtils';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProfileScreen from '../screen/profile/ProfileScreen';
 import MyPaymentsScreen from '../screen/profile/MyPaymentsScreen';
@@ -6,6 +5,7 @@ import MyOrdersScreen from '../screen/profile/MyOrdersScreen';
 import UploadedDocumentsScreen from '../screen/profile/UploadedDocumentsScreen';
 import AboutUsScreen from '../screen/profile/AboutUsScreen';
 import ContactUsScreen from '../screen/profile/ContactUsScreen';
+import { useTheme, COLOR_TOKENS } from '../context/ThemeProvider';
 
 export type ProfileStackParamList = {
   Profile: undefined;
@@ -19,8 +19,15 @@ export type ProfileStackParamList = {
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
 export default function ProfileStack() {
+  const { theme } = useTheme();
+  const colors = COLOR_TOKENS[theme];
+
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: colors.background },
+      }}>
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="MyPayments" component={MyPaymentsScreen} />
       <Stack.Screen name="MyOrders" component={MyOrdersScreen} />

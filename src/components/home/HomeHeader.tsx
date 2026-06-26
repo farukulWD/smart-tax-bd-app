@@ -1,10 +1,11 @@
-import { View, Text } from 'react-native';
-import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { BellIcon } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAppNavigation } from '@/src/utils/NavigationUtils';
 
 const HomeHeader = () => {
   const { top } = useSafeAreaInsets();
+  const navigation = useAppNavigation();
   return (
     <View
       style={{ paddingTop: top + 20 }}
@@ -21,14 +22,17 @@ const HomeHeader = () => {
             Your Smart Tax Companion
           </Text>
         </View>
-        <View className="relative h-12 w-12 items-center justify-center rounded-full px-2 py-1">
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Notification')}
+          activeOpacity={0.7}
+          className="relative h-14 w-14 items-center justify-center px-2 py-1">
           <BellIcon color={'white'} />
-          <View className="absolute right-0.5 top-0.5 rounded-full bg-secondary px-1">
+          <View className="absolute right-1 top-1 rounded-full bg-secondary px-1">
             <Text className="text-xs font-extrabold leading-tight text-secondaryForeground">
               99+
             </Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
 
       <Text className="mb-4 text-center text-2xl font-bold text-primaryForeground">

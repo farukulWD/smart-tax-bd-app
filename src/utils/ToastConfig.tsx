@@ -1,4 +1,3 @@
-import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { CheckCircle, XCircle, TriangleAlert } from 'lucide-react-native';
 import { screenHeight } from './Sizes';
@@ -73,11 +72,6 @@ export const toastConfig = {
   },
   successToast: ({
     text1 = 'Successful!',
-    props = {
-      background: '#3bb068',
-      color: 'white',
-      type: 'success',
-    } as ToastProps,
   }: {
     text1?: string;
     props?: ToastProps;
@@ -103,11 +97,6 @@ export const toastConfig = {
   },
   errorToast: ({
     text1 = 'Error!',
-    props = {
-      background: '#DA4B43',
-      color: 'white',
-      type: 'error',
-    } as ToastProps,
   }: {
     text1?: string;
     props?: ToastProps;
@@ -133,11 +122,6 @@ export const toastConfig = {
   },
   warningToast: ({
     text1 = 'Warning!',
-    props = {
-      background: '#E7931C',
-      color: 'white',
-      type: 'warning',
-    } as ToastProps,
   }: {
     text1?: string;
     props?: ToastProps;

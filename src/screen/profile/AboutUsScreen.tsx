@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { CheckCircle2, ShieldCheck, Users, Zap } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';

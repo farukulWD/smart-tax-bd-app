@@ -1,5 +1,4 @@
 import { View } from 'react-native';
-import React from 'react';
 import NoData from '@/src/components/global/NoData';
 
 const DocumentScreen = () => {
