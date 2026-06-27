@@ -25,7 +25,7 @@ const RequireDocumentsScreen = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'RequireDocuments'>>();
   const navigation = useNavigation<any>();
   const taxId = route.params?.taxId;
-  const { top } = useSafeAreaInsets();
+  const { top, bottom } = useSafeAreaInsets();
 
   const [activeDocToUpload, setActiveDocToUpload] = useState('');
   const [previewFile, setPreviewFile] = useState<PreviewFile | null>(null);
@@ -165,19 +165,19 @@ const RequireDocumentsScreen = () => {
 
   return (
     <ProtectedScreen redirectTo={{ screen: 'CreateTaxOrder' }}>
-      <View style={{ paddingTop: top }} className="flex-1 bg-background">
+      <View style={{ paddingTop: top, paddingBottom: bottom }} className="flex-1 bg-background">
+        <View className="m-4 mt-0">
+          <Text className="text-2xl font-bold tracking-tight text-foreground">
+            Step 2: Documents
+          </Text>
+          <Text className="text-sm text-mutedForeground">
+            Upload and submit the required tax documents.
+          </Text>
+        </View>
         <ScrollView
           contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
           showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <View className="mb-6">
-            <Text className="text-2xl font-bold tracking-tight text-foreground">
-              Step 2: Documents
-            </Text>
-            <Text className="text-sm text-mutedForeground">
-              Upload and submit the required tax documents.
-            </Text>
-          </View>
 
           {/* Card */}
           <View className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
@@ -240,37 +240,34 @@ const RequireDocumentsScreen = () => {
                   </Text>
                 </View>
               )}
-
-              {/* Submit button */}
-              <TouchableOpacity
-                onPress={handleSubmitStepTwo}
-                disabled={isSubmittingStepTwo || isFilesLoading || !stepTwoReady}
-                className={[
-                  'mt-5 flex-row items-center justify-center gap-2 rounded-2xl py-4',
-                  isSubmittingStepTwo || isFilesLoading || !stepTwoReady
-                    ? 'bg-indigo-300'
-                    : 'bg-indigo-600',
-                ].join(' ')}
-                activeOpacity={0.8}>
-                {(isSubmittingStepTwo || isFilesLoading) && (
-                  <ActivityIndicator size="small" color="#fff" />
-                )}
-                <Text className="text-base font-bold text-white">
-                  {isSubmittingStepTwo ? 'Submitting…' : 'Go To Payment'}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-                activeOpacity={0.7}
-                className="flex-row items-center justify-center gap-2 py-3">
-                <ArrowLeft size={15} color="#6366f1" />
-                <Text className="text-sm font-semibold text-indigo-600">
-                  Back to Create Tax Order
-                </Text>
-              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
+        {/* Submit button */}
+        <TouchableOpacity
+          onPress={handleSubmitStepTwo}
+          disabled={isSubmittingStepTwo || isFilesLoading || !stepTwoReady}
+          className={[
+            'mx-4 mt-3 flex-row items-center justify-center gap-2 rounded-2xl py-3',
+            isSubmittingStepTwo || isFilesLoading || !stepTwoReady
+              ? 'bg-indigo-300'
+              : 'bg-indigo-600',
+          ].join(' ')}
+          activeOpacity={0.8}>
+          {(isSubmittingStepTwo || isFilesLoading) && (
+            <ActivityIndicator size="small" color="#fff" />
+          )}
+          <Text className="text-base font-bold text-white">
+            {isSubmittingStepTwo ? 'Submitting…' : 'Go To Payment'}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.7}
+          className="mx-4 flex-row items-center justify-center gap-2 py-3">
+          <ArrowLeft size={15} color="#6366f1" />
+          <Text className="font-semibold text-indigo-600">Back to Create Tax Order</Text>
+        </TouchableOpacity>
 
         {/* Preview Modal */}
         <PreviewModal
