@@ -1,15 +1,7 @@
 import React, { useCallback, useState } from 'react';
-import { FlatList, Text, View, TouchableOpacity } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  Bell,
-  AlertCircle,
-  FileText,
-  CreditCard,
-  Megaphone,
-  Trash2,
-} from 'lucide-react-native';
-import { BackButton } from '@/src/components/global/BackButton';
+import { FlatList, Text, View } from 'react-native';
+import { Bell, AlertCircle, FileText, CreditCard, Megaphone } from 'lucide-react-native';
+import ScreenHeader from '@/src/components/common/ScreenHeader';
 
 type NotificationType = 'tax_reminder' | 'news' | 'payment' | 'system' | 'deadline';
 
@@ -40,7 +32,8 @@ const DUMMY_NOTIFICATIONS: NotificationItem[] = [
     id: '1',
     type: 'tax_reminder',
     title: 'Tax Filing Deadline Approaching',
-    description: 'Your tax return for fiscal year 2025-2026 is due in 15 days. Submit your documents to avoid penalties.',
+    description:
+      'Your tax return for fiscal year 2025-2026 is due in 15 days. Submit your documents to avoid penalties.',
     timestamp: '2 hours ago',
     read: false,
   },
@@ -48,7 +41,8 @@ const DUMMY_NOTIFICATIONS: NotificationItem[] = [
     id: '2',
     type: 'payment',
     title: 'Payment Successful',
-    description: 'Your payment of BDT 5,000 for tax order #TXN-2024-8921 has been processed successfully.',
+    description:
+      'Your payment of BDT 5,000 for tax order #TXN-2024-8921 has been processed successfully.',
     timestamp: '5 hours ago',
     read: false,
   },
@@ -56,7 +50,8 @@ const DUMMY_NOTIFICATIONS: NotificationItem[] = [
     id: '3',
     type: 'deadline',
     title: 'Document Submission Reminder',
-    description: 'You have 3 pending documents for your ongoing tax order. Please upload them at your earliest convenience.',
+    description:
+      'You have 3 pending documents for your ongoing tax order. Please upload them at your earliest convenience.',
     timestamp: '8 hours ago',
     read: true,
   },
@@ -64,7 +59,8 @@ const DUMMY_NOTIFICATIONS: NotificationItem[] = [
     id: '4',
     type: 'news',
     title: 'New Tax Policy Update',
-    description: 'The government has announced revised tax slabs for individual taxpayers effective from July 2026.',
+    description:
+      'The government has announced revised tax slabs for individual taxpayers effective from July 2026.',
     timestamp: 'Yesterday',
     read: false,
   },
@@ -72,7 +68,8 @@ const DUMMY_NOTIFICATIONS: NotificationItem[] = [
     id: '5',
     type: 'system',
     title: 'Profile Update Required',
-    description: 'Please update your contact information to ensure smooth communication regarding your tax matters.',
+    description:
+      'Please update your contact information to ensure smooth communication regarding your tax matters.',
     timestamp: 'Yesterday',
     read: true,
   },
@@ -80,7 +77,8 @@ const DUMMY_NOTIFICATIONS: NotificationItem[] = [
     id: '6',
     type: 'tax_reminder',
     title: 'Return Acknowledged',
-    description: 'Your tax return for FY 2024-2025 has been received and is under review by the tax authority.',
+    description:
+      'Your tax return for FY 2024-2025 has been received and is under review by the tax authority.',
     timestamp: 'Yesterday',
     read: true,
   },
@@ -96,7 +94,8 @@ const DUMMY_NOTIFICATIONS: NotificationItem[] = [
     id: '8',
     type: 'news',
     title: 'Smart Tax BD Feature Update',
-    description: 'We have added new features to simplify your tax filing process. Check out the latest updates now.',
+    description:
+      'We have added new features to simplify your tax filing process. Check out the latest updates now.',
     timestamp: '5 days ago',
     read: true,
   },
@@ -104,7 +103,8 @@ const DUMMY_NOTIFICATIONS: NotificationItem[] = [
     id: '9',
     type: 'system',
     title: 'Account Security Alert',
-    description: 'A new login was detected from Dhaka, Bangladesh on June 25, 2026. If this was not you, please secure your account immediately.',
+    description:
+      'A new login was detected from Dhaka, Bangladesh on June 25, 2026. If this was not you, please secure your account immediately.',
     timestamp: '1 week ago',
     read: false,
   },
@@ -112,7 +112,8 @@ const DUMMY_NOTIFICATIONS: NotificationItem[] = [
     id: '10',
     type: 'deadline',
     title: 'Tax Notice Received',
-    description: 'You have received a notice from the tax office regarding your submitted return. Please check your documents.',
+    description:
+      'You have received a notice from the tax office regarding your submitted return. Please check your documents.',
     timestamp: '2 weeks ago',
     read: true,
   },
@@ -164,7 +165,8 @@ const NotificationCard = React.memo(({ item }: { item: NotificationItem }) => {
 
       <View className="flex-1 gap-1">
         <View className="flex-row items-start justify-between">
-          <Text className={`flex-1 text-sm font-semibold ${item.read ? 'text-foreground' : 'text-foreground'}`}>
+          <Text
+            className={`flex-1 text-sm font-semibold ${item.read ? 'text-foreground' : 'text-foreground'}`}>
             {item.title}
           </Text>
           {!item.read && <View className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" />}
@@ -172,45 +174,27 @@ const NotificationCard = React.memo(({ item }: { item: NotificationItem }) => {
         <Text className="text-[13px] leading-5 text-mutedForeground" numberOfLines={3}>
           {item.description}
         </Text>
-        <Text className="text-[11px] font-medium text-mutedForeground/70">{item.timestamp}</Text>
+        <Text className="text-mutedForeground/70 text-[11px] font-medium">{item.timestamp}</Text>
       </View>
     </View>
   );
 });
 
 const NotificationScreen = () => {
-  const { top } = useSafeAreaInsets();
   const [sections] = useState(() => groupNotifications(DUMMY_NOTIFICATIONS));
 
   const unreadCount = DUMMY_NOTIFICATIONS.filter((n) => !n.read).length;
 
   const renderItem = useCallback(
     ({ item }: { item: NotificationItem }) => <NotificationCard item={item} />,
-    [],
+    []
   );
 
   const keyExtractor = useCallback((item: NotificationItem) => item.id, []);
 
   return (
-    <View className="flex-1 bg-background" style={{ paddingTop: top }}>
-      <View className="flex-row items-center justify-between border-b border-border px-4 pb-3">
-        <View className="flex-row items-center gap-3">
-          <BackButton />
-          <Text className="text-xl font-bold text-foreground">Notifications</Text>
-          {unreadCount > 0 && (
-            <View className="rounded-full bg-primary px-2 py-0.5">
-              <Text className="text-[11px] font-bold text-primaryForeground">{unreadCount}</Text>
-            </View>
-          )}
-        </View>
-
-        <TouchableOpacity
-          onPress={() => {}}
-          className="h-9 w-9 items-center justify-center rounded-full bg-muted">
-          <Trash2 size={18} color="hsl(0, 0%, 60%)" />
-        </TouchableOpacity>
-      </View>
-
+    <View className="flex-1 bg-background">
+      <ScreenHeader title="Notification" />
       <FlatList
         data={sections.flatMap((s) => s.data)}
         renderItem={renderItem}

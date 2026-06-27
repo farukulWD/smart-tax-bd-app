@@ -11,7 +11,6 @@ import {
   Linking,
   RefreshControl,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Directory, File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import {
@@ -350,7 +349,6 @@ const EmptyState = () => (
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 const UploadedDocumentsScreen = () => {
-  const { top } = useSafeAreaInsets();
   const [selectedFile, setSelectedFile] = useState<IFile | null>(null);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -393,10 +391,8 @@ const UploadedDocumentsScreen = () => {
   // ── render ─────────────────────────────────────────────────────────────────
 
   return (
-    <View className="flex-1 bg-background" style={{ paddingTop: top }}>
-      <ScreenHeader
-        title="My Documents"
-      />
+    <View className="flex-1 bg-background">
+      <ScreenHeader title="My Documents" />
 
       {isLoading ? (
         <View className="flex-1 items-center justify-center gap-3">
