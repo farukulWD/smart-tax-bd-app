@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AppStackParamList } from '@/src/navigation/AppStack';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
 import SignInScreen from './SignInScreen';

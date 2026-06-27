@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FAQItem } from '@/src/screen/faq/FAQScreen';
 
 const FaqItem = ({ item }: { item: FAQItem }) => {

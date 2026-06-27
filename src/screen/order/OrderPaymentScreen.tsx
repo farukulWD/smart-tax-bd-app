@@ -1,11 +1,11 @@
-import React, { useRef, useState } from 'react';
-import { View, Text, ActivityIndicator, TouchableOpacity, Modal, Alert } from 'react-native';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useRef, useState } from 'react';
+import { View, Text, ActivityIndicator, TouchableOpacity, Modal } from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { AppStackParamList } from '@/src/navigation/AppStack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { WebView, WebViewNavigation } from 'react-native-webview';
-import { ArrowLeft, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react-native';
+import { CheckCircle2, XCircle, AlertTriangle } from 'lucide-react-native';
 import { navigateToStack } from '@/src/utils/NavigationUtils';
 
 // ─── types ───────────────────────────────────────────────────────────────────

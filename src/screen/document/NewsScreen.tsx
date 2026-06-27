@@ -6,7 +6,6 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useGetAllNewsQuery } from '@/src/services/publicApi';
 import { Newspaper, Calendar, AlertCircle, ChevronRight } from 'lucide-react-native';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
@@ -115,8 +114,6 @@ const EmptyState = () => (
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 const NewsScreen = () => {
-  const { top } = useSafeAreaInsets();
-
   const { data, isLoading, error, refetch, isFetching } = useGetAllNewsQuery();
   const news: INews[] = (data?.data ?? []).filter((n: INews) => n.isActive);
 
@@ -125,13 +122,8 @@ const NewsScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-background" style={{ paddingTop: top }}>
-      <ScreenHeader
-        title="News"
-        description={`${news.length} article${news.length !== 1 ? 's' : ''}`}
-        showBack={false}
-      />
-
+    <View className="flex-1 bg-background">
+      <ScreenHeader title="News" showBack={false} />
       {isLoading ? (
         <View className="flex-1 items-center justify-center gap-3">
           <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />

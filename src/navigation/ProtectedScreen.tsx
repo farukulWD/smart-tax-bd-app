@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '../redux/hooks';
 

@@ -1,24 +1,19 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft } from 'lucide-react-native';
+import { ArrowLeftIcon } from 'lucide-react-native';
 import { cn } from '@/lib/utils';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface ScreenHeaderProps {
   title: string;
-  description?: string;
   onPress?: () => void;
   showBack?: boolean;
   className?: string;
 }
 
-const ScreenHeader = ({
-  title,
-  description,
-  onPress,
-  showBack = true,
-  className,
-}: ScreenHeaderProps) => {
+const ScreenHeader = ({ title, onPress, showBack = true, className }: ScreenHeaderProps) => {
   const navigation = useNavigation();
+  const { top } = useSafeAreaInsets();
 
   const handleBack = () => {
     if (onPress) {
@@ -29,19 +24,21 @@ const ScreenHeader = ({
   };
 
   return (
-    <View className={cn('flex-row items-center gap-2 px-4', className)}>
-      {showBack && (
+    <View
+      style={{ paddingTop: top }}
+      className={cn('flex-row items-center justify-between gap-2 bg-primary px-4', className)}>
+      {showBack ? (
         <TouchableOpacity
           onPress={handleBack}
           activeOpacity={0.7}
-          className="mr-1 h-12 w-12 items-center justify-center rounded-full border border-border bg-muted">
-          <ArrowLeft size={25} color="hsl(125, 70%, 33%)" />
+          className="mr-1 h-12 w-12 items-center justify-center">
+          <ArrowLeftIcon size={35} color="#FFFFFF" />
         </TouchableOpacity>
+      ) : (
+        <View className="h-12 w-12" />
       )}
-      <View>
-        <Text className="text-2xl font-bold tracking-tight text-foreground">{title}</Text>
-        {description && <Text className={`text-sm text-mutedForeground`}>{description}</Text>}
-      </View>
+      <Text className="text-2xl font-bold tracking-tight text-white">{title}</Text>
+      <View className="h-12 w-12" />
     </View>
   );
 };

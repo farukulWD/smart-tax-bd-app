@@ -362,7 +362,6 @@ const MyOrdersScreen = () => {
       <ScreenHeader
         className="mb-3"
         title="My Orders"
-        description="Manage your tax filing orders"
       />
 
       {isLoading ? (

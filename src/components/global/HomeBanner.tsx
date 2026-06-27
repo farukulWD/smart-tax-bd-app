@@ -26,7 +26,7 @@ const HomeBanner: React.FC<HomeBannerProps> = ({ containerStyle }) => {
   const slides = useMemo(() => (s ? s.filter((item) => item.isActive) : []), [s]);
 
   const flatListRef = useRef<FlatList<TSlide>>(null);
-  const timerRef = useRef<number | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 

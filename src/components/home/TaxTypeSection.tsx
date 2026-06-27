@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useGetAllTaxTypesQuery } from '@/src/services/publicApi';

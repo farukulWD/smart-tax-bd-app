@@ -1,4 +1,3 @@
-import React from 'react';
 import { StyleSheet, View, Text, ViewStyle, TextStyle } from 'react-native';
 import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react-native';
 import Toast, { BaseToast, ErrorToast, ToastConfig } from 'react-native-toast-message';
@@ -21,7 +20,7 @@ const CustomToastLayout = ({ text1, icon, bgStyle, textStyle }: CustomToastLayou
 );
 
 export const toastConfig: ToastConfig = {
-  success: props => (
+  success: (props) => (
     <BaseToast
       {...props}
       style={styles.successContainer}
@@ -31,7 +30,7 @@ export const toastConfig: ToastConfig = {
       text2NumberOfLines={3}
     />
   ),
-  error: props => (
+  error: (props) => (
     <ErrorToast
       {...props}
       style={styles.errorContainer}

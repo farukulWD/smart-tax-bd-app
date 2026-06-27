@@ -396,7 +396,6 @@ const UploadedDocumentsScreen = () => {
     <View className="flex-1 bg-background" style={{ paddingTop: top }}>
       <ScreenHeader
         title="My Documents"
-        description={`${files.length} uploaded file${files.length !== 1 ? 's' : ''}`}
       />
 
       {isLoading ? (

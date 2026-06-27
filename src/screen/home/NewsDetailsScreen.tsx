@@ -1,4 +1,3 @@
-import React from 'react';
 import { ActivityIndicator, ScrollView, Text, View, TouchableOpacity } from 'react-native';
 import { AppStackParamList } from '@/src/navigation/AppStack';
 import { useGetSingleNewsQuery } from '@/src/services/publicApi';
@@ -7,7 +6,6 @@ import { goBack } from '@/src/utils/NavigationUtils';
 import { formatDate } from '@/src/utils/commonFunction';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
-  ArrowLeft,
   Calendar,
   Clock,
   Hash,
@@ -16,6 +14,7 @@ import {
   CheckCircle2,
   XCircle,
 } from 'lucide-react-native';
+import ScreenHeader from '@/src/components/common/ScreenHeader';
 
 type Props = RouteProp<AppStackParamList, 'NewsDetails'>;
 
@@ -129,24 +128,8 @@ const NewsDetailsScreen = () => {
   // ── Content ──────────────────────────────────────────────────────────────
 
   return (
-    <View className="flex-1 bg-background" style={{ paddingTop: top }}>
-      {/* Header */}
-      <View className="flex-row items-center justify-between border-b border-border px-4 pb-2">
-        <TouchableOpacity
-          onPress={() => goBack()}
-          activeOpacity={0.75}
-          className="h-10 w-10 items-center justify-center rounded-full border border-border bg-muted">
-          <ArrowLeft size={22} color="hsl(125, 70%, 33%)" />
-        </TouchableOpacity>
-
-        <View className="flex-row items-center gap-2">
-          <Newspaper size={25} color="hsl(125, 70%, 33%)" />
-          <Text className="text-lg font-bold text-foreground">News Details</Text>
-        </View>
-
-        {/* Spacer to center title */}
-        <View className="w-9" />
-      </View>
+    <View className="flex-1 bg-background">
+      <ScreenHeader title="News Details" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}

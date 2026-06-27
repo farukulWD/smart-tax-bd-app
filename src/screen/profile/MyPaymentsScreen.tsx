@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,6 @@ import {
   Clock,
   XCircle,
   CreditCard,
-  TrendingUp,
   AlertCircle,
   Receipt,
 } from 'lucide-react-native';
@@ -245,7 +244,6 @@ const MyPaymentsScreen = () => {
       <ScreenHeader
         className="mb-2"
         title="My Payments"
-        description="Track all your transaction history"
       />
 
       {isLoading ? (

@@ -1,7 +1,7 @@
 import FaqItem from '@/src/components/faq/FaqItem';
 import Header from '@/src/components/global/Header';
-import React, { useMemo, useState } from 'react';
-import { View, Text, FlatList, Pressable } from 'react-native';
+import { useMemo } from 'react';
+import { View, Text, FlatList } from 'react-native';
 
 export type FAQItem = {
   question: string;
