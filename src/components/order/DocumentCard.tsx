@@ -30,7 +30,7 @@ const DocumentCard = ({
       onPress={onPress}
       className={[
         'flex aspect-square flex-col justify-between rounded-2xl border p-3',
-        uploaded ? 'border-border bg-card' : 'border-amber-200 bg-amber-50',
+        uploaded ? 'border-border bg-card' : 'border-amber-200 bg-amber-50/10',
         isActive ? 'ring-2 ring-indigo-500' : '',
       ].join(' ')}
       style={{ flex: 1, margin: 6, minWidth: 140, maxWidth: '48%' }}>
@@ -82,7 +82,7 @@ const DocumentCard = ({
           <Text className="text-xs font-semibold text-green-700">{t('common.view')}</Text>
         </TouchableOpacity>
       ) : (
-        <View className="items-center rounded-lg bg-amber-100 py-1.5">
+        <View className="items-center rounded-full bg-amber-100/20 py-1.5">
           <Text className="text-xs font-semibold text-amber-600">{t('common.missing')}</Text>
         </View>
       )}

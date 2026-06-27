@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IPayment, useGetMyPaymentsQuery } from '@/src/services/paymentApi';
 import {
   CheckCircle2,
@@ -222,7 +221,6 @@ const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 const MyPaymentsScreen = () => {
-  const { top } = useSafeAreaInsets();
   const [filter, setFilter] = useState<FilterStatus>('all');
 
   const { data, isLoading, error, refetch, isFetching } = useGetMyPaymentsQuery();
@@ -238,8 +236,7 @@ const MyPaymentsScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-background" style={{ paddingTop: top }}>
-      {/* Header */}
+    <View className="flex-1 bg-background">
 
       <ScreenHeader
         className="mb-2"

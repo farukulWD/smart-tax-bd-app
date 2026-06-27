@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { IOrder, useGetMyOrdersQuery } from '@/src/services/orderApi';
 import {
@@ -334,7 +333,6 @@ const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 const MyOrdersScreen = () => {
-  const { top } = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const [filter, setFilter] = useState<FilterStatus>('all');
 
@@ -358,7 +356,7 @@ const MyOrdersScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-background" style={{ paddingTop: top }}>
+    <View className="flex-1 bg-background">
       <ScreenHeader
         className="mb-3"
         title="My Orders"

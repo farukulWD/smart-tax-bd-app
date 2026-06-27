@@ -1,7 +1,7 @@
 import FaqItem from '@/src/components/faq/FaqItem';
-import Header from '@/src/components/global/Header';
 import { useMemo } from 'react';
 import { View, Text, FlatList } from 'react-native';
+import ScreenHeader from '@/src/components/common/ScreenHeader';
 
 export type FAQItem = {
   question: string;
@@ -93,13 +93,8 @@ const FAQScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-background px-3 pt-3">
-      <Header />
-      {/* Header */}
-      <View className="my-3 rounded-xl border border-border bg-card px-3 py-3">
-        <Text className="text-[16px] font-bold text-foreground">{headerTitle}</Text>
-        <Text className="mt-1 text-[12px] text-mutedForeground">{data.tax_year_reference}</Text>
-      </View>
+    <View className="flex-1 bg-background">
+      <ScreenHeader title={headerTitle} />
 
       {/* List */}
       <FlatList
