@@ -1,4 +1,5 @@
 import { TResponse } from '../types/commonTypes';
+import { IFile } from '../types/filesTypes';
 import { baseApi } from './baseApi';
 
 const fileApi = baseApi.injectEndpoints({
@@ -36,6 +37,14 @@ const fileApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['files'],
     }),
+    updateFile: builder.mutation<TResponse<any>, { id: string; data: Partial<Pick<IFile, 'name' | 'type'>> }>({
+      query: ({ id, data }) => ({
+        url: `/files/update-file/${id}`,
+        method: 'PATCH',
+        data,
+      }),
+      invalidatesTags: ['files'],
+    }),
   }),
 });
 
@@ -44,4 +53,5 @@ export const {
   useGetMyFilesQuery,
   useGetSingleFileQuery,
   useDeleteFileMutation,
+  useUpdateFileMutation,
 } = fileApi;

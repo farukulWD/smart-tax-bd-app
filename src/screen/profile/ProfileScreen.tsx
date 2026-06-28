@@ -1,4 +1,7 @@
+import { useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
+import ConfirmModal from '@/src/components/global/ConfirmModal';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { useAppSelector } from '@/src/redux/hooks';
 import { logout } from '@/src/redux/slices/authSlice';
@@ -6,8 +9,6 @@ import { store } from '@/src/redux/store';
 import { useGetMyOrdersQuery } from '@/src/services/orderApi';
 import { useGetMyPaymentsQuery } from '@/src/services/paymentApi';
 import { navigate } from '@/src/utils/NavigationUtils';
-
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useLocale } from '@/src/localization/useLocale';
 import { useTheme } from '@/src/context/ThemeProvider';
 import LucideIcon from '@/src/components/common/LucideIcon';
@@ -25,6 +26,7 @@ import {
   BookOpen,
   Languages,
   ChevronRight,
+  FilesIcon,
 } from 'lucide-react-native';
 import { useGetMyFilesQuery } from '@/src/services/fileApi';
 import {
@@ -41,6 +43,7 @@ const ProfileScreen = () => {
   const { setLocale, isEnglish } = useLocale();
   const { theme, toggleTheme } = useTheme();
   const { isLoggedIn, user } = useAppSelector((state) => state.auth);
+  const [activeConfirm, setActiveConfirm] = useState<'logout' | 'delete-account' | null>(null);
 
   const { data: filesResponse } = useGetMyFilesQuery(undefined);
   const { data: orderResponse } = useGetMyOrdersQuery(undefined);
@@ -67,23 +70,9 @@ const ProfileScreen = () => {
     },
   ];
 
-  const handleLogout = () => {
-    Alert.alert(t('profile.signOut'), t('profile.signOutConfirm'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('profile.signOut'),
-        style: 'destructive',
-        onPress: () => store.dispatch(logout()),
-      },
-    ]);
-  };
+  const handleLogout = () => setActiveConfirm('logout');
 
-  const handleDeleteAccount = () => {
-    Alert.alert(t('profile.deleteAccount'), t('profile.deleteAccountDesc'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      { text: t('profile.deleteConfirm'), style: 'destructive', onPress: () => {} },
-    ]);
-  };
+  const handleDeleteAccount = () => setActiveConfirm('delete-account');
 
   const initials = user?.name
     ? user.name
@@ -214,6 +203,13 @@ const ProfileScreen = () => {
             description={t('profile.uploadedFiles')}
             onPress={() => navigate('UploadedDocuments')}
           />
+          <MenuItem
+            icon={<FilesIcon size={16} color="hsl(75, 90%, 49%)" />}
+            accent="bg-blue/15"
+            label={'My Files'}
+            description={'Your all files'}
+            onPress={() => navigate('MyFiles')}
+          />
         </View>
 
         {/* ── Info & Support ────────────────────────────────────────────── */}
@@ -314,6 +310,33 @@ const ProfileScreen = () => {
           <Text className="text-xs text-mutedForeground">Version 1.0.0</Text>
         </View>
       </ScrollView>
+
+      <ConfirmModal
+        visible={activeConfirm === 'logout'}
+        title={t('profile.signOut')}
+        message={t('profile.signOutConfirm')}
+        confirmLabel={t('profile.signOut')}
+        cancelLabel={t('common.cancel')}
+        destructive
+        onConfirm={() => {
+          store.dispatch(logout());
+          setActiveConfirm(null);
+        }}
+        onCancel={() => setActiveConfirm(null)}
+      />
+
+      <ConfirmModal
+        visible={activeConfirm === 'delete-account'}
+        title={t('profile.deleteAccount')}
+        message={t('profile.deleteAccountDesc')}
+        confirmLabel={t('profile.deleteConfirm')}
+        cancelLabel={t('common.cancel')}
+        destructive
+        onConfirm={() => {
+          setActiveConfirm(null);
+        }}
+        onCancel={() => setActiveConfirm(null)}
+      />
     </ProtectedScreen>
   );
 };

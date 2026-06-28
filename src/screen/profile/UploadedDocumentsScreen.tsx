@@ -27,21 +27,7 @@ import {
 } from 'lucide-react-native';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
 import { useGetMyFilesQuery } from '@/src/services/fileApi';
-
-// ─── types ────────────────────────────────────────────────────────────────────
-
-interface IFile {
-  _id: string;
-  name: string;
-  type: string;
-  userId: string;
-  orderId: string;
-  file: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// ─── helpers ──────────────────────────────────────────────────────────────────
+import { IFile } from '@/src/types/filesTypes';
 
 const isImageUrl = (url: string) => /\.(jpe?g|png|gif|webp|svg)(\?.*)?$/i.test(url);
 const isPdfUrl = (url: string) => /\.pdf(\?.*)?$/i.test(url);

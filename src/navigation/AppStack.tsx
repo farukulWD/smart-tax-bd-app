@@ -10,6 +10,7 @@ import RequireDocumentsScreen from '../screen/order/RequireDocumentsScreen';
 import OrderPaymentStatusScreen from '../screen/order/OrderPaymentStatusScreen';
 import OrderPaymentScreen from '../screen/order/OrderPaymentScreen';
 import { useTheme, COLOR_TOKENS } from '../context/ThemeProvider';
+import MyFilesScreen from '../screen/profile/MyFilesScreen';
 
 export type AppStackParamList = {
   BottomTabNavigator: undefined;
@@ -23,6 +24,7 @@ export type AppStackParamList = {
   Packages: undefined;
   NewsDetails: { newsId: string };
   Notification: undefined;
+  MyFiles: undefined;
   CreateTaxOrder: { taxTypeId: string; redirectTo: { stack: string; screen: string } };
   RequireDocuments: { taxId: string; redirectTo?: { stack: string; screen: string } };
   OrderPaymentStatus: { taxId: string; redirectTo?: { stack: string; screen: string } };
@@ -49,6 +51,8 @@ export default function AppStack() {
       <Stack.Screen name="RequireDocuments" component={RequireDocumentsScreen} />
       <Stack.Screen name="OrderPaymentStatus" component={OrderPaymentStatusScreen} />
       <Stack.Screen name="OrderPayment" component={OrderPaymentScreen} />
+      <Stack.Screen name="MyFiles" component={MyFilesScreen} />
+
       <Stack.Screen name="Auth" component={AuthScreen} />
     </Stack.Navigator>
   );
