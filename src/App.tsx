@@ -17,7 +17,7 @@ export default function App() {
   return (
     <KeyboardProvider>
       <ThemeProvider>
-        <StatusBar style={'light'} />
+        <StatusBar style={'light'} backgroundColor="transparent" />
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <Navigation />

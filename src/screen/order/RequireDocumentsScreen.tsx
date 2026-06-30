@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { skipToken } from '@reduxjs/toolkit/query';
@@ -12,12 +12,15 @@ import {
 } from '@/src/services/orderApi';
 import { AppStackParamList } from '@/src/navigation/AppStack';
 import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 import * as Sharing from 'expo-sharing';
 import { File, Directory, Paths } from 'expo-file-system';
 import { AlertCircle, ArrowLeft, CheckCircle2 } from 'lucide-react-native';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { toast } from '@/src/utils/ToastConfig';
 import DocumentCard from '@/src/components/order/DocumentCard';
+import UploadOptionModal from '@/src/components/order/UploadOptionModal';
 import { isImageUrl, isPdfUrl } from '@/src/utils/commonFunction';
 import { PreviewFile } from '@/src/types/commonTypes';
 import PreviewModal from '@/src/components/order/PreviewModal';
@@ -28,11 +31,15 @@ const RequireDocumentsScreen = () => {
   const taxId = route.params?.taxId;
   const { top, bottom } = useSafeAreaInsets();
 
+  const uploadingDocRef = useRef('');
+  const [isLocalUploading, setIsLocalUploading] = useState(false);
+  const [pendingDoc, setPendingDoc] = useState('');
+  const [showUploadOptions, setShowUploadOptions] = useState(false);
   const [previewFile, setPreviewFile] = useState<PreviewFile | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const [uploadFile, { isLoading: isUploadingFile }] = useUploadFileMutation();
+  const [uploadFile] = useUploadFileMutation();
   const [uploadTaxStepTwoDocuments, { isLoading: isSubmittingStepTwo }] =
     useUploadTaxStepTwoDocumentsMutation();
   const [skipUpload, { isLoading: isSkipping }] = useSkipUploadStepTwoMutation();
@@ -85,19 +92,46 @@ const RequireDocumentsScreen = () => {
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri, { dialogTitle: name || uniqueName });
       } else {
-        Alert.alert('Download complete', `Saved to: ${uri}`);
+        toast.success('Download complete');
       }
     } catch (err: any) {
       console.log('err', JSON.stringify(err, null, 2));
-      Alert.alert('Download failed', err?.message || 'Unknown error');
+      toast.error(err?.message || 'Download failed');
     } finally {
       setIsDownloading(false);
     }
   };
 
-  const handleDocPress = async (doc: string) => {
-    if (isUploadingFile) return;
+  const uploadAsset = async (doc: string, uri: string, name: string, mimeType: string) => {
+    setIsLocalUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('data', JSON.stringify({ name: doc, type: doc, orderId: taxId }));
+      formData.append('file', {
+        uri,
+        name,
+        type: mimeType || 'application/octet-stream',
+      } as any);
 
+      await uploadFile(formData).unwrap();
+      uploadingDocRef.current = '';
+      toast.success(`${doc} uploaded`);
+      try {
+        await refetchMyFiles();
+      } catch (_) {}
+      try {
+        await refetchOrder();
+      } catch (_) {}
+    } catch (error: any) {
+      const message =
+        error?.data?.message || error?.data?.error || error?.message || 'Upload failed';
+      toast.error(message);
+    } finally {
+      setIsLocalUploading(false);
+    }
+  };
+
+  const pickFromFiles = async (doc: string) => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
         type: ['image/*', 'application/pdf'],
@@ -107,24 +141,44 @@ const RequireDocumentsScreen = () => {
       if (result.canceled || !result.assets?.[0]) return;
 
       const asset = result.assets[0];
-
-      const formData = new FormData();
-      formData.append('data', JSON.stringify({ name: doc, type: doc, orderId: taxId }));
-      formData.append('file', {
-        uri: asset.uri,
-        name: asset.name,
-        type: asset.mimeType || 'application/octet-stream',
-      } as any);
-
-      await uploadFile(formData).unwrap();
-      Alert.alert('Success', `${doc} uploaded`);
-      await refetchMyFiles();
-      await refetchOrder();
+      await uploadAsset(doc, asset.uri, asset.name, asset.mimeType || 'application/octet-stream');
     } catch (error: any) {
       const message =
         error?.data?.message || error?.data?.error || error?.message || 'Document upload failed';
-      Alert.alert('Upload failed', message);
+      toast.error(message);
     }
+  };
+
+  const captureFromCamera = async (doc: string) => {
+    try {
+      const permission = await ImagePicker.requestCameraPermissionsAsync();
+      if (!permission.granted) {
+        Alert.alert('Permission required', 'Camera access is needed to take a photo.');
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['images'],
+        quality: 0.8,
+      });
+
+      if (result.canceled || !result.assets?.[0]) return;
+
+      const asset = result.assets[0];
+      const fileName = asset.fileName || `${doc.replace(/\s+/g, '_')}.jpg`;
+      await uploadAsset(doc, asset.uri, fileName, asset.mimeType || 'image/jpeg');
+    } catch (error: any) {
+      const message =
+        error?.data?.message || error?.data?.error || error?.message || 'Camera upload failed';
+      toast.error(message);
+    }
+  };
+
+  const handleDocPress = (doc: string) => {
+    if (isLocalUploading) return;
+
+    setPendingDoc(doc);
+    setShowUploadOptions(true);
   };
 
   const handleSkipUpload = async () => {
@@ -135,7 +189,7 @@ const RequireDocumentsScreen = () => {
     } catch (error: any) {
       const message =
         error?.data?.message || error?.data?.error || error?.message || 'Failed to skip upload';
-      Alert.alert('Error', message);
+      toast.error(message);
     }
   };
 
@@ -144,8 +198,7 @@ const RequireDocumentsScreen = () => {
 
     if (!stepTwoReady) {
       const missing = missingDocuments.join(', ');
-      Alert.alert(
-        'Missing documents',
+      toast.error(
         missing
           ? `Upload required documents first: ${missing}`
           : 'Upload all required documents first'
@@ -156,18 +209,20 @@ const RequireDocumentsScreen = () => {
     const documentIds = requiredDocuments.map((doc) => latestFileByType[doc]?._id).filter(Boolean);
 
     if (!documentIds.length) {
-      Alert.alert('Error', 'No uploaded document IDs found');
+      toast.error('No uploaded document IDs found');
       return;
     }
 
     try {
       await uploadTaxStepTwoDocuments({ taxId, documentIds }).unwrap();
       navigation.navigate('OrderPaymentStatus', { taxId });
-      await refetchOrder();
+      try {
+        await refetchOrder();
+      } catch (_) {}
     } catch (error: any) {
       const message =
         error?.data?.message || error?.data?.error || error?.message || 'Step 2 submission failed';
-      Alert.alert('Error', message);
+      toast.error(message);
     }
   };
 
@@ -184,27 +239,26 @@ const RequireDocumentsScreen = () => {
             Upload and submit the required tax documents.
           </Text>
         </View>
-        <ScrollView
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
-          showsVerticalScrollIndicator={false}>
-          {/* Header */}
-
+        <View className="flex-1 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
           {/* Card */}
-          <View className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
-            {/* Card header */}
-            <View className="border-b border-border px-5 pb-3 pt-5">
-              <Text className="text-base font-bold text-foreground">Required Documents</Text>
-            </View>
+          {/* Card header */}
+          <View className="border-b border-border px-5 pb-3 pt-5">
+            <Text className="text-base font-bold text-foreground">Required Documents</Text>
+          </View>
+          <ScrollView
+            contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
+            showsVerticalScrollIndicator={false}>
+            {/* Header */}
 
             {/* Document grid */}
-            <View className="p-4">
+            <View className="flex-1 p-4">
               {requiredDocuments.length === 0 ? (
                 <View className="items-center gap-2 py-10">
                   <ActivityIndicator color="#6366f1" />
                   <Text className="text-sm text-mutedForeground">Loading required documents…</Text>
                 </View>
               ) : (
-                <View className="flex-row flex-wrap" style={{ margin: -6 }}>
+                <View className="flex-1 flex-row flex-wrap" style={{ margin: -6 }}>
                   {requiredDocuments.map((doc) => {
                     const file = latestFileByType[doc];
                     const fileUrl = file?.file;
@@ -216,7 +270,8 @@ const RequireDocumentsScreen = () => {
                         key={doc}
                         doc={doc}
                         file={file}
-                        isUploading={isUploadingFile}
+                        isUploading={isLocalUploading}
+                        isActive={isLocalUploading && uploadingDocRef.current === doc}
                         onPress={() => handleDocPress(doc)}
                         onView={() =>
                           openPreview(
@@ -250,8 +305,8 @@ const RequireDocumentsScreen = () => {
                 </View>
               )}
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </View>
         {/* Submit button */}
         <TouchableOpacity
           onPress={handleSubmitStepTwo}
@@ -275,9 +330,7 @@ const RequireDocumentsScreen = () => {
           disabled={isSkipping}
           className="mx-4 mt-2 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3"
           activeOpacity={0.7}>
-          {isSkipping ? (
-            <ActivityIndicator size="small" color="hsl(0, 0%, 60%)" />
-          ) : null}
+          {isSkipping ? <ActivityIndicator size="small" color="hsl(0, 0%, 60%)" /> : null}
           <Text className="text-sm font-semibold text-mutedForeground">
             {isSkipping ? 'Skipping…' : 'Upload File Later'}
           </Text>
@@ -289,6 +342,26 @@ const RequireDocumentsScreen = () => {
           <ArrowLeft size={15} color="#6366f1" />
           <Text className="font-semibold text-indigo-600">Back to Create Tax Order</Text>
         </TouchableOpacity>
+
+        {/* Upload option modal */}
+        <UploadOptionModal
+          visible={showUploadOptions}
+          doc={pendingDoc}
+          onPickFromFiles={() => {
+            setShowUploadOptions(false);
+            uploadingDocRef.current = pendingDoc;
+            pickFromFiles(pendingDoc);
+          }}
+          onTakePhoto={() => {
+            setShowUploadOptions(false);
+            uploadingDocRef.current = pendingDoc;
+            captureFromCamera(pendingDoc);
+          }}
+          onCancel={() => {
+            setShowUploadOptions(false);
+            setPendingDoc('');
+          }}
+        />
 
         {/* Preview Modal */}
         <PreviewModal

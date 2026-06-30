@@ -29,9 +29,8 @@ const DocumentCard = ({
       activeOpacity={0.75}
       onPress={onPress}
       className={[
-        'flex aspect-square flex-col justify-between rounded-2xl border p-3',
+        'h-52 justify-between rounded-2xl border p-3',
         uploaded ? 'border-border bg-card' : 'border-amber-200 bg-amber-50/10',
-        isActive ? 'ring-2 ring-indigo-500' : '',
       ].join(' ')}
       style={{ flex: 1, margin: 6, minWidth: 140, maxWidth: '48%' }}>
       {/* Thumbnail area */}

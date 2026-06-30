@@ -29,13 +29,13 @@ const OrderSuccessScreen = () => {
             <Home size={18} color="#fff" />
             <Text className="text-base font-bold text-white">{t('order.goHome')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Profile' })}
             activeOpacity={0.8}
             className="flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-muted py-4">
             <ClipboardList size={18} color="hsl(0, 0%, 60%)" />
             <Text className="text-sm font-semibold text-mutedForeground">{t('order.goOrders')}</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     </View>
