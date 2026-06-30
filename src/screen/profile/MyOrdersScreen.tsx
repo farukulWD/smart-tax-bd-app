@@ -351,7 +351,6 @@ const MyOrdersScreen = () => {
   };
 
   const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
-  console.log('selectedOrder', JSON.stringify(selectedOrder, null, 2));
   const handleOrderPress = (order: IOrder) => {
     setSelectedOrder(order);
   };
