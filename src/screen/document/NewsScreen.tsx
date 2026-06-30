@@ -11,17 +11,6 @@ import { Newspaper, Calendar, AlertCircle, ChevronRight } from 'lucide-react-nat
 import ScreenHeader from '@/src/components/common/ScreenHeader';
 import { navigate } from '@/src/utils/NavigationUtils';
 
-// ─── types ────────────────────────────────────────────────────────────────────
-
-interface INews {
-  _id: string;
-  title: string;
-  description: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
 const formatDate = (dateStr: string) =>
@@ -54,7 +43,7 @@ const NewsCard = ({
   index,
   onPress,
 }: {
-  item: INews;
+  item: { _id: string; title: string; description: string; createdAt: string; isActive: boolean };
   index: number;
   onPress: () => void;
 }) => {
@@ -115,9 +104,9 @@ const EmptyState = () => (
 
 const NewsScreen = () => {
   const { data, isLoading, error, refetch, isFetching } = useGetAllNewsQuery();
-  const news: INews[] = (data?.data ?? []).filter((n: INews) => n.isActive);
+  const news = (data?.data ?? []).filter((n) => n.isActive);
 
-  const openDetail = (item: INews) => {
+  const openDetail = (item: typeof news[number]) => {
     navigate('NewsDetails', { newsId: item._id });
   };
 

@@ -1,7 +1,10 @@
-export const ENV: 'production' | 'local' = 'production';
+export const ENV: 'production' | 'dev' | 'local' = 'dev';
 
 const CONFIG = {
   production: {
+    BASE_URL: 'https://api.smarttaxbd.com/api/v1',
+  },
+  dev: {
     BASE_URL: 'https://api.dev.smarttaxbd.com/api/v1',
   },
   local: {

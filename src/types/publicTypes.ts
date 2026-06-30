@@ -1,3 +1,8 @@
+export type LocalizedString = {
+  en: string;
+  bn: string;
+};
+
 export type NewsItem = {
   _id: string;
   title: string;
@@ -9,11 +14,11 @@ export type NewsItem = {
 };
 export interface TaxType {
   _id: string;
-  title: string;
+  title: LocalizedString;
   rate: number;
   value: string;
   icon?: string;
-  description: string;
+  description: LocalizedString;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -31,11 +36,11 @@ export type GetSingleNewsResponse = {
 };
 export type TaxTypeItem = {
   _id: string;
-  title: string;
+  title: LocalizedString;
   rate: number;
   value: string;
   tax_orders_id: string[];
-  description: string;
+  description: LocalizedString;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

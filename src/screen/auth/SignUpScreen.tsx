@@ -125,8 +125,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
     }
   };
 
-  const inputClass =
-    'h-12 w-full rounded-lg border border-slate-300 bg-slate-50 px-4 text-base text-card-foreground';
+  const inputClass = 'h-12 w-full rounded-lg border border-border bg-card px-4 text-foreground';
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -288,10 +287,10 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       <Checkbox
                         checked={field.value as boolean}
                         onCheckedChange={field.onChange}
-                        className="mt-0.5 border-slate-300"
+                        className="mt-0.5 border-border"
                       />
                     </FormControl>
-                    <Text className="flex-1 text-sm leading-5 text-slate-600">
+                    <Text className="flex-1 text-sm leading-5 text-mutedForeground">
                       {t('auth.termsAndConditions')}
                     </Text>
                   </View>

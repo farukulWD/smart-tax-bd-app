@@ -2,10 +2,15 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { BellIcon } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppNavigation } from '@/src/utils/NavigationUtils';
+import { useAppSelector } from '@/src/redux/hooks';
+import { useGetUnreadCountQuery } from '@/src/services/notificationApi';
 
 const HomeHeader = () => {
   const { top } = useSafeAreaInsets();
   const navigation = useAppNavigation();
+  const { user } = useAppSelector((state) => state.auth);
+  const { data: unreadData } = useGetUnreadCountQuery();
+  const unreadCount = unreadData?.data?.count ?? 0;
   return (
     <View
       style={{ paddingTop: top + 20 }}
@@ -27,17 +32,21 @@ const HomeHeader = () => {
           activeOpacity={0.7}
           className="relative h-14 w-14 items-center justify-center px-2 py-1">
           <BellIcon color={'white'} />
-          <View className="absolute right-1 top-1 rounded-full bg-secondary px-1">
-            <Text className="text-xs font-extrabold leading-tight text-secondaryForeground">
-              99+
-            </Text>
-          </View>
+          {unreadCount > 0 ? (
+            <View className="absolute right-1 top-1 rounded-full bg-secondary px-1">
+              <Text className="text-xs font-extrabold leading-tight text-secondaryForeground">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </Text>
+            </View>
+          ) : null}
         </TouchableOpacity>
       </View>
 
-      <Text className="mb-4 text-center text-2xl font-bold text-primaryForeground">
-        Hafizur Rahman
-      </Text>
+      {user?.name ? (
+        <Text className="mb-4 text-center text-2xl font-bold text-primaryForeground">
+          {user.name}
+        </Text>
+      ) : null}
 
       {/* <TouchableOpacity
         onPress={() => setBalanceVisible((v) => !v)}

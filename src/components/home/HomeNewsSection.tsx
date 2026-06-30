@@ -8,12 +8,12 @@ const SEPARATOR = '          ◆          ';
 
 const HomeNewsSection = () => {
   const { t } = useTranslation();
-  const { data, isLoading } = useGetAllNewsQuery();
-
-  const marqueeContent = data?.data?.map((item) => item.title).join(SEPARATOR);
+  const { data } = useGetAllNewsQuery();
   const handleNavigateToNewDetails = (id: string) => {
     navigate('NewsDetails', { newsId: id });
   };
+
+  if (!data?.data?.length) return null;
 
   return (
     <View className="flex-row items-center bg-muted">
@@ -22,24 +22,20 @@ const HomeNewsSection = () => {
       </View>
 
       <Marquee speed={40} style={{}}>
-        {isLoading || !marqueeContent ? (
-          <Text className="text-foreground">{t('home.loadingNews')}</Text>
-        ) : (
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {data?.data?.map((item, index) => (
-              <Pressable
-                onPress={() => {
-                  item?._id && handleNavigateToNewDetails(item._id);
-                }}
-                key={item._id ?? index}>
-                <Text className="font-medium capitalize text-foreground">
-                  {item.title}
-                  {index < data.data.length - 1 ? SEPARATOR : ''}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        )}
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {data?.data?.map((item, index) => (
+            <Pressable
+              onPress={() => {
+                item?._id && handleNavigateToNewDetails(item._id);
+              }}
+              key={item._id ?? index}>
+              <Text className="font-medium capitalize text-foreground">
+                {item.title}
+                {index < data.data.length - 1 ? SEPARATOR : ''}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
       </Marquee>
     </View>
   );

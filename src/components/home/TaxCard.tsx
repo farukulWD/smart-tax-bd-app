@@ -2,6 +2,7 @@ import { TaxTypeItem } from '@/src/types/publicTypes';
 import { Pressable, Text, View } from 'react-native';
 import LucideIcon from '../common/LucideIcon';
 import { navigate } from '@/src/utils/NavigationUtils';
+import { useLocale } from '@/src/localization/useLocale';
 
 const getTaxIconName = (value: string) => {
   switch (value) {
@@ -38,6 +39,7 @@ const getTaxIconName = (value: string) => {
 
 const TaxCard = ({ item }: { item: TaxTypeItem }) => {
   const IconName = getTaxIconName(item.value);
+  const { locale } = useLocale();
   const handleNavigation = () => {
     navigate('CreateTaxOrder', { taxType: item.value });
   };
@@ -49,7 +51,7 @@ const TaxCard = ({ item }: { item: TaxTypeItem }) => {
       </View>
 
       <Text className="text-center font-medium text-foreground" numberOfLines={2}>
-        {item.title}
+        {item.title[locale as keyof typeof item.title] || item.title.en}
       </Text>
     </Pressable>
   );

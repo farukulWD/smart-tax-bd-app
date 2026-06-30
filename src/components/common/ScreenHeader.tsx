@@ -9,9 +9,13 @@ interface ScreenHeaderProps {
   onPress?: () => void;
   showBack?: boolean;
   className?: string;
+  rightButton?: {
+    icon: React.ReactNode;
+    onPress: () => void;
+  };
 }
 
-const ScreenHeader = ({ title, onPress, showBack = true, className }: ScreenHeaderProps) => {
+const ScreenHeader = ({ title, onPress, showBack = true, className, rightButton }: ScreenHeaderProps) => {
   const navigation = useNavigation();
   const { top } = useSafeAreaInsets();
 
@@ -38,7 +42,16 @@ const ScreenHeader = ({ title, onPress, showBack = true, className }: ScreenHead
         <View className="h-12 w-12" />
       )}
       <Text className="text-2xl font-bold tracking-tight text-white">{title}</Text>
-      <View className="h-12 w-12" />
+      {rightButton ? (
+        <TouchableOpacity
+          onPress={rightButton.onPress}
+          activeOpacity={0.7}
+          className="h-12 w-12 items-center justify-center">
+          {rightButton.icon}
+        </TouchableOpacity>
+      ) : (
+        <View className="h-12 w-12" />
+      )}
     </View>
   );
 };
