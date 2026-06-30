@@ -23,8 +23,8 @@ import { useTranslation } from 'react-i18next';
 const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
   const { t } = useTranslation();
   const route = useRoute<RouteProp<AppStackParamList, 'Auth'>>();
-  const [mobile, setMobile] = useState('01991002474');
-  const [password, setPassword] = useState('123456aA@');
+  const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const navigation = useNavigation();
@@ -34,9 +34,6 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
   const dispatch = useAppDispatch();
 
   const handleLogin = async () => {
-    console.log('Sending payload:', JSON.stringify(mobile)); // check this
-    console.log('Sending payload:', JSON.stringify(password)); // check this
-
     try {
       const res = await login({
         mobile,

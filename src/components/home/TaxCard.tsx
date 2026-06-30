@@ -50,8 +50,8 @@ const TaxCard = ({ item }: { item: TaxTypeItem }) => {
 
   return (
     <Pressable onPress={handleNavigation} className="mb-2 flex-1 items-center">
-      <View className="mb-1 h-[80px] w-[80px] items-center justify-center rounded-2xl border border-[#3ca34d79] bg-[#3ca34d1f]">
-        <LucideIcon name={IconName} size={45} className="text-primary" strokeWidth={2} />
+      <View className="mb-1 h-[80px] w-[80px] items-center justify-center rounded-2xl border border-primary bg-primary">
+        <LucideIcon name={IconName} size={45} className="text-white" strokeWidth={2} />
       </View>
 
       <Text className="text-center font-medium text-foreground" numberOfLines={2}>

@@ -11,7 +11,7 @@ export const COLOR_TOKENS = {
     cardForeground: 'hsl(0 0% 0.3%)',
     popover: 'hsl(0 0% 100%)',
     popoverForeground: 'hsl(0 0% 0.3%)',
-    primary: 'hsl(145, 100%, 25%)',
+    primary: 'hsl(359, 100%, 42%)',
     primaryForeground: 'hsl(0 0% 96%)',
     secondary: 'hsl(121 38% 87%)',
     secondaryForeground: 'hsl(0 0% 1%)',
@@ -23,7 +23,7 @@ export const COLOR_TOKENS = {
     destructiveForeground: 'hsl(0 0% 96%)',
     border: 'hsl(0 0% 90%)',
     input: 'hsl(0 0% 78%)',
-    ring: 'hsl(145, 100%, 25%)',
+    ring: 'hsl(359, 100%, 42%)',
     radius: '0.625rem',
     chart1: 'hsl(4 100% 46%)',
     chart2: 'hsl(169 100% 15%)',
@@ -46,7 +46,7 @@ export const COLOR_TOKENS = {
     cardForeground: 'hsl(0 0% 96%)',
     popover: 'hsl(0 0% 1%)',
     popoverForeground: 'hsl(0 0% 96%)',
-    primary: 'hsl(125 70% 33%)',
+    primary: 'hsl(2, 100%, 55%)',
     primaryForeground: 'hsl(0 0% 100%)',
     secondary: 'hsl(0 0% 4%)',
     secondaryForeground: 'hsl(0 0% 96%)',
@@ -58,7 +58,7 @@ export const COLOR_TOKENS = {
     destructiveForeground: 'hsl(0 0% 96%)',
     border: 'hsla(0 0% 100% / 0.1)',
     input: 'hsla(0 0% 100% / 0.15)',
-    ring: 'hsl(125 70% 33%)',
+    ring: 'hsl(2, 100%, 55%)',
     radius: '0.625rem',
     chart1: 'hsl(264 100% 31%)',
     chart2: 'hsl(161 100% 34%)',
@@ -195,7 +195,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <ThemeContext.Provider value={value}>
-      <View style={[themeVars[theme], { flex: 1, backgroundColor: COLOR_TOKENS[theme].background }]}>{children}</View>
+      <View
+        style={[themeVars[theme], { flex: 1, backgroundColor: COLOR_TOKENS[theme].background }]}>
+        {children}
+      </View>
     </ThemeContext.Provider>
   );
 };
