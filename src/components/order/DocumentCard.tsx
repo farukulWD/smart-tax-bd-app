@@ -14,7 +14,7 @@ const DocumentCard = ({
   doc: string;
   file: any;
   isUploading: boolean;
-  isActive: boolean;
+  isActive?: boolean;
   onPress: () => void;
   onView: () => void;
 }) => {

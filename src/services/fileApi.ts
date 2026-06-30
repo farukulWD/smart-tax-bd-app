@@ -10,9 +10,6 @@ const fileApi = baseApi.injectEndpoints({
         url: '/files/create-file',
         method: 'POST',
         data,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
       }),
       invalidatesTags: ['files'],
     }),

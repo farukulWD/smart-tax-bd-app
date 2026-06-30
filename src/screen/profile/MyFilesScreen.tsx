@@ -27,6 +27,7 @@ import {
   useDeleteFileMutation,
   useUpdateFileMutation,
 } from '@/src/services/fileApi';
+import { useGetMyOrdersQuery } from '@/src/services/orderApi';
 import { IFile } from '@/src/types/filesTypes';
 import { toPreviewFile } from '@/src/utils/fileHelpers';
 import { toast } from '@/src/utils/ToastConfig';
@@ -59,6 +60,7 @@ const MyFilesScreen = () => {
   const [isDownloading, setIsDownloading] = useState(false);
 
   const { data, isLoading, error, refetch, isFetching } = useGetMyFilesQuery(undefined);
+  const { data: ordersData } = useGetMyOrdersQuery(undefined);
   const [uploadFile, { isLoading: isUploading }] = useUploadFileMutation();
   const [deleteFile] = useDeleteFileMutation();
   const [updateFile, { isLoading: isUpdating }] = useUpdateFileMutation();
@@ -67,6 +69,14 @@ const MyFilesScreen = () => {
 
   const handleUpload = useCallback(async () => {
     if (isUploading) return;
+
+    const orders = ordersData?.data ?? [];
+    const orderId = orders.length > 0 ? orders[0]._id : null;
+
+    if (!orderId) {
+      toast.error('No order found. Please create an order first.');
+      return;
+    }
 
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -84,7 +94,7 @@ const MyFilesScreen = () => {
         JSON.stringify({
           name: asset.name.replace(/\.[^/.]+$/, ''),
           type: asset.mimeType?.split('/')[1] || 'file',
-          orderId: 'N/A',
+          orderId,
         })
       );
       formData.append('file', {
@@ -100,7 +110,7 @@ const MyFilesScreen = () => {
         err?.data?.message || err?.data?.error || err?.message || 'File upload failed';
       toast.error(message);
     }
-  }, [isUploading, uploadFile]);
+  }, [isUploading, uploadFile, ordersData]);
 
   const handleConfirmDelete = useCallback(async () => {
     if (!deleteTarget) return;

@@ -28,7 +28,6 @@ const RequireDocumentsScreen = () => {
   const taxId = route.params?.taxId;
   const { top, bottom } = useSafeAreaInsets();
 
-  const [activeDocToUpload, setActiveDocToUpload] = useState('');
   const [previewFile, setPreviewFile] = useState<PreviewFile | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -108,7 +107,6 @@ const RequireDocumentsScreen = () => {
       if (result.canceled || !result.assets?.[0]) return;
 
       const asset = result.assets[0];
-      setActiveDocToUpload(doc);
 
       const formData = new FormData();
       formData.append('data', JSON.stringify({ name: doc, type: doc, orderId: taxId }));
@@ -120,14 +118,12 @@ const RequireDocumentsScreen = () => {
 
       await uploadFile(formData).unwrap();
       Alert.alert('Success', `${doc} uploaded`);
-      setActiveDocToUpload('');
       await refetchMyFiles();
       await refetchOrder();
     } catch (error: any) {
       const message =
         error?.data?.message || error?.data?.error || error?.message || 'Document upload failed';
       Alert.alert('Upload failed', message);
-      setActiveDocToUpload('');
     }
   };
 
@@ -221,7 +217,6 @@ const RequireDocumentsScreen = () => {
                         doc={doc}
                         file={file}
                         isUploading={isUploadingFile}
-                        isActive={activeDocToUpload === doc}
                         onPress={() => handleDocPress(doc)}
                         onView={() =>
                           openPreview(
