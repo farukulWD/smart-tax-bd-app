@@ -9,6 +9,7 @@ import CreateTaxOrderScreen from '../screen/order/CreateTaxOrderScreen';
 import RequireDocumentsScreen from '../screen/order/RequireDocumentsScreen';
 import OrderPaymentStatusScreen from '../screen/order/OrderPaymentStatusScreen';
 import OrderPaymentScreen from '../screen/order/OrderPaymentScreen';
+import OrderSuccessScreen from '../screen/order/OrderSuccessScreen';
 import { useTheme, COLOR_TOKENS } from '../context/ThemeProvider';
 import MyFilesScreen from '../screen/profile/MyFilesScreen';
 
@@ -29,6 +30,7 @@ export type AppStackParamList = {
   RequireDocuments: { taxId: string; redirectTo?: { stack: string; screen: string } };
   OrderPaymentStatus: { taxId: string; redirectTo?: { stack: string; screen: string } };
   OrderPayment: { gatewayUrl: string; redirectTo?: { stack: string; screen: string } };
+  OrderSuccess: { taxId: string } | undefined;
 };
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
@@ -51,6 +53,7 @@ export default function AppStack() {
       <Stack.Screen name="RequireDocuments" component={RequireDocumentsScreen} />
       <Stack.Screen name="OrderPaymentStatus" component={OrderPaymentStatusScreen} />
       <Stack.Screen name="OrderPayment" component={OrderPaymentScreen} />
+      <Stack.Screen name="OrderSuccess" component={OrderSuccessScreen} />
       <Stack.Screen name="MyFiles" component={MyFilesScreen} />
 
       <Stack.Screen name="Auth" component={AuthScreen} />

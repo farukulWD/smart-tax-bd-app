@@ -206,8 +206,8 @@ const ProfileScreen = () => {
           <MenuItem
             icon={<FilesIcon size={16} color="hsl(75, 90%, 49%)" />}
             accent="bg-blue/15"
-            label={'My Files'}
-            description={'Your all files'}
+            label={t('profile.myFiles')}
+            description={t('profile.myFilesDesc')}
             onPress={() => navigate('MyFiles')}
           />
         </View>
@@ -233,7 +233,7 @@ const ProfileScreen = () => {
           <MenuItem
             icon={<Languages size={16} color="hsl(270, 60%, 55%)" />}
             accent="bg-purple-500/15"
-            label="Language"
+            label={t('profile.language')}
             description={isEnglish ? 'English' : 'বাংলা'}
             onPress={() => setLocale(isEnglish ? 'bn' : 'en')}
           />
@@ -246,8 +246,8 @@ const ProfileScreen = () => {
               />
             }
             accent="bg-muted"
-            label="Theme"
-            description={theme === 'dark' ? 'Dark' : 'Light'}
+            label={t('profile.theme')}
+            description={theme === 'dark' ? t('profile.dark') : t('profile.light')}
             onPress={toggleTheme}
           />
         </View>
@@ -307,7 +307,7 @@ const ProfileScreen = () => {
         {/* ── App meta ─────────────────────────────────────────────────── */}
         <View className="mx-4 mt-5 flex-row items-center justify-center gap-1.5">
           <Info size={12} color="hsl(0, 0%, 60%)" />
-          <Text className="text-xs text-mutedForeground">Version 1.0.0</Text>
+          <Text className="text-xs text-mutedForeground">{t('profile.version')}</Text>
         </View>
       </ScrollView>
 

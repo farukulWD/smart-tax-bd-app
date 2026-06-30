@@ -46,6 +46,7 @@ export interface IOrder {
   tax_paid_date?: string;
   createdAt?: string;
   total_amount: number;
+  files_upload_pending?: boolean;
 }
 
 export interface ICreateTaxStepOnePayload {
@@ -117,6 +118,21 @@ const orderApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['orders'],
     }),
+    skipUploadStepTwo: builder.mutation<TResponse<IOrder>, string>({
+      query: (taxId) => ({
+        url: `/tax-orders/${taxId}/step-2`,
+        method: 'PATCH',
+        data: { skip_upload: true },
+      }),
+      invalidatesTags: ['orders'],
+    }),
+    placeManualOrder: builder.mutation<TResponse<{ tax_order: IOrder }>, string>({
+      query: (taxId) => ({
+        url: `/tax-orders/${taxId}/place-manual`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['orders'],
+    }),
     initTaxStepThreePayment: builder.mutation<TResponse<ITaxStepThreeResponse>, string>({
       query: (taxId) => ({
         url: `/tax-orders/${taxId}/step-3`,
@@ -140,6 +156,8 @@ export const {
   useCreateTaxStepOneMutation,
   useUpdateTaxStepOneMutation,
   useUploadTaxStepTwoDocumentsMutation,
+  useSkipUploadStepTwoMutation,
+  usePlaceManualOrderMutation,
   useInitTaxStepThreePaymentMutation,
   useGetMyOrdersQuery,
 } = orderApi;

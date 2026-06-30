@@ -8,6 +8,7 @@ import { useGetMyFilesQuery, useUploadFileMutation } from '@/src/services/fileAp
 import {
   useGetTaxOrderByIdQuery,
   useUploadTaxStepTwoDocumentsMutation,
+  useSkipUploadStepTwoMutation,
 } from '@/src/services/orderApi';
 import { AppStackParamList } from '@/src/navigation/AppStack';
 import * as DocumentPicker from 'expo-document-picker';
@@ -35,6 +36,7 @@ const RequireDocumentsScreen = () => {
   const [uploadFile, { isLoading: isUploadingFile }] = useUploadFileMutation();
   const [uploadTaxStepTwoDocuments, { isLoading: isSubmittingStepTwo }] =
     useUploadTaxStepTwoDocumentsMutation();
+  const [skipUpload, { isLoading: isSkipping }] = useSkipUploadStepTwoMutation();
 
   const { data, refetch: refetchOrder } = useGetTaxOrderByIdQuery(taxId ?? skipToken);
   const {
@@ -126,6 +128,18 @@ const RequireDocumentsScreen = () => {
         error?.data?.message || error?.data?.error || error?.message || 'Document upload failed';
       Alert.alert('Upload failed', message);
       setActiveDocToUpload('');
+    }
+  };
+
+  const handleSkipUpload = async () => {
+    if (!taxId) return;
+    try {
+      await skipUpload(taxId).unwrap();
+      navigation.navigate('OrderPaymentStatus', { taxId });
+    } catch (error: any) {
+      const message =
+        error?.data?.message || error?.data?.error || error?.message || 'Failed to skip upload';
+      Alert.alert('Error', message);
     }
   };
 
@@ -259,6 +273,18 @@ const RequireDocumentsScreen = () => {
           )}
           <Text className="text-base font-bold text-white">
             {isSubmittingStepTwo ? 'Submitting…' : 'Go To Payment'}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleSkipUpload}
+          disabled={isSkipping}
+          className="mx-4 mt-2 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3"
+          activeOpacity={0.7}>
+          {isSkipping ? (
+            <ActivityIndicator size="small" color="hsl(0, 0%, 60%)" />
+          ) : null}
+          <Text className="text-sm font-semibold text-mutedForeground">
+            {isSkipping ? 'Skipping…' : 'Upload File Later'}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity

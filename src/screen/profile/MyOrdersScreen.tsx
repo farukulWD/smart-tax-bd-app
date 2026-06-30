@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Modal,
+  ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { IOrder, useGetMyOrdersQuery } from '@/src/services/orderApi';
@@ -21,9 +23,9 @@ import {
   CircleDot,
 } from 'lucide-react-native';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
-import { toast } from '@/src/utils/ToastConfig';
 import { Button } from '@/components/ui/button';
 import { navigate } from '@/src/utils/NavigationUtils';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type FilterStatus = 'all' | 'draft' | 'documents_uploaded' | 'order_placed';
 
@@ -348,19 +350,15 @@ const MyOrdersScreen = () => {
     order_placed: orders.filter((o) => o.status === 'order_placed').length,
   };
 
+  const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
+  console.log('selectedOrder', JSON.stringify(selectedOrder, null, 2));
   const handleOrderPress = (order: IOrder) => {
-    // Navigate to order detail — adjust screen name to match your stack
-    // navigation.navigate('TaxOrderDetail', { taxId: order._id });
-    console.log(order);
-    toast.warning('Coming soon...');
+    setSelectedOrder(order);
   };
 
   return (
     <View className="flex-1 bg-background">
-      <ScreenHeader
-        className="mb-3"
-        title="My Orders"
-      />
+      <ScreenHeader className="mb-3" title="My Orders" />
 
       {isLoading ? (
         <View className="flex-1 items-center justify-center gap-3">
@@ -399,6 +397,122 @@ const MyOrdersScreen = () => {
           />
         </>
       )}
+
+      {/* Order detail modal */}
+      <Modal
+        visible={!!selectedOrder}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setSelectedOrder(null)}>
+        <SafeAreaView className="flex-1 bg-background">
+          <View className="flex-row items-center justify-between border-b border-border px-4 pb-3">
+            <Text className="text-lg font-bold text-foreground">Order Details</Text>
+          </View>
+          <ScrollView contentContainerStyle={{ padding: 16 }} showsVerticalScrollIndicator={false}>
+            {selectedOrder && (
+              <View className="gap-4">
+                <View className="rounded-3xl border border-border bg-card p-5">
+                  <Text className="mb-3 text-base font-bold text-foreground">
+                    Personal Information
+                  </Text>
+                  <View className="gap-2">
+                    <Text className="text-sm text-mutedForeground">
+                      Name:{' '}
+                      <Text className="font-semibold text-foreground">
+                        {selectedOrder.personal_information?.name || '—'}
+                      </Text>
+                    </Text>
+                    <Text className="text-sm text-mutedForeground">
+                      Email:{' '}
+                      <Text className="font-semibold text-foreground">
+                        {selectedOrder.personal_information?.email || '—'}
+                      </Text>
+                    </Text>
+                    <Text className="text-sm text-mutedForeground">
+                      Phone:{' '}
+                      <Text className="font-semibold text-foreground">
+                        {selectedOrder.personal_information?.phone || '—'}
+                      </Text>
+                    </Text>
+                  </View>
+                </View>
+
+                <View className="rounded-3xl border border-border bg-card p-5">
+                  <Text className="mb-3 text-base font-bold text-foreground">Order Info</Text>
+                  <View className="gap-2">
+                    <Text className="text-sm text-mutedForeground">
+                      Tax Year:{' '}
+                      <Text className="font-semibold text-foreground">
+                        {selectedOrder.tax_year || '—'}
+                      </Text>
+                    </Text>
+                    <Text className="text-sm text-mutedForeground">
+                      Status:{' '}
+                      <Text className="font-semibold text-foreground">
+                        {formatStatus(selectedOrder.status)}
+                      </Text>
+                    </Text>
+                    <Text className="text-sm text-mutedForeground">
+                      Fee:{' '}
+                      <Text className="font-semibold text-foreground">
+                        {formatAmount(selectedOrder.fee_amount)}
+                      </Text>
+                    </Text>
+                    <Text className="text-sm text-mutedForeground">
+                      Total:{' '}
+                      <Text className="font-semibold text-foreground">
+                        {formatAmount(selectedOrder.total_amount)}
+                      </Text>
+                    </Text>
+                    <Text className="text-sm text-mutedForeground">
+                      Created:{' '}
+                      <Text className="font-semibold text-foreground">
+                        {formatDate(selectedOrder.createdAt)}
+                      </Text>
+                    </Text>
+                  </View>
+                </View>
+
+                {selectedOrder.source_of_income?.length > 0 && (
+                  <View className="rounded-3xl border border-border bg-card p-5">
+                    <Text className="mb-3 text-base font-bold text-foreground">
+                      Source of Income
+                    </Text>
+                    <View className="flex-row flex-wrap gap-1.5">
+                      {selectedOrder.source_of_income.map((src) => (
+                        <View key={src} className="rounded-lg bg-muted px-3 py-1.5">
+                          <Text className="text-xs text-mutedForeground">{src}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                )}
+
+                {selectedOrder.status === 'payment_pending' && (
+                  <View className="gap-2">
+                    <TouchableOpacity
+                      onPress={() => {
+                        const id = selectedOrder._id;
+                        setSelectedOrder(null);
+                        if (id) navigation.navigate('OrderPaymentStatus', { taxId: id });
+                      }}
+                      activeOpacity={0.8}
+                      className="flex-row items-center justify-center gap-2 rounded-2xl bg-indigo-600 py-4">
+                      <Text className="text-base font-bold text-white">Start Payment</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+                <TouchableOpacity
+                  onPress={() => setSelectedOrder(null)}
+                  activeOpacity={0.7}
+                  className="flex-row items-center justify-center py-3">
+                  <Text className="text-sm font-semibold text-mutedForeground">Close</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </ScrollView>
+        </SafeAreaView>
+      </Modal>
     </View>
   );
 };
