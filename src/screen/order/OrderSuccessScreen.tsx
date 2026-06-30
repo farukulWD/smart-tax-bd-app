@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { CheckCircle2, Home, ClipboardList } from 'lucide-react-native';
+import { CheckCircle2, Home } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const OrderSuccessScreen = () => {

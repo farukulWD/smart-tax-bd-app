@@ -8,6 +8,10 @@ const getTaxIconName = (value: string) => {
   switch (value) {
     case 'income_tax':
       return 'CircleDollarSign';
+    case 'income_tax_government':
+      return 'Landmark';
+    case 'income_tax_non_government':
+      return 'Briefcase';
     case 'house_rental_tax':
       return 'Home';
     case 'property_tax':
