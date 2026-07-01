@@ -19,6 +19,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { AppStackParamList } from '@/src/navigation/AppStack';
 import { navigateToStack, replace } from '@/src/utils/NavigationUtils';
 import { useTranslation } from 'react-i18next';
+import { BackButton } from '@/src/components/global/BackButton';
 
 const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
   const { t } = useTranslation();
@@ -33,6 +34,20 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
 
   const dispatch = useAppDispatch();
 
+  const handleNavigation = () => {
+    if (route?.params?.shouldGoBack) {
+      return navigation.goBack();
+    }
+
+    if (route.params?.redirectTo) {
+      if (route.params?.redirectTo.stack) {
+        navigateToStack(route.params.redirectTo.stack, { screen: route.params.redirectTo.stack });
+      } else {
+        replace(route.params.redirectTo.screen);
+      }
+    }
+  };
+
   const handleLogin = async () => {
     try {
       const res = await login({
@@ -46,15 +61,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
           user: res.data.user,
         })
       );
-      route?.params?.shouldGoBack && navigation.goBack();
-
-      if (route.params?.redirectTo) {
-        if (route.params?.redirectTo.stack) {
-          navigateToStack(route.params.redirectTo.stack, { screen: route.params.redirectTo.stack });
-        } else {
-          replace(route.params.redirectTo.screen);
-        }
-      }
+      handleNavigation();
     } catch (error) {
       console.log(error);
     }
@@ -63,13 +70,20 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className="flex-1 bg-card">
+      <View className="mx-4 mt-14">
+        <BackButton
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+      </View>
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled">
         <View className="flex-1 px-5">
           {/* Logo Section */}
-          <View className="items-center pb-8 pt-16">
+          <View className="items-center pb-8 pt-6">
             <View className="h-28 w-28 items-center justify-center overflow-hidden rounded-full">
               <Image
                 resizeMode="contain"
