@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Tax BD – #1 Tax Software in Bangladesh</title>
+    <meta
+      name="description"
+      content="Download Smart Tax BD app — the #1 tax software in Bangladesh. File taxes, manage orders, and make bKash payments from your phone." />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="icon" type="image/png" href="app_logo.png" />
+    <link rel="apple-touch-icon" href="app_logo.png" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+
+      :root {
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --primary: #0f172a;
+        --primary-light: #1e293b;
+        --accent: #059669;
+        --accent-hover: #047857;
+        --muted: #64748b;
+        --border: #e2e8f0;
+        --radius: 16px;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+          sans-serif;
+        background: var(--bg);
+        color: var(--primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .container {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 48px 24px;
+      }
+
+      /* Header */
+      header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+
+      .app-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        box-shadow: var(--shadow-lg);
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--primary);
+      }
+
+      .tagline {
+        font-size: 1.05rem;
+        color: var(--accent);
+        font-weight: 600;
+        margin-top: 4px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-top: 12px;
+        max-width: 480px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* Download Card */
+      .hero-card {
+        background: var(--surface);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        padding: 40px 32px;
+        text-align: center;
+        border: 1px solid var(--border);
+        margin-bottom: 32px;
+      }
+
+      .hero-card h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .hero-card p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 24px;
+      }
+
+      .download-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--accent);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 14px 36px;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+      }
+
+      .download-btn:hover {
+        background: var(--accent-hover);
+        box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+        transform: translateY(-1px);
+      }
+
+      .download-btn:active {
+        transform: translateY(0);
+      }
+
+      .download-btn svg {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+      }
+
+      .meta-note {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: 14px;
+      }
+
+      /* Features */
+      .features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+
+      .feature-item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+      }
+
+      .feature-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+        font-size: 1.1rem;
+      }
+
+      .feature-label {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--primary);
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      footer a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      footer .copyright {
+        margin-top: 8px;
+        font-size: 0.75rem;
+      }
+
+      /* Bengali support */
+      [lang='bn'] {
+        font-family: 'Noto Sans Bengali', 'Arial Unicode MS', sans-serif;
+      }
+
+      /* Responsive */
+      @media (max-width: 480px) {
+        .container {
+          padding: 32px 16px;
+        }
+        h1 {
+          font-size: 1.6rem;
+        }
+        .hero-card {
+          padding: 32px 20px;
+        }
+        .features {
+          grid-template-columns: 1fr;
+        }
+        .download-btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      @media (min-width: 768px) {
+        .container {
+          padding: 64px 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header>
+        <img src="app_logo.png" alt="Smart Tax BD" class="app-icon" />
+        <h1>Smart Tax BD</h1>
+        <div class="tagline">#1 Tax Software in Bangladesh</div>
+        <p class="subtitle">
+          File your taxes, manage orders, upload documents, and pay via bKash — all from your phone.
+        </p>
+      </header>
+
+      <!-- Download -->
+      <div class="hero-card">
+        <h2>Download the App</h2>
+        <p>Get the latest Android APK and start managing your taxes on the go.</p>
+        <a
+          href="https://github.com/shuvajitmaitra/apk/releases/download/SmartTaxBD/SmartTaxBD.apk"
+          class="download-btn"
+          target="_blank"
+          rel="noopener noreferrer">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Download APK
+        </a>
+        <div class="meta-note">Android • Version 1.0.0</div>
+      </div>
+
+      <!-- Footer -->
+      <footer>
+        <a href="https://smarttaxbd.com" target="_blank" rel="noopener noreferrer"
+          >smarttaxbd.com</a
+        >
+        <div class="copyright">&copy; 2026 Smart Tax BD Technology Ltd. All rights reserved.</div>
+      </footer>
+    </div>
+  </body>
+</html>

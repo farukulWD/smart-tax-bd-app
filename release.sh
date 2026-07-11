@@ -6,10 +6,10 @@ set -e
 
 TARGET_REPO="shuvajitmaitra/apk"
 FIXED_RELEASE_TAG="SmartTaxBD"
-VERSION="0.0.2"
+VERSION=".0.0"
 
 
-echo "🚀 Starting automated upload for version: $VERSION..."
+echo "🚀 Starting automated upload"
 echo "🎯 Target Release: https://github.com/$TARGET_REPO/releases/tag/$FIXED_RELEASE_TAG"
 
 echo "🏗️  Cleaning and building production APK..."
@@ -25,7 +25,7 @@ if [ ! -f "$ORIGINAL_APK" ]; then
     exit 1
 fi
 
-NEW_APK_NAME="android/app/build/outputs/apk/release/SmartTaxBD-$VERSION.apk"
+NEW_APK_NAME="android/app/build/outputs/apk/release/SmartTaxBD.apk"
 mv "$ORIGINAL_APK" "$NEW_APK_NAME"
 
 echo "📦 Uploading $NEW_APK_NAME to '$FIXED_RELEASE_TAG' release..."
@@ -34,5 +34,5 @@ gh release upload "$FIXED_RELEASE_TAG" "$NEW_APK_NAME" \
   --repo "$TARGET_REPO" \
   --clobber
 
-echo "🎉 Done! SmartTaxBD-$VERSION.apk সফলভাবে আপলোড হয়েছে।" 
-echo "Download Link: https://github.com/shuvajitmaitra/apk/releases/download/SmartTaxBD/SmartTaxBD-$VERSION.apk"
+echo "🎉 Done! SmartTaxBD-$VERSION.apk" 
+echo "Download Link: https://github.com/shuvajitmaitra/apk/releases/download/SmartTaxBD/SmartTaxBD.apk"
