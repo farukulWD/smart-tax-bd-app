@@ -4,6 +4,7 @@ import { Text } from '@/components/ui/text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '@/src/context/ThemeProvider';
 import { navigate } from '@/src/utils/NavigationUtils';
+import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 
 const contactCards = [
   {
@@ -28,6 +29,7 @@ const contactCards = [
 
 const ContactUsScreen = () => {
   return (
+    <ProtectedScreen redirectTo={{ stack: 'ProfileStack', screen: 'ContactUs' }}>
     <SafeAreaView edges={['top']} className="flex-1 bg-background">
       <ScrollView
         className="flex-1"
@@ -103,6 +105,7 @@ const ContactUsScreen = () => {
         </View>
       </ScrollView>
     </SafeAreaView>
+    </ProtectedScreen>
   );
 };
 

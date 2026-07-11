@@ -23,6 +23,7 @@ import {
   CircleDot,
 } from 'lucide-react-native';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
+import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { Button } from '@/components/ui/button';
 import { navigate } from '@/src/utils/NavigationUtils';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -356,6 +357,7 @@ const MyOrdersScreen = () => {
   };
 
   return (
+    <ProtectedScreen redirectTo={{ stack: 'ProfileStack', screen: 'MyOrders' }}>
     <View className="flex-1 bg-background">
       <ScreenHeader className="mb-3" title="My Orders" />
 
@@ -513,6 +515,7 @@ const MyOrdersScreen = () => {
         </SafeAreaView>
       </Modal>
     </View>
+    </ProtectedScreen>
   );
 };
 

@@ -19,7 +19,7 @@ export type AppStackParamList = {
     | {
         screen: 'SignIn' | 'SignUp' | 'ForgotPassword';
         shouldGoBack?: boolean;
-        redirectTo?: { stack: string; screen: string };
+        redirectTo?: { stack?: string; screen: string };
       }
     | undefined;
   Packages: undefined;

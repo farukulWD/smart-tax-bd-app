@@ -17,6 +17,7 @@ import {
   Receipt,
 } from 'lucide-react-native';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
+import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
@@ -236,6 +237,7 @@ const MyPaymentsScreen = () => {
   };
 
   return (
+    <ProtectedScreen redirectTo={{ stack: 'ProfileStack', screen: 'MyPayments' }}>
     <View className="flex-1 bg-background">
 
       <ScreenHeader
@@ -274,6 +276,7 @@ const MyPaymentsScreen = () => {
         </>
       )}
     </View>
+    </ProtectedScreen>
   );
 };
 

@@ -31,6 +31,7 @@ import { useGetMyOrdersQuery } from '@/src/services/orderApi';
 import { IFile } from '@/src/types/filesTypes';
 import { toPreviewFile } from '@/src/utils/fileHelpers';
 import { toast } from '@/src/utils/ToastConfig';
+import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 
 const EmptyState = ({ onUpload }: { onUpload: () => void }) => (
   <View className="flex-1 items-center justify-center gap-3 px-8 py-16">
@@ -178,6 +179,7 @@ const MyFilesScreen = () => {
   };
 
   return (
+    <ProtectedScreen redirectTo={{ screen: 'MyFiles' }}>
     <View className="flex-1 bg-background">
       <ScreenHeader title="My Files" />
 
@@ -271,6 +273,7 @@ const MyFilesScreen = () => {
         onCancel={handleCancelDelete}
       />
     </View>
+    </ProtectedScreen>
   );
 };
 

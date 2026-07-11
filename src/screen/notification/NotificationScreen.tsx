@@ -27,6 +27,7 @@ import {
   INotification,
   TNotificationType,
 } from '@/src/services/notificationApi';
+import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 
 type UITheme = 'tax_reminder' | 'news' | 'payment' | 'system' | 'deadline';
 
@@ -284,120 +285,116 @@ const NotificationScreen = () => {
 
   const keyExtractor = useCallback((item: INotification) => item._id, []);
 
-  if (isLoading && page === 1) {
-    return (
-      <View className="flex-1 bg-background">
-        <ScreenHeader title="Notification" />
-        <View className="flex-1 items-center justify-center gap-3">
-          <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
-          <Text className="text-sm text-mutedForeground">Loading notifications…</Text>
-        </View>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View className="flex-1 bg-background">
-        <ScreenHeader title="Notification" />
-        <View className="flex-1 items-center justify-center gap-4 px-8">
-          <View className="bg-destructive/15 h-16 w-16 items-center justify-center rounded-full">
-            <Bell size={28} color="hsl(0, 83%, 49%)" />
-          </View>
-          <Text className="text-center text-lg font-bold text-foreground">
-            Failed to load notifications
-          </Text>
-          <Text className="text-center text-sm text-mutedForeground">
-            Something went wrong. Pull down to try again.
-          </Text>
-          <TouchableOpacity onPress={() => refetch()} className="rounded-2xl bg-primary px-6 py-3">
-            <Text className="font-semibold text-primaryForeground">Retry</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
-
   return (
-    <View className="flex-1 bg-background">
-      <ScreenHeader
-        title="Notification"
-        rightButton={
-          unreadCount > 0
-            ? {
-                icon: <CheckCheck size={20} color="white" />,
-                onPress: handleMarkAllAsRead,
-              }
-            : undefined
-        }
-      />
-      <FlatList
-        data={sections.flatMap((s) => s.data)}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
-        contentContainerClassName="px-4 pb-8 pt-4"
-        showsVerticalScrollIndicator={false}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.3}
-        ItemSeparatorComponent={() => <View className="h-2.5" />}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            tintColor="hsl(125, 70%, 33%)"
-          />
-        }
-        ListHeaderComponent={() =>
-          unreadCount > 0 ? (
-            <View className="mb-4 mt-4 flex-row items-center gap-3 rounded-2xl bg-muted px-4 py-3">
-              <Bell size={18} color="hsl(0, 0%, 60%)" />
-              <Text className="flex-1 text-[13px] text-mutedForeground">
-                You have {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
-              </Text>
-            </View>
-          ) : null
-        }
-        ListFooterComponent={() =>
-          isFetching && page > 1 ? (
-            <View className="py-4">
-              <ActivityIndicator size="small" color="hsl(125, 70%, 33%)" />
-            </View>
-          ) : null
-        }
-        ListEmptyComponent={() => (
-          <View className="mt-20 items-center gap-4">
-            <View className="h-16 w-16 items-center justify-center rounded-full bg-muted">
-              <Bell size={28} color="hsl(0, 0%, 60%)" />
-            </View>
-            <Text className="text-lg font-bold text-foreground">All caught up!</Text>
-            <Text className="text-center text-sm text-mutedForeground">
-              You have no notifications at this time.
-            </Text>
+    <ProtectedScreen redirectTo={{ screen: 'Notification' }}>
+      {isLoading && page === 1 ? (
+        <View className="flex-1 bg-background">
+          <ScreenHeader title="Notification" />
+          <View className="flex-1 items-center justify-center gap-3">
+            <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
+            <Text className="text-sm text-mutedForeground">Loading notifications…</Text>
           </View>
-        )}
-      />
+        </View>
+      ) : error ? (
+        <View className="flex-1 bg-background">
+          <ScreenHeader title="Notification" />
+          <View className="flex-1 items-center justify-center gap-4 px-8">
+            <View className="bg-destructive/15 h-16 w-16 items-center justify-center rounded-full">
+              <Bell size={28} color="hsl(0, 83%, 49%)" />
+            </View>
+            <Text className="text-center text-lg font-bold text-foreground">
+              Failed to load notifications
+            </Text>
+            <Text className="text-center text-sm text-mutedForeground">
+              Something went wrong. Pull down to try again.
+            </Text>
+            <TouchableOpacity onPress={() => refetch()} className="rounded-2xl bg-primary px-6 py-3">
+              <Text className="font-semibold text-primaryForeground">Retry</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : (
+        <View className="flex-1 bg-background">
+          <ScreenHeader
+            title="Notification"
+            rightButton={
+              unreadCount > 0
+                ? {
+                    icon: <CheckCheck size={20} color="white" />,
+                    onPress: handleMarkAllAsRead,
+                  }
+                : undefined
+            }
+          />
+          <FlatList
+            data={sections.flatMap((s) => s.data)}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
+            contentContainerClassName="px-4 pb-8 pt-4"
+            showsVerticalScrollIndicator={false}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.3}
+            ItemSeparatorComponent={() => <View className="h-2.5" />}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                tintColor="hsl(125, 70%, 33%)"
+              />
+            }
+            ListHeaderComponent={() =>
+              unreadCount > 0 ? (
+                <View className="mb-4 mt-4 flex-row items-center gap-3 rounded-2xl bg-muted px-4 py-3">
+                  <Bell size={18} color="hsl(0, 0%, 60%)" />
+                  <Text className="flex-1 text-[13px] text-mutedForeground">
+                    You have {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
+                  </Text>
+                </View>
+              ) : null
+            }
+            ListFooterComponent={() =>
+              isFetching && page > 1 ? (
+                <View className="py-4">
+                  <ActivityIndicator size="small" color="hsl(125, 70%, 33%)" />
+                </View>
+              ) : null
+            }
+            ListEmptyComponent={() => (
+              <View className="mt-20 items-center gap-4">
+                <View className="h-16 w-16 items-center justify-center rounded-full bg-muted">
+                  <Bell size={28} color="hsl(0, 0%, 60%)" />
+                </View>
+                <Text className="text-lg font-bold text-foreground">All caught up!</Text>
+                <Text className="text-center text-sm text-mutedForeground">
+                  You have no notifications at this time.
+                </Text>
+              </View>
+            )}
+          />
 
-      <ConfirmModal
-        visible={showMarkAllModal}
-        title="Mark all as read"
-        message="Mark all notifications as read?"
-        confirmLabel="Mark All"
-        cancelLabel="Cancel"
-        onConfirm={handleConfirmMarkAllAsRead}
-        onCancel={() => setShowMarkAllModal(false)}
-      />
+          <ConfirmModal
+            visible={showMarkAllModal}
+            title="Mark all as read"
+            message="Mark all notifications as read?"
+            confirmLabel="Mark All"
+            cancelLabel="Cancel"
+            onConfirm={handleConfirmMarkAllAsRead}
+            onCancel={() => setShowMarkAllModal(false)}
+          />
 
-      <ConfirmModal
-        visible={!!deleteTarget}
-        title="Delete notification"
-        message="Are you sure you want to delete this notification?"
-        confirmLabel="Delete"
-        cancelLabel="Cancel"
-        destructive
-        onConfirm={handleConfirmDelete}
-        onCancel={() => setDeleteTarget(null)}
-      />
-    </View>
+          <ConfirmModal
+            visible={!!deleteTarget}
+            title="Delete notification"
+            message="Are you sure you want to delete this notification?"
+            confirmLabel="Delete"
+            cancelLabel="Cancel"
+            destructive
+            onConfirm={handleConfirmDelete}
+            onCancel={() => setDeleteTarget(null)}
+          />
+        </View>
+      )}
+    </ProtectedScreen>
   );
 };
 

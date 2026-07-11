@@ -26,6 +26,7 @@ import {
   AlertCircle,
 } from 'lucide-react-native';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
+import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { useGetMyFilesQuery } from '@/src/services/fileApi';
 import { IFile } from '@/src/types/filesTypes';
 
@@ -377,6 +378,7 @@ const UploadedDocumentsScreen = () => {
   // ── render ─────────────────────────────────────────────────────────────────
 
   return (
+    <ProtectedScreen redirectTo={{ stack: 'ProfileStack', screen: 'UploadedDocuments' }}>
     <View className="flex-1 bg-background">
       <ScreenHeader title="My Documents" />
 
@@ -429,6 +431,7 @@ const UploadedDocumentsScreen = () => {
         isDownloading={isDownloading && downloadingId === selectedFile?._id}
       />
     </View>
+    </ProtectedScreen>
   );
 };
 

@@ -16,7 +16,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.shuvajitmaitra.smarttaxbd"
+      "bundleIdentifier": "com.smarttaxbd"
     },
     "android": {
       "edgeToEdgeEnabled": true,
@@ -25,7 +25,7 @@
         "foregroundImage": "./assets/images/app_logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.shuvajitmaitra.smarttaxbd"
+      "package": "com.smarttaxbd"
     },
     "web": {
       "bundler": "metro",
