@@ -8,6 +8,11 @@ import { StatusBar } from 'expo-status-bar';
 import Toast from 'react-native-toast-message';
 import { createToastConfig } from '../utils/ToastConfig';
 
+const hslToChannels = (color: string) => {
+  const match = color.match(/^hsla?\((.+)\)$/i);
+  return match ? match[1].replace(/,/g, '').trim() : color;
+};
+
 const ThemedApp = () => {
   const { theme } = useAppSelector((state) => state.auth);
   const { setColorScheme } = useColorScheme();
@@ -21,25 +26,25 @@ const ThemedApp = () => {
     <View
       className="flex-1 bg-background"
       style={vars({
-        'color-background': colors.background,
-        'color-foreground': colors.foreground,
-        'color-card': colors.card,
-        'color-cardForeground': colors.cardForeground,
-        'color-popover': colors.popover,
-        'color-popoverForeground': colors.popoverForeground,
-        'color-primary': colors.primary,
-        'color-primaryForeground': colors.primaryForeground,
-        'color-secondary': colors.secondary,
-        'color-secondaryForeground': colors.secondaryForeground,
-        'color-muted': colors.muted,
-        'color-mutedForeground': colors.mutedForeground,
-        'color-accent': colors.accent,
-        'color-accentForeground': colors.accentForeground,
-        'color-destructive': colors.destructive,
-        'color-destructiveForeground': colors.destructiveForeground,
-        'color-border': colors.border,
-        'color-input': colors.input,
-        'color-ring': colors.ring,
+        'color-background': hslToChannels(colors.background),
+        'color-foreground': hslToChannels(colors.foreground),
+        'color-card': hslToChannels(colors.card),
+        'color-cardForeground': hslToChannels(colors.cardForeground),
+        'color-popover': hslToChannels(colors.popover),
+        'color-popoverForeground': hslToChannels(colors.popoverForeground),
+        'color-primary': hslToChannels(colors.primary),
+        'color-primaryForeground': hslToChannels(colors.primaryForeground),
+        'color-secondary': hslToChannels(colors.secondary),
+        'color-secondaryForeground': hslToChannels(colors.secondaryForeground),
+        'color-muted': hslToChannels(colors.muted),
+        'color-mutedForeground': hslToChannels(colors.mutedForeground),
+        'color-accent': hslToChannels(colors.accent),
+        'color-accentForeground': hslToChannels(colors.accentForeground),
+        'color-destructive': hslToChannels(colors.destructive),
+        'color-destructiveForeground': hslToChannels(colors.destructiveForeground),
+        'color-border': hslToChannels(colors.border),
+        'color-input': hslToChannels(colors.input),
+        'color-ring': hslToChannels(colors.ring),
       })}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} backgroundColor="transparent" />
       <Navigation />

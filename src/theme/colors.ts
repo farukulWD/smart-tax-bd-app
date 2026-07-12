@@ -50,8 +50,8 @@ export const darkColors = {
   accentForeground: 'hsl(0 0% 96%)',
   destructive: 'hsl(0 83% 49%)',
   destructiveForeground: 'hsl(0 0% 96%)',
-  border: 'hsla(0 0% 100% / 0.1)',
-  input: 'hsla(0 0% 100% / 0.15)',
+  border: 'hsl(0 0% 12%)',
+  input: 'hsl(0 0% 18%)',
   ring: 'hsl(2, 100%, 55%)',
   radius: '0.625rem',
   chart1: 'hsl(264 100% 31%)',
@@ -65,6 +65,6 @@ export const darkColors = {
   sidebarPrimaryForeground: 'hsl(0 0% 96%)',
   sidebarAccent: 'hsl(0 0% 4%)',
   sidebarAccentForeground: 'hsl(0 0% 96%)',
-  sidebarBorder: 'hsla(0 0% 100% / 0.1)',
+  sidebarBorder: 'hsl(0 0% 12%)',
   sidebarRing: 'hsl(0 0% 17%)',
 };

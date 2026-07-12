@@ -129,14 +129,14 @@ const OnboardingScreen = () => {
               key={i}
               className={cn(
                 'rounded-full',
-                i === currentPage ? 'h-2.5 w-8 bg-primary' : 'h-2 w-2 bg-secondary'
+                i === currentPage ? 'h-2.5 w-8 bg-primary' : 'bg-primary/20 h-2 w-2'
               )}
             />
           ))}
         </View>
 
         {/* CTA Button */}
-        <Button size="lg" onPress={handleNext} className="w-full rounded-full">
+        <Button size="lg" onPress={handleNext} className="w-full rounded-full bg-primary">
           <Text>{isLastPage ? 'Get Started' : 'Next'}</Text>
         </Button>
       </View>
