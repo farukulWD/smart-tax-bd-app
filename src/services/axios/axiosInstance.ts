@@ -1,4 +1,4 @@
-import env from '@/src/env';
+import env from '@/env';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 

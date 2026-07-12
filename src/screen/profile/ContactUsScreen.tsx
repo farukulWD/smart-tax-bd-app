@@ -2,7 +2,7 @@ import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { Mail, MapPin, PhoneCall } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors } from '@/src/context/ThemeProvider';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 import { navigate } from '@/src/utils/NavigationUtils';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 
@@ -28,6 +28,7 @@ const contactCards = [
 ];
 
 const ContactUsScreen = () => {
+  const { colors } = useThemeColors();
   return (
     <ProtectedScreen redirectTo={{ stack: 'ProfileStack', screen: 'ContactUs' }}>
     <SafeAreaView edges={['top']} className="flex-1 bg-background">
@@ -62,7 +63,7 @@ const ContactUsScreen = () => {
             <View key={item.title} className="rounded-2xl border border-border bg-card p-5">
               {/* Icon */}
               <View className="mb-4 h-10 w-10 items-center justify-center rounded-full bg-muted">
-                <item.icon size={20} color={Colors.primary} />
+                <item.icon size={20} color={colors.primary} />
               </View>
               {/* Title */}
               <Text className="text-base font-semibold text-cardForeground">{item.title}</Text>

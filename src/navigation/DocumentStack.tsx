@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import NewsScreen from '../screen/document/NewsScreen';
-import { useTheme, COLOR_TOKENS } from '../context/ThemeProvider';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export type DocumentStackParamList = {
   News: undefined;
@@ -9,8 +9,7 @@ export type DocumentStackParamList = {
 const Stack = createNativeStackNavigator<DocumentStackParamList>();
 
 export default function DocumentStack() {
-  const { theme } = useTheme();
-  const colors = COLOR_TOKENS[theme];
+  const { colors } = useThemeColors();
 
   return (
     <Stack.Navigator

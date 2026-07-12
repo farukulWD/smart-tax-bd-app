@@ -5,7 +5,7 @@ import { Phone } from 'lucide-react-native';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BackButton } from '@/src/components/global/BackButton';
-import { Colors } from '@/src/context/ThemeProvider';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 import { Text } from '@/components/ui/text';
 import { z } from 'zod';
 import { useForm, Controller, Control, FieldPath, FieldValues } from 'react-hook-form';
@@ -69,6 +69,7 @@ const ForgotPasswordScreen = ({
   setAuthMobile: Dispatch<SetStateAction<string>>;
 }) => {
   const { t } = useTranslation();
+  const { colors } = useThemeColors();
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
 
   const form = useForm<ForgotPasswordFormValues>({
@@ -164,7 +165,7 @@ const ForgotPasswordScreen = ({
           {/* Bottom Info */}
           <View className="items-center pb-8">
             <View className="flex-row items-center">
-              <Phone size={16} color={Colors.mutedForeground} />
+              <Phone size={16} color={colors.mutedForeground} />
               <Text className="ml-2 text-sm text-mutedForeground">support@smarttaxbd.com.bd</Text>
             </View>
           </View>

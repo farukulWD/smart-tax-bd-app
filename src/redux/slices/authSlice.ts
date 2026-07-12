@@ -5,12 +5,14 @@ type AuthState = {
   token: string | null;
   user: IUser | null;
   isLoggedIn: boolean;
+  theme: 'dark' | 'light';
 };
 
 const initialState: AuthState = {
   token: null,
   user: null,
   isLoggedIn: false,
+  theme: 'light',
 };
 
 const authSlice = createSlice({
@@ -34,8 +36,12 @@ const authSlice = createSlice({
     removeToken: (state) => {
       state.token = null;
     },
+    toggleLocalTheme: (state) => {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+    },
   },
 });
 
-export const { setCredentials, logout, setToken, removeToken } = authSlice.actions;
+export const { setCredentials, logout, setToken, removeToken, toggleLocalTheme } =
+  authSlice.actions;
 export default authSlice.reducer;

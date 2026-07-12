@@ -4,7 +4,7 @@ import { ChevronDown, Check } from 'lucide-react-native';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
-import { Colors } from '@/src/context/ThemeProvider';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 import { useTranslation } from 'react-i18next';
 
 type PackageFeature = string;
@@ -33,6 +33,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
   highlighted = false,
 }) => {
   const { t } = useTranslation();
+  const { colors } = useThemeColors();
   const [isOpen, setIsOpen] = React.useState(false);
   const isContactPrice = typeof price === 'string' && price.includes('Contact');
 
@@ -108,7 +109,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
               </Text>
               <ChevronDown
                 size={20}
-                color={Colors.foreground}
+                color={colors.foreground}
                 strokeWidth={2}
                 style={{ transform: [{ rotate: isOpen ? '180deg' : '0deg' }] }}
               />
@@ -122,7 +123,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
               <View
                 key={index}
                 className={`flex-row items-start gap-2 ${index !== 0 ? 'mt-3' : ''}`}>
-                <Check size={18} color={Colors.primary} strokeWidth={2.5} />
+                <Check size={18} color={colors.primary} strokeWidth={2.5} />
                 <Text className="flex-1 text-sm text-mutedForeground">{feature}</Text>
               </View>
             ))}

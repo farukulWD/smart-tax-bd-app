@@ -1,16 +1,15 @@
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import AppStack from './AppStack';
 import { navigationRef } from '../utils/NavigationUtils';
-import { useTheme, COLOR_TOKENS } from '../context/ThemeProvider';
+import { useThemeColors } from '../theme/useThemeColors';
 
 const Navigation = () => {
-  const { theme } = useTheme();
-  const colors = COLOR_TOKENS[theme];
+  const { colors, colorScheme } = useThemeColors();
 
   const navigationTheme = {
-    ...(theme === 'dark' ? DarkTheme : DefaultTheme),
+    ...(colorScheme === 'dark' ? DarkTheme : DefaultTheme),
     colors: {
-      ...(theme === 'dark' ? DarkTheme.colors : DefaultTheme.colors),
+      ...(colorScheme === 'dark' ? DarkTheme.colors : DefaultTheme.colors),
       background: colors.background,
       card: colors.background,
     },

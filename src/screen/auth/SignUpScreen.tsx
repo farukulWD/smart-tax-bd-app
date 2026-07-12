@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '@/components/ui/text';
 import { Checkbox } from '@/components/ui/checkbox';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
-import { Colors } from '@/src/context/ThemeProvider';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 import { z } from 'zod';
 import { useForm, Controller, Control, FieldPath, FieldValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -97,6 +97,7 @@ const SignUpScreen = ({
   setAuthMobile: Dispatch<SetStateAction<string>>;
 }) => {
   const { t } = useTranslation();
+  const { colors } = useThemeColors();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -156,7 +157,7 @@ const SignUpScreen = ({
                     <Input
                       className={inputClass}
                       placeholder={t('auth.fullNamePlaceholder')}
-                      placeholderTextColor={Colors.mutedForeground}
+                      placeholderTextColor={colors.mutedForeground}
                       value={field.value as string}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
@@ -178,7 +179,7 @@ const SignUpScreen = ({
                     <Input
                       className={inputClass}
                       placeholder={t('auth.mobilePlaceholder')}
-                      placeholderTextColor={Colors.mutedForeground}
+                      placeholderTextColor={colors.mutedForeground}
                       value={field.value as string}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
@@ -200,7 +201,7 @@ const SignUpScreen = ({
                     <Input
                       className={inputClass}
                       placeholder={t('auth.emailPlaceholder')}
-                      placeholderTextColor={Colors.mutedForeground}
+                      placeholderTextColor={colors.mutedForeground}
                       value={field.value as string}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
@@ -224,7 +225,7 @@ const SignUpScreen = ({
                       <Input
                         className={inputClass}
                         placeholder={t('auth.passwordPlaceholder')}
-                        placeholderTextColor={Colors.mutedForeground}
+                        placeholderTextColor={colors.mutedForeground}
                         value={field.value as string}
                         onChangeText={field.onChange}
                         onBlur={field.onBlur}
@@ -236,9 +237,9 @@ const SignUpScreen = ({
                         className="absolute right-3"
                         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                         {showPassword ? (
-                          <Eye size={20} color={Colors.mutedForeground} />
+                          <Eye size={20} color={colors.mutedForeground} />
                         ) : (
-                          <EyeOff size={20} color={Colors.mutedForeground} />
+                          <EyeOff size={20} color={colors.mutedForeground} />
                         )}
                       </TouchableOpacity>
                     </View>
@@ -259,7 +260,7 @@ const SignUpScreen = ({
                       <Input
                         className={inputClass}
                         placeholder={t('auth.confirmPasswordPlaceholder')}
-                        placeholderTextColor={Colors.mutedForeground}
+                        placeholderTextColor={colors.mutedForeground}
                         value={field.value as string}
                         onChangeText={field.onChange}
                         onBlur={field.onBlur}
@@ -271,9 +272,9 @@ const SignUpScreen = ({
                         className="absolute right-3"
                         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                         {showConfirmPassword ? (
-                          <Eye size={20} color={Colors.mutedForeground} />
+                          <Eye size={20} color={colors.mutedForeground} />
                         ) : (
-                          <EyeOff size={20} color={Colors.mutedForeground} />
+                          <EyeOff size={20} color={colors.mutedForeground} />
                         )}
                       </TouchableOpacity>
                     </View>
@@ -334,11 +335,11 @@ const SignUpScreen = ({
             {/* Contact Info */}
             <View className="mb-4 items-center gap-2">
               <View className="flex-row items-center">
-                <Mail size={16} color={Colors.mutedForeground} />
+                <Mail size={16} color={colors.mutedForeground} />
                 <Text className="ml-2 text-sm text-mutedForeground">support@smarttaxbd.com.bd</Text>
               </View>
               <View className="flex-row items-center">
-                <Phone size={16} color={Colors.mutedForeground} />
+                <Phone size={16} color={colors.mutedForeground} />
                 <Text className="ml-2 text-sm text-mutedForeground">01409-991225</Text>
               </View>
             </View>

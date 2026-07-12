@@ -5,7 +5,7 @@ import MyOrdersScreen from '../screen/profile/MyOrdersScreen';
 import UploadedDocumentsScreen from '../screen/profile/UploadedDocumentsScreen';
 import AboutUsScreen from '../screen/profile/AboutUsScreen';
 import ContactUsScreen from '../screen/profile/ContactUsScreen';
-import { useTheme, COLOR_TOKENS } from '../context/ThemeProvider';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export type ProfileStackParamList = {
   Profile: undefined;
@@ -19,8 +19,7 @@ export type ProfileStackParamList = {
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
 export default function ProfileStack() {
-  const { theme } = useTheme();
-  const colors = COLOR_TOKENS[theme];
+  const { colors } = useThemeColors();
 
   return (
     <Stack.Navigator

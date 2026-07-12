@@ -2,7 +2,7 @@ import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { CheckCircle2, ShieldCheck, Users, Zap } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors } from '@/src/context/ThemeProvider';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 import { navigate } from '@/src/utils/NavigationUtils';
 
 const highlights = [
@@ -32,6 +32,7 @@ const whyUs = [
 ];
 
 const AboutUsScreen = () => {
+  const { colors } = useThemeColors();
   return (
     <SafeAreaView edges={['top']} className="flex-1 bg-background">
       <ScrollView
@@ -68,7 +69,7 @@ const AboutUsScreen = () => {
               className="rounded-2xl border border-border bg-card p-5 shadow-sm">
               {/* Icon */}
               <View className="mb-4 h-10 w-10 items-center justify-center rounded-full bg-muted">
-                <item.icon size={20} color={Colors.primary} />
+                <item.icon size={20} color={colors.primary} />
               </View>
               {/* Title */}
               <Text className="text-base font-semibold text-cardForeground">{item.title}</Text>
@@ -87,7 +88,7 @@ const AboutUsScreen = () => {
           <View className="mb-6 gap-3">
             {whyUs.map((item, index) => (
               <View key={index} className="flex-row items-start gap-3">
-                <CheckCircle2 size={20} color={Colors.primary} className="mt-0.5 shrink-0" />
+                <CheckCircle2 size={20} color={colors.primary} className="mt-0.5 shrink-0" />
                 <Text className="flex-1 text-sm leading-relaxed text-mutedForeground">{item}</Text>
               </View>
             ))}

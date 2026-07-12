@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { ArrowLeft, Phone } from 'lucide-react-native';
 import { SCREEN_NAME, TAuth, TVerifyPurpose } from '@/src/types/authTypes';
-import { Colors } from '@/src/context/ThemeProvider';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 import { goBack } from '@/src/utils/NavigationUtils';
 import { toast } from '@/src/utils/commonFunction';
 import {
@@ -34,6 +34,7 @@ const VerifyOTPScreen = ({
   verifyType: TVerifyPurpose;
 }) => {
   const { t } = useTranslation();
+  const { colors } = useThemeColors();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [timer, setTimer] = useState(RESEND_COOLDOWN);
   const inputRefs = useRef<(TextInput | null)[]>([]);
@@ -137,7 +138,7 @@ const VerifyOTPScreen = ({
               goBack();
             }}
             className="mb-8 mt-12">
-            <ArrowLeft size={24} color={Colors.foreground} />
+            <ArrowLeft size={24} color={colors.foreground} />
           </TouchableOpacity>
 
           {/* Header */}
@@ -196,7 +197,7 @@ const VerifyOTPScreen = ({
                 <Text className="text-sm text-mutedForeground">{t('auth.didNotReceiveCode')} </Text>
                 <TouchableOpacity onPress={handleResend} disabled={isResending}>
                   {isResending ? (
-                    <ActivityIndicator color={Colors.primary} size="small" />
+                    <ActivityIndicator color={colors.primary} size="small" />
                   ) : (
                     <Text className="text-sm font-semibold text-green-600">{t('auth.resend')}</Text>
                   )}
@@ -234,7 +235,7 @@ const VerifyOTPScreen = ({
           {/* Bottom Info */}
           <View className="items-center pb-8">
             <View className="mb-2 flex-row items-center">
-              <Phone size={16} color={Colors.mutedForeground} />
+              <Phone size={16} color={colors.mutedForeground} />
               <Text className="ml-2 text-sm text-mutedForeground">support@smarttaxbd.com.bd</Text>
             </View>
           </View>

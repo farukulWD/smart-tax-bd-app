@@ -10,7 +10,7 @@ import { useGetMyOrdersQuery } from '@/src/services/orderApi';
 import { useGetMyPaymentsQuery } from '@/src/services/paymentApi';
 import { navigate } from '@/src/utils/NavigationUtils';
 import { useLocale } from '@/src/localization/useLocale';
-import { useTheme } from '@/src/context/ThemeProvider';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 import LucideIcon from '@/src/components/common/LucideIcon';
 import { useTranslation } from 'react-i18next';
 import {
@@ -41,7 +41,7 @@ import {
 const ProfileScreen = () => {
   const { t } = useTranslation();
   const { setLocale, isEnglish } = useLocale();
-  const { theme, toggleTheme } = useTheme();
+  const { colorScheme, toggleColorScheme } = useThemeColors();
   const { isLoggedIn, user } = useAppSelector((state) => state.auth);
   const [activeConfirm, setActiveConfirm] = useState<'logout' | 'delete-account' | null>(null);
 
@@ -240,15 +240,15 @@ const ProfileScreen = () => {
           <MenuItem
             icon={
               <LucideIcon
-                name={theme === 'dark' ? 'Sun' : 'Moon'}
+                name={colorScheme === 'dark' ? 'Sun' : 'Moon'}
                 size={16}
                 className="text-foreground"
               />
             }
             accent="bg-muted"
             label={t('profile.theme')}
-            description={theme === 'dark' ? t('profile.dark') : t('profile.light')}
-            onPress={toggleTheme}
+            description={colorScheme === 'dark' ? t('profile.dark') : t('profile.light')}
+            onPress={toggleColorScheme}
           />
         </View>
 

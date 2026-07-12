@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { EyeOff, Eye, Home, Mail, Phone } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
-import { Colors } from '@/src/context/ThemeProvider';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 import { useLoginMutation } from '@/src/services/auth';
 import { useAppDispatch } from '@/src/redux/hooks';
 import { setCredentials } from '@/src/redux/slices/authSlice';
@@ -23,6 +23,7 @@ import { BackButton } from '@/src/components/global/BackButton';
 
 const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
   const { t } = useTranslation();
+  const { colors } = useThemeColors();
   const route = useRoute<RouteProp<AppStackParamList, 'Auth'>>();
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
@@ -123,9 +124,9 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                 onPress={() => setShowPassword(!showPassword)}
                 className="absolute right-4">
                 {showPassword ? (
-                  <Eye size={20} color={Colors.mutedForeground} />
+                  <Eye size={20} color={colors.mutedForeground} />
                 ) : (
-                  <EyeOff size={20} color={Colors.mutedForeground} />
+                  <EyeOff size={20} color={colors.mutedForeground} />
                 )}
               </TouchableOpacity>
             </View>
@@ -187,13 +188,13 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               {/* Contact Info */}
               <View className="items-center">
                 <View className="flex-row items-center">
-                  <Mail size={16} color={Colors.mutedForeground} />
+                  <Mail size={16} color={colors.mutedForeground} />
                   <Text className="ml-2 text-sm text-mutedForeground">
                     support@smarttaxbd.com.bd
                   </Text>
                 </View>
                 <View className="flex-row items-center">
-                  <Phone size={16} color={Colors.mutedForeground} />
+                  <Phone size={16} color={colors.mutedForeground} />
                   <Text className="ml-2 text-sm text-mutedForeground">01409-991225</Text>
                 </View>
               </View>

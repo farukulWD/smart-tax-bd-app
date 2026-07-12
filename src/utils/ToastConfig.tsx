@@ -1,7 +1,6 @@
 import { StyleSheet, View, Text, ViewStyle, TextStyle } from 'react-native';
 import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react-native';
 import Toast, { BaseToast, ErrorToast, ToastConfig } from 'react-native-toast-message';
-import { Colors } from '@/src/context/ThemeProvider';
 
 interface CustomToastLayoutProps {
   text1?: string;
@@ -19,11 +18,13 @@ const CustomToastLayout = ({ text1, icon, bgStyle, textStyle }: CustomToastLayou
   </View>
 );
 
-export const toastConfig: ToastConfig = {
+export const createToastConfig = (colors: {
+  border: string;
+}): ToastConfig => ({
   success: (props) => (
     <BaseToast
       {...props}
-      style={styles.successContainer}
+      style={[styles.successContainer, { borderColor: colors.border }]}
       contentContainerStyle={styles.contentContainer}
       text1Style={styles.title}
       text2Style={styles.description}
@@ -33,7 +34,7 @@ export const toastConfig: ToastConfig = {
   error: (props) => (
     <ErrorToast
       {...props}
-      style={styles.errorContainer}
+      style={[styles.errorContainer, { borderColor: colors.border }]}
       contentContainerStyle={styles.contentContainer}
       text1Style={styles.title}
       text2Style={styles.description}
@@ -65,7 +66,7 @@ export const toastConfig: ToastConfig = {
       textStyle={styles.customWarningText}
     />
   ),
-};
+});
 
 const styles = StyleSheet.create({
   // --- Classic Design Styles ---
@@ -75,7 +76,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     minHeight: 68,
     borderWidth: 1,
-    borderColor: Colors.border,
   },
   errorContainer: {
     borderLeftColor: '#EF4444',
@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     minHeight: 68,
     borderWidth: 1,
-    borderColor: Colors.border,
   },
   contentContainer: {
     paddingHorizontal: 14,
@@ -127,15 +126,6 @@ const styles = StyleSheet.create({
   customWarningBg: { backgroundColor: '#FFEDD5', borderColor: '#ffc078' },
   customWarningText: { color: '#C2410C' },
 });
-
-// export const showToast = ({ message, position }) => {
-//   Toast.show({
-//     type: 'success',
-//     text1: message || 'No message found',
-//     visibilityTime: 1000,
-//     position: position || 'bottom',
-//   });
-// };
 
 export const toast: Record<'success' | 'error' | 'warning', (message: string) => void> = {
   success: (message: string) => {

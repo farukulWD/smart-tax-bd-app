@@ -1,6 +1,10 @@
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import AuthScreen from '../screen/auth/AuthScreen';
+import OnboardingScreen from '../screen/onboarding/OnboardingScreen';
 import BottomTabNavigator from './BottomTabNavigator';
 import PackagesScreen from '../screen/home/PackageScreen';
 import NewsDetailsScreen from '../screen/home/NewsDetailsScreen';
@@ -10,11 +14,13 @@ import RequireDocumentsScreen from '../screen/order/RequireDocumentsScreen';
 import OrderPaymentStatusScreen from '../screen/order/OrderPaymentStatusScreen';
 import OrderPaymentScreen from '../screen/order/OrderPaymentScreen';
 import OrderSuccessScreen from '../screen/order/OrderSuccessScreen';
-import { useTheme, COLOR_TOKENS } from '../context/ThemeProvider';
 import MyFilesScreen from '../screen/profile/MyFilesScreen';
+import { HAS_SEEN_ONBOARDING } from '../utils/onboarding';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export type AppStackParamList = {
   BottomTabNavigator: undefined;
+  Onboarding: undefined;
   Auth:
     | {
         screen: 'SignIn' | 'SignUp' | 'ForgotPassword';
@@ -36,16 +42,35 @@ export type AppStackParamList = {
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
 export default function AppStack() {
-  const { theme } = useTheme();
-  const colors = COLOR_TOKENS[theme];
+  const { colors } = useThemeColors();
+
+  const [initialRoute, setInitialRoute] = useState<keyof AppStackParamList | null>(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem(HAS_SEEN_ONBOARDING).then((val) => {
+      setInitialRoute(val === 'true' ? 'BottomTabNavigator' : 'Onboarding');
+    });
+  }, []);
+
+  if (!initialRoute) {
+    return (
+      <View
+        style={{ flex: 1, backgroundColor: colors.background }}
+        className="items-center justify-center">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <Stack.Navigator
+      initialRouteName={initialRoute}
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: colors.background },
       }}>
       <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
+      <Stack.Screen name="Onboarding" component={OnboardingScreen} />
       <Stack.Screen name="Packages" component={PackagesScreen} />
       <Stack.Screen name="NewsDetails" component={NewsDetailsScreen} />
       <Stack.Screen name="Notification" component={NotificationScreen} />
@@ -55,7 +80,6 @@ export default function AppStack() {
       <Stack.Screen name="OrderPayment" component={OrderPaymentScreen} />
       <Stack.Screen name="OrderSuccess" component={OrderSuccessScreen} />
       <Stack.Screen name="MyFiles" component={MyFilesScreen} />
-
       <Stack.Screen name="Auth" component={AuthScreen} />
     </Stack.Navigator>
   );

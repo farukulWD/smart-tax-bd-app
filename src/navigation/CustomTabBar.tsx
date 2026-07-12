@@ -13,7 +13,7 @@ import { CircleQuestionMark, Home, LayoutGrid, User } from 'lucide-react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { gGap } from '../utils/Sizes';
 import { cn } from '@/lib/utils';
-import { Colors, useTheme } from '../context/ThemeProvider';
+import { useThemeColors } from '../theme/useThemeColors';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../redux/hooks';
 import { navigate } from '../utils/NavigationUtils';
@@ -27,9 +27,9 @@ interface TabIconProps {
 
 const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
   const { t } = useTranslation();
-  useTheme();
+  const { colors } = useThemeColors();
 
-  const iconColor = isFocused ? Colors.primary : Colors.mutedForeground;
+  const iconColor = isFocused ? colors.primary : colors.mutedForeground;
 
   const getIconContent = () => {
     switch (routeName) {
@@ -101,7 +101,7 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
 };
 
 const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
-  useTheme();
+  const { colors } = useThemeColors();
   const { isLoggedIn } = useAppSelector((state) => state.auth);
 
   const tabWidth = screenWidth / state.routes.length;
@@ -137,7 +137,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
         paddingBottom: gGap(bottom / 1.5) + gGap(5),
         paddingTop: gGap(5),
         borderTopWidth: 1,
-        borderTopColor: Colors.border,
+        borderTopColor: colors.border,
       }}>
       <Animated.View
         style={[
@@ -148,7 +148,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             width: tabWidth * 0.6,
             marginLeft: tabWidth * 0.2,
             height: 3,
-            backgroundColor: Colors.primary,
+            backgroundColor: colors.primary,
             borderRadius: 1.5,
           },
         ]}

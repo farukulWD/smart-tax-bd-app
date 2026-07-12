@@ -4,10 +4,11 @@ import { PressableScale } from './PressableScale';
 import { LucideArrowLeft } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';
 import { goBack } from '@/src/utils/NavigationUtils';
-import { Colors } from '@/src/context/ThemeProvider';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 
 const TitleHeader = ({ title, onPress }: { onPress?: () => void; title: string }) => {
   const { top } = useSafeAreaInsets();
+  const { colors } = useThemeColors();
   return (
     <View
       style={{
@@ -19,7 +20,7 @@ const TitleHeader = ({ title, onPress }: { onPress?: () => void; title: string }
           onPress ? onPress() : goBack();
         }}
         className="mb-3 w-12 items-center justify-center">
-        <LucideArrowLeft size={25} color={Colors.foreground} strokeWidth={3} />
+        <LucideArrowLeft size={25} color={colors.foreground} strokeWidth={3} />
       </PressableScale>
       <Text variant={'lead'} className="mb-3 font-bold text-foreground">
         {title}

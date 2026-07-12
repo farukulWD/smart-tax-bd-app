@@ -11,7 +11,7 @@ import {
 
 import { screenWidth } from '../../utils/Sizes';
 import { TSlide } from '@/src/types/productTypes';
-import { Colors } from '@/src/context/ThemeProvider';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 
 const HORIZONTAL_PADDING = 12;
 const PAGE_WIDTH = screenWidth;
@@ -23,6 +23,7 @@ interface HomeBannerProps {
 }
 
 const HomeBanner: React.FC<HomeBannerProps> = ({ containerStyle }) => {
+  const { colors } = useThemeColors();
   const slides = useMemo(() => (s ? s.filter((item) => item.isActive) : []), [s]);
 
   const flatListRef = useRef<FlatList<TSlide>>(null);
@@ -79,7 +80,7 @@ const HomeBanner: React.FC<HomeBannerProps> = ({ containerStyle }) => {
 
     return (
       <View style={styles.page}>
-        <Image source={source} style={styles.image} resizeMode="cover" />
+        <Image source={source} style={[styles.image, { backgroundColor: colors.background }]} resizeMode="cover" />
       </View>
     );
   };
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
     width: SLIDE_WIDTH,
     height: '100%',
     borderRadius: 20,
-    backgroundColor: Colors.background,
+    // backgroundColor is set dynamically via inline style
   },
 
   dotsContainer: {
