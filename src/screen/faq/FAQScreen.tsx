@@ -102,12 +102,12 @@ const FAQScreen = () => {
         keyExtractor={(item, idx) => `${idx}-${item.question}`}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 12 }}
+        contentContainerStyle={{ paddingBottom: 12, marginHorizontal: 16 }}
       />
 
       {/* Footer Note (tight spacing) */}
       {!!data.verification_note && (
-        <View className="mb-3 rounded-xl border border-border bg-card px-3 py-3">
+        <View className="mx-4 mb-3 rounded-xl border border-border bg-card px-3 py-3">
           <Text className="text-[12px] font-semibold text-foreground">Verification note</Text>
           <Text className="mt-1 text-xs text-mutedForeground">{data.verification_note}</Text>
         </View>

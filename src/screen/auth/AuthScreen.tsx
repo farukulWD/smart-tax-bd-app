@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AppStackParamList } from '@/src/navigation/AppStack';
-import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
+import { SCREEN_NAME, TAuth, TVerifyPurpose } from '@/src/types/authTypes';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
 import ForgotPasswordScreen from './ForgotPasswordScreen';
@@ -13,6 +13,8 @@ const AuthScreen = ({ route }: Props) => {
   const initialScreen = route?.params?.screen;
   const [screen, setScreen] = useState<TAuth>(SCREEN_NAME.SIGNIN);
   const [authMobile, setAuthMobile] = useState('');
+  const [verifyType, setVerifyType] = useState<TVerifyPurpose>('register');
+  const prevScreenRef = useRef<TAuth>(SCREEN_NAME.SIGNIN);
 
   useEffect(() => {
     if (initialScreen) {
@@ -23,19 +25,30 @@ const AuthScreen = ({ route }: Props) => {
     };
   }, [initialScreen]);
 
+  useEffect(() => {
+    if (screen === SCREEN_NAME.VERIFY_USER) {
+      if (prevScreenRef.current === SCREEN_NAME.FORGOT_PASSWORD) {
+        setVerifyType('forgotPassword');
+      } else {
+        setVerifyType('register');
+      }
+    }
+    prevScreenRef.current = screen;
+  }, [screen]);
+
   if (screen === SCREEN_NAME.SIGNIN) {
     return <SignInScreen setScreen={setScreen} />;
   }
 
   if (screen === SCREEN_NAME.SIGNUP) {
-    return <SignUpScreen setScreen={setScreen} />;
+    return <SignUpScreen setAuthMobile={setAuthMobile} setScreen={setScreen} />;
   }
 
   if (screen === SCREEN_NAME.FORGOT_PASSWORD) {
     return <ForgotPasswordScreen setScreen={setScreen} setAuthMobile={setAuthMobile} />;
   }
   if (screen === SCREEN_NAME.VERIFY_USER) {
-    return <VerifyOTPScreen setScreen={setScreen} mobile={authMobile} />;
+    return <VerifyOTPScreen setScreen={setScreen} mobile={authMobile} verifyType={verifyType} />;
   }
 
   return <SignInScreen setScreen={setScreen} />;

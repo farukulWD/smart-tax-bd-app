@@ -166,5 +166,10 @@ export default {
     passwordMin: 'Password must be at least 6 characters',
     termsRequired: 'You must accept the terms and conditions',
     passwordsMismatch: 'Passwords do not match',
+    otpSent: 'OTP sent to your mobile number',
+    otpVerified: 'Account verified successfully',
+    verifyFail: 'Failed to verify OTP. Please try again.',
+    mobileMissing: 'Mobile number is missing. Please try again.',
+    resendFail: 'Failed to resend OTP. Please try again.',
   },
 };

@@ -12,6 +12,20 @@ export const authApi = baseApi.injectEndpoints({
         data,
       }),
     }),
+    verifyRegisterOtp: builder.mutation<TResponse<any>, { mobile: string; otp: string }>({
+      query: (data) => ({
+        url: '/users/verify-otp',
+        method: 'POST',
+        data,
+      }),
+    }),
+    resendRegisterOtp: builder.mutation<TResponse<any>, { mobile: string }>({
+      query: (data) => ({
+        url: '/users/resend-otp',
+        method: 'POST',
+        data,
+      }),
+    }),
     login: builder.mutation<ILoginResponse, { mobile: string; password: string }>({
       query: (data) => ({
         url: '/auth/login',
@@ -66,5 +80,7 @@ export const {
   useLogoutMutation,
   useResetPasswordMutation,
   useVerifyForgotOtpMutation,
+  useVerifyRegisterOtpMutation,
+  useResendRegisterOtpMutation,
   useLazyGetUserInfoQuery,
 } = authApi;

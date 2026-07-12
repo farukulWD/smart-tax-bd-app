@@ -21,11 +21,12 @@ import { useTranslation } from 'react-i18next';
 const registerSchema = z
   .object({
     name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-    email: z
+    email: z.string().email({ message: 'Invalid email address' }).optional().or(z.literal('')),
+    mobile: z
       .string()
-      .min(1, { message: 'Email is required' })
-      .email({ message: 'Invalid email address' }),
-    mobile: z.string().min(11, { message: 'Phone number must be at least 11 characters' }),
+      .regex(/^01[3-9]\d{8}$/, {
+        message: 'Enter a valid Bangladeshi mobile number (e.g. 01712345678)',
+      }),
     password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
     confirmPassword: z.string(),
     terms: z.boolean().refine((val) => val === true, {
@@ -88,7 +89,13 @@ const FormMessage = ({ message }: { message?: string }): React.ReactElement | nu
 
 // ─── SignUpScreen ─────────────────────────────────────────────────────────────
 
-const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
+const SignUpScreen = ({
+  setScreen,
+  setAuthMobile,
+}: {
+  setScreen: Dispatch<SetStateAction<TAuth>>;
+  setAuthMobile: Dispatch<SetStateAction<string>>;
+}) => {
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -111,13 +118,13 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { confirmPassword, ...payload } = data;
-      // Only include email if the user actually typed one —
-      // sending an empty string causes a server-side Zod validation error.
       const res = await register(payload).unwrap();
       if (res) {
-        toast.success('Your account created successfully');
+        console.log('res.data', JSON.stringify(res.data, null, 2));
+        toast.success(t('auth.otpSent'));
+        setAuthMobile(data.mobile || res.data.mobile);
         form.reset();
-        setScreen(SCREEN_NAME.SIGNIN);
+        setScreen(SCREEN_NAME.VERIFY_USER);
       }
     } catch (error) {
       console.error('Registration failed:', error);
@@ -156,7 +163,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       autoCapitalize="words"
                     />
                   </FormControl>
-                  <FormMessage message={t(form.formState.errors.name?.message || '')} />
+                  <FormMessage message={form.formState.errors.name?.message} />
                 </FormItem>
               )}
             />
@@ -178,7 +185,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       keyboardType="phone-pad"
                     />
                   </FormControl>
-                  <FormMessage message={t(form.formState.errors.mobile?.message || '')} />
+                  <FormMessage message={form.formState.errors.mobile?.message} />
                 </FormItem>
               )}
             />
@@ -201,7 +208,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       autoCapitalize="none"
                     />
                   </FormControl>
-                  <FormMessage message={t(form.formState.errors.email?.message || '')} />
+                  <FormMessage message={form.formState.errors.email?.message} />
                 </FormItem>
               )}
             />
@@ -236,7 +243,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       </TouchableOpacity>
                     </View>
                   </FormControl>
-                  <FormMessage message={t(form.formState.errors.password?.message || '')} />
+                  <FormMessage message={form.formState.errors.password?.message} />
                 </FormItem>
               )}
             />
@@ -271,7 +278,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       </TouchableOpacity>
                     </View>
                   </FormControl>
-                  <FormMessage message={t(form.formState.errors.confirmPassword?.message || '')} />
+                  <FormMessage message={form.formState.errors.confirmPassword?.message} />
                 </FormItem>
               )}
             />
@@ -294,7 +301,7 @@ const SignUpScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       {t('auth.termsAndConditions')}
                     </Text>
                   </View>
-                  <FormMessage message={t(form.formState.errors.terms?.message || '')} />
+                  <FormMessage message={form.formState.errors.terms?.message} />
                 </FormItem>
               )}
             />

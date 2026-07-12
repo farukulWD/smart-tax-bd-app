@@ -11,6 +11,8 @@ web-build/
 # Native
 *.orig.*
 *.jks
+*.keystore
+keystore.properties
 *.p8
 *.p12
 *.key

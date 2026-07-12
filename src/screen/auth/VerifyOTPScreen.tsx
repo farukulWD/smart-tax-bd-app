@@ -10,25 +10,45 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { ArrowLeft, Phone } from 'lucide-react-native';
-import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
+import { SCREEN_NAME, TAuth, TVerifyPurpose } from '@/src/types/authTypes';
 import { Colors } from '@/src/context/ThemeProvider';
 import { goBack } from '@/src/utils/NavigationUtils';
 import { toast } from '@/src/utils/commonFunction';
-import { useForgotPasswordMutation } from '@/src/services/auth';
+import {
+  useVerifyRegisterOtpMutation,
+  useResendRegisterOtpMutation,
+  useVerifyForgotOtpMutation,
+  useForgotPasswordMutation,
+} from '@/src/services/auth';
 import { useTranslation } from 'react-i18next';
+
+const RESEND_COOLDOWN = 240; // 4 minutes
 
 const VerifyOTPScreen = ({
   setScreen,
   mobile,
+  verifyType,
 }: {
   setScreen: Dispatch<SetStateAction<TAuth>>;
   mobile: string;
+  verifyType: TVerifyPurpose;
 }) => {
   const { t } = useTranslation();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(RESEND_COOLDOWN);
   const inputRefs = useRef<(TextInput | null)[]>([]);
-  const [forgotPassword, { isLoading: isResending }] = useForgotPasswordMutation();
+
+  const [verifyRegisterOtp, { isLoading: isVerifyingRegister }] =
+    useVerifyRegisterOtpMutation();
+  const [resendRegisterOtp, { isLoading: isResendingRegister }] =
+    useResendRegisterOtpMutation();
+  const [verifyForgotOtp, { isLoading: isVerifyingForgot }] =
+    useVerifyForgotOtpMutation();
+  const [forgotPassword, { isLoading: isResendingForgot }] =
+    useForgotPasswordMutation();
+
+  const isVerifying = verifyType === 'register' ? isVerifyingRegister : isVerifyingForgot;
+  const isResending = verifyType === 'register' ? isResendingRegister : isResendingForgot;
 
   useEffect(() => {
     if (timer > 0) {
@@ -40,50 +60,64 @@ const VerifyOTPScreen = ({
   }, [timer]);
 
   const handleOtpChange = (text: string, index: number) => {
-    // Only allow numbers
     if (text && !/^\d+$/.test(text)) return;
 
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
 
-    // Auto focus next input
     if (text && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
   const handleKeyPress = (key: string, index: number) => {
-    // Handle backspace
     if (key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     const otpCode = otp.join('');
-    console.log('Verify OTP:', otpCode);
-    setScreen(SCREEN_NAME.SIGNIN);
+
+    try {
+      if (verifyType === 'register') {
+        await verifyRegisterOtp({ mobile, otp: otpCode }).unwrap();
+        toast.success(t('auth.otpVerified'));
+      } else {
+        const res = await verifyForgotOtp({ mobile, otp: otpCode }).unwrap();
+        toast.success(res?.message ?? t('auth.otpVerified'));
+      }
+      setOtp(['', '', '', '', '', '']);
+      setTimer(RESEND_COOLDOWN);
+      setScreen(SCREEN_NAME.SIGNIN);
+    } catch (error) {
+      const err = error as { data?: { message?: string } };
+      toast.error(err?.data?.message ?? t('auth.verifyFail'));
+    }
   };
 
-  const handleResend = () => {
+  const handleResend = async () => {
     if (!mobile) {
-      toast.error('Mobile number is missing. Please try again.');
-      setScreen(SCREEN_NAME.FORGOT_PASSWORD);
+      toast.error(t('auth.mobileMissing'));
+      setScreen(SCREEN_NAME.SIGNUP);
       return;
     }
 
-    forgotPassword({ mobile })
-      .unwrap()
-      .then((res) => {
-        setTimer(60);
-        setOtp(['', '', '', '', '', '']);
-        inputRefs.current[0]?.focus();
-        toast.success(res?.message ?? 'OTP resent to your mobile number');
-      })
-      .catch((error: { data?: { message?: string } }) => {
-        toast.error(error?.data?.message ?? 'Failed to resend OTP. Please try again.');
-      });
+    try {
+      if (verifyType === 'register') {
+        await resendRegisterOtp({ mobile }).unwrap();
+      } else {
+        await forgotPassword({ mobile }).unwrap();
+      }
+      setTimer(RESEND_COOLDOWN);
+      setOtp(['', '', '', '', '', '']);
+      inputRefs.current[0]?.focus();
+      toast.success(t('auth.otpSent'));
+    } catch (error) {
+      const err = error as { data?: { message?: string } };
+      toast.error(err?.data?.message ?? t('auth.resendFail'));
+    }
   };
 
   const isOtpComplete = otp.every((digit) => digit !== '');
@@ -152,7 +186,9 @@ const VerifyOTPScreen = ({
               <View className="flex-row items-center justify-center">
                 <Text className="text-sm text-mutedForeground">
                   {t('auth.resendCodeIn')}{' '}
-                  <Text className="font-semibold text-green-600">{timer}s</Text>
+                  <Text className="font-semibold text-green-600">
+                    {Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')}
+                  </Text>
                 </Text>
               </View>
             ) : (
@@ -172,11 +208,17 @@ const VerifyOTPScreen = ({
           {/* Verify Button */}
           <TouchableOpacity
             onPress={handleVerify}
-            disabled={!isOtpComplete}
-            className={`mb-6 rounded-xl py-4 ${isOtpComplete ? 'bg-green-600' : 'bg-accent'}`}>
-            <Text className="text-center text-base font-semibold text-white">
-              {t('auth.verifyOtpButton')}
-            </Text>
+            disabled={!isOtpComplete || isVerifying}
+            className={`mb-6 rounded-xl py-4 ${
+              isOtpComplete && !isVerifying ? 'bg-green-600' : 'bg-accent'
+            }`}>
+            {isVerifying ? (
+              <ActivityIndicator color="#ffffff" />
+            ) : (
+              <Text className="text-center text-base font-semibold text-white">
+                {t('auth.verifyOtpButton')}
+              </Text>
+            )}
           </TouchableOpacity>
 
           {/* Help Text */}

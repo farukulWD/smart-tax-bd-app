@@ -1,4 +1,5 @@
 export type TAuth = 'SignIn' | 'SignUp' | 'ForgotPassword' | 'VerifyUser';
+export type TVerifyPurpose = 'register' | 'forgotPassword';
 
 export const SCREEN_NAME = {
   SIGNIN: 'SignIn' as TAuth,
