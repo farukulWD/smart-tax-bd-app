@@ -101,7 +101,7 @@ const ThemedApp = () => {
         'color-input': hslToRgbChannels(colors.input),
         'color-ring': hslToRgbChannels(colors.ring),
       })}>
-      <StatusBar style={'light'} backgroundColor="transparent" />
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} backgroundColor="transparent" />
       <Navigation />
       <Toast config={createToastConfig(colors)} />
     </View>

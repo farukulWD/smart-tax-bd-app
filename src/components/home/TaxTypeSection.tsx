@@ -20,9 +20,9 @@ const TaxTypeSection = () => {
 
   const paddedTypes = useMemo(() => getPaddedData(types, NUM_COLUMNS), [types]);
 
-  const renderItem = useCallback(({ item }: { item: TaxTypeItem | null }) => {
+  const renderItem = useCallback(({ item, index }: { item: TaxTypeItem | null; index: number }) => {
     if (!item) return <View style={{ flex: 1 }} />;
-    return <TaxCard item={item} />;
+    return <TaxCard item={item} index={index} />;
   }, []);
 
   const keyExtractor = useCallback(
@@ -57,7 +57,7 @@ const TaxTypeSection = () => {
 
   return (
     <View className="bg-background px-4">
-      <Text className="text-lg font-semibold text-foreground">{t('home.taxTypes')}</Text>
+      <Text className="text-xl font-bold text-foreground">{t('home.taxTypes')}</Text>
       <FlatList
         data={paddedTypes}
         renderItem={renderItem}
