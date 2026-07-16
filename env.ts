@@ -1,4 +1,4 @@
-export const ENV: 'production' | 'dev' | 'local' = 'dev';
+export const ENV: 'production' | 'dev' | 'local' = 'production';
 
 const CONFIG = {
   production: {

@@ -5,7 +5,7 @@ import { useGetAllTaxTypesQuery } from '@/src/services/publicApi';
 import TaxCard from './TaxCard';
 import { TaxTypeItem } from '@/src/types/publicTypes';
 
-const NUM_COLUMNS = 4;
+const NUM_COLUMNS = 2;
 
 const getPaddedData = (data: TaxTypeItem[], columns: number): (TaxTypeItem | null)[] => {
   const remainder = data.length % columns;

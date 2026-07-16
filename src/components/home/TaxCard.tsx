@@ -49,14 +49,22 @@ const TaxCard = ({ item }: { item: TaxTypeItem }) => {
   };
 
   return (
-    <Pressable onPress={handleNavigation} className="mb-2 flex-1 items-center">
-      <View className="mb-1 h-[80px] w-[80px] items-center justify-center rounded-2xl border border-primary bg-primary">
-        <LucideIcon name={IconName} size={45} className="text-white" strokeWidth={2} />
+    <Pressable onPress={handleNavigation} className="mb-2 flex-1">
+      <View className="flex-1 overflow-hidden rounded-xl border border-border bg-card p-3">
+        <View className="mb-1 h-[40px] w-[40px] items-center justify-center rounded-xl bg-secondary/20">
+          <LucideIcon name={IconName} size={20} className="text-secondary" strokeWidth={2} />
+        </View>
+        <View className="flex-grow" />
+        <Text className="text-center font-medium text-foreground" numberOfLines={2}>
+          {item.title[locale as keyof typeof item.title] || item.title.en}
+        </Text>
+        <LucideIcon
+          name={IconName}
+          size={60}
+          className="absolute -right-1.5 -top-1.5 text-mutedForeground opacity-30"
+          strokeWidth={2}
+        />
       </View>
-
-      <Text className="text-center font-medium text-foreground" numberOfLines={2}>
-        {item.title[locale as keyof typeof item.title] || item.title.en}
-      </Text>
     </Pressable>
   );
 };
