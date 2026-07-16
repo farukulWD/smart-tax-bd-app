@@ -15,8 +15,6 @@ import { gGap } from '../utils/Sizes';
 import { cn } from '@/lib/utils';
 import { useThemeColors } from '../theme/useThemeColors';
 import { useTranslation } from 'react-i18next';
-import { useAppSelector } from '../redux/hooks';
-import { navigate } from '../utils/NavigationUtils';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -102,7 +100,6 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
 
 const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const { colors } = useThemeColors();
-  const { isLoggedIn } = useAppSelector((state) => state.auth);
 
   const tabWidth = screenWidth / state.routes.length;
   const indicatorPosition = useSharedValue(0);
@@ -168,11 +165,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
           });
 
           if (!isFocused && !event.defaultPrevented) {
-            if (!isLoggedIn && route.name) {
-              navigate('Auth', { redirectTo: route.name });
-            } else {
-              navigation.navigate(route.name);
-            }
+            navigation.navigate(route.name);
           }
         };
 

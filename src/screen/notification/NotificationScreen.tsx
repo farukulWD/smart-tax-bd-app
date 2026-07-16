@@ -286,7 +286,7 @@ const NotificationScreen = () => {
   const keyExtractor = useCallback((item: INotification) => item._id, []);
 
   return (
-    <ProtectedScreen redirectTo={{ screen: 'Notification' }}>
+    <ProtectedScreen>
       {isLoading && page === 1 ? (
         <View className="flex-1 bg-background">
           <ScreenHeader title="Notification" />

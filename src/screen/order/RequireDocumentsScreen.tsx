@@ -229,7 +229,7 @@ const RequireDocumentsScreen = () => {
   // ── render ───────────────────────────────────────────────────────────────────
 
   return (
-    <ProtectedScreen redirectTo={{ screen: 'CreateTaxOrder' }}>
+    <ProtectedScreen>
       <View style={{ paddingTop: top, paddingBottom: bottom }} className="flex-1 bg-background">
         <View className="m-4 mt-0">
           <Text className="text-2xl font-bold tracking-tight text-foreground">

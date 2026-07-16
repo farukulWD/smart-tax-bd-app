@@ -179,7 +179,7 @@ const MyFilesScreen = () => {
   };
 
   return (
-    <ProtectedScreen redirectTo={{ screen: 'MyFiles' }}>
+    <ProtectedScreen>
     <View className="flex-1 bg-background">
       <ScreenHeader title="My Files" />
 

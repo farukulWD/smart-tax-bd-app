@@ -30,7 +30,7 @@ const contactCards = [
 const ContactUsScreen = () => {
   const { colors } = useThemeColors();
   return (
-    <ProtectedScreen redirectTo={{ stack: 'ProfileStack', screen: 'ContactUs' }}>
+    <ProtectedScreen>
     <SafeAreaView edges={['top']} className="flex-1 bg-background">
       <ScrollView
         className="flex-1"

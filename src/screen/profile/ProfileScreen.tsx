@@ -84,7 +84,7 @@ const ProfileScreen = () => {
     : '?';
 
   return (
-    <ProtectedScreen redirectTo={{ stack: 'ProfileStack', screen: 'Profile' }}>
+    <ProtectedScreen>
       <ScreenHeader title={t('profile.headerTitle')} showBack={false} />
       <ScrollView
         className="flex-1"

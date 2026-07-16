@@ -237,7 +237,7 @@ const MyPaymentsScreen = () => {
   };
 
   return (
-    <ProtectedScreen redirectTo={{ stack: 'ProfileStack', screen: 'MyPayments' }}>
+    <ProtectedScreen>
     <View className="flex-1 bg-background">
 
       <ScreenHeader

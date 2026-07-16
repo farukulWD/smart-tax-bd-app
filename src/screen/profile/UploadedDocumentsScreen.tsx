@@ -378,7 +378,7 @@ const UploadedDocumentsScreen = () => {
   // ── render ─────────────────────────────────────────────────────────────────
 
   return (
-    <ProtectedScreen redirectTo={{ stack: 'ProfileStack', screen: 'UploadedDocuments' }}>
+    <ProtectedScreen>
     <View className="flex-1 bg-background">
       <ScreenHeader title="My Documents" />
 

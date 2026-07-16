@@ -1,23 +1,17 @@
-import { ReactNode, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { ReactNode } from 'react';
 import { useAppSelector } from '../redux/hooks';
+import AuthScreen from '../screen/auth/AuthScreen';
 
 type Props = {
   children: ReactNode;
-  redirectTo?: { stack?: string; screen: string };
 };
 
-export default function ProtectedScreen({ children, redirectTo }: Props) {
+export default function ProtectedScreen({ children }: Props) {
   const { isLoggedIn } = useAppSelector((state) => state.auth);
-  const navigation = useNavigation<any>();
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigation.replace('Auth', { redirectTo });
-    }
-  }, [isLoggedIn, navigation, redirectTo]);
-
-  if (!isLoggedIn) return null;
+  if (!isLoggedIn) {
+    return <AuthScreen initialScreen={'SignIn'} />;
+  }
 
   return <>{children}</>;
 }

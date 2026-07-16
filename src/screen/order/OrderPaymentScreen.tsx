@@ -154,7 +154,7 @@ const OrderPaymentScreen = () => {
 
   if (!gatewayUrl) {
     return (
-      <ProtectedScreen redirectTo={{ screen: 'CreateTaxOrder' }}>
+      <ProtectedScreen>
         <View
           style={{ paddingTop: top }}
           className="flex-1 items-center justify-center gap-4 bg-background px-6">
@@ -168,7 +168,7 @@ const OrderPaymentScreen = () => {
   }
 
   return (
-    <ProtectedScreen redirectTo={{ screen: 'CreateTaxOrder' }}>
+    <ProtectedScreen>
       <View style={{ flex: 1, paddingTop: top }} className="bg-background">
         <View className="flex-1">
           {!modalVisible && (

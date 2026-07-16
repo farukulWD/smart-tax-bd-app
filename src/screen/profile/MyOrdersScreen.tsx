@@ -357,7 +357,7 @@ const MyOrdersScreen = () => {
   };
 
   return (
-    <ProtectedScreen redirectTo={{ stack: 'ProfileStack', screen: 'MyOrders' }}>
+    <ProtectedScreen>
     <View className="flex-1 bg-background">
       <ScreenHeader className="mb-3" title="My Orders" />
 

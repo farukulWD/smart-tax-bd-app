@@ -208,7 +208,7 @@ const CreateTaxOrderScreen = () => {
   };
 
   return (
-    <ProtectedScreen redirectTo={{ screen: 'CreateTaxOrder' }}>
+    <ProtectedScreen>
       <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
         {/* Header */}
         <View className="flex-row items-start gap-3 px-4 py-4">

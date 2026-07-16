@@ -25,17 +25,40 @@ const hslToRgbChannels = (color: string) => {
   const X = C * (1 - Math.abs(((H * 6) % 2) - 1));
   const m = L - C / 2;
 
-  let r = 0, g = 0, b = 0;
+  let r = 0,
+    g = 0,
+    b = 0;
   const sextant = Math.floor(H * 6);
 
   switch (sextant) {
-    case 0: r = C; g = X; break;
-    case 1: r = X; g = C; break;
-    case 2: g = C; b = X; break;
-    case 3: g = X; b = C; break;
-    case 4: r = X; b = C; break;
-    case 5: r = C; b = X; break;
-    default: r = C; g = X; break;
+    case 0:
+      r = C;
+      g = X;
+      break;
+    case 1:
+      r = X;
+      g = C;
+      break;
+    case 2:
+      g = C;
+      b = X;
+      break;
+    case 3:
+      g = X;
+      b = C;
+      break;
+    case 4:
+      r = X;
+      b = C;
+      break;
+    case 5:
+      r = C;
+      b = X;
+      break;
+    default:
+      r = C;
+      g = X;
+      break;
   }
 
   const R = Math.round((r + m) * 255);
@@ -78,7 +101,7 @@ const ThemedApp = () => {
         'color-input': hslToRgbChannels(colors.input),
         'color-ring': hslToRgbChannels(colors.ring),
       })}>
-      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} backgroundColor="transparent" />
+      <StatusBar style={'light'} backgroundColor="transparent" />
       <Navigation />
       <Toast config={createToastConfig(colors)} />
     </View>

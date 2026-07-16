@@ -129,7 +129,7 @@ const OnboardingScreen = () => {
               key={i}
               className={cn(
                 'rounded-full',
-                i === currentPage ? 'h-2.5 w-8 bg-primary' : 'bg-primary/20 h-2 w-2'
+                i === currentPage ? 'h-2.5 w-8 bg-primary' : 'h-2 w-2 bg-primary/20'
               )}
             />
           ))}

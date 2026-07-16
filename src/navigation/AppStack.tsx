@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import AuthScreen from '../screen/auth/AuthScreen';
 import OnboardingScreen from '../screen/onboarding/OnboardingScreen';
 import BottomTabNavigator from './BottomTabNavigator';
 import PackagesScreen from '../screen/home/PackageScreen';
@@ -80,7 +78,6 @@ export default function AppStack() {
       <Stack.Screen name="OrderPayment" component={OrderPaymentScreen} />
       <Stack.Screen name="OrderSuccess" component={OrderSuccessScreen} />
       <Stack.Screen name="MyFiles" component={MyFilesScreen} />
-      <Stack.Screen name="Auth" component={AuthScreen} />
     </Stack.Navigator>
   );
 }

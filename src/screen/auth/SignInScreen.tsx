@@ -25,8 +25,22 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
   const { t } = useTranslation();
   const { colors } = useThemeColors();
   const route = useRoute<RouteProp<AppStackParamList, 'Auth'>>();
-  const [mobile, setMobile] = useState('');
-  const [password, setPassword] = useState('');
+  const TEST_ACCOUNTS = {
+    dev: {
+      mobile: '01949887896',
+      password: 'Shuvajit#1',
+    },
+
+    default: {
+      mobile: '',
+      password: '',
+    },
+  } as const;
+
+  const ACTIVE_ACCOUNT = TEST_ACCOUNTS.dev;
+
+  const [mobile, setMobile] = useState<string>(ACTIVE_ACCOUNT.mobile);
+  const [password, setPassword] = useState<string>(ACTIVE_ACCOUNT.password);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const navigation = useNavigation();

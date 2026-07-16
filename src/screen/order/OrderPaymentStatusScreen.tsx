@@ -142,7 +142,7 @@ const OrderPaymentStatusScreen = () => {
   // ── render ────────────────────────────────────────────────────────────────
 
   return (
-    <ProtectedScreen redirectTo={{ screen: 'CreateTaxOrder' }}>
+    <ProtectedScreen>
       <View style={{ paddingTop: top }} className="flex-1 bg-background">
         <ScrollView
           contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}

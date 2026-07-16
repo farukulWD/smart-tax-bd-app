@@ -1,16 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { AppStackParamList } from '@/src/navigation/AppStack';
 import { SCREEN_NAME, TAuth, TVerifyPurpose } from '@/src/types/authTypes';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
 import ForgotPasswordScreen from './ForgotPasswordScreen';
 import VerifyOTPScreen from './VerifyOTPScreen';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-type Props = NativeStackScreenProps<AppStackParamList, 'Auth'>;
-
-const AuthScreen = ({ route }: Props) => {
-  const initialScreen = route?.params?.screen;
+const AuthScreen = ({ initialScreen }: { initialScreen: TAuth }) => {
   const [screen, setScreen] = useState<TAuth>(SCREEN_NAME.SIGNIN);
   const [authMobile, setAuthMobile] = useState('');
   const [verifyType, setVerifyType] = useState<TVerifyPurpose>('register');
