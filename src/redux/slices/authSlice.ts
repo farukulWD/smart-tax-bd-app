@@ -6,6 +6,12 @@ type AuthState = {
   user: IUser | null;
   isLoggedIn: boolean;
   theme: 'dark' | 'light';
+  insets: {
+    top: number;
+    bottom: number;
+    right: number;
+    left: number;
+  };
 };
 
 const initialState: AuthState = {
@@ -13,6 +19,12 @@ const initialState: AuthState = {
   user: null,
   isLoggedIn: false,
   theme: 'light',
+  insets: {
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+  },
 };
 
 const authSlice = createSlice({
@@ -39,9 +51,12 @@ const authSlice = createSlice({
     toggleLocalTheme: (state) => {
       state.theme = state.theme === 'dark' ? 'light' : 'dark';
     },
+    setInsets: (state, action) => {
+      state.insets = action.payload;
+    },
   },
 });
 
-export const { setCredentials, logout, setToken, removeToken, toggleLocalTheme } =
+export const { setCredentials, logout, setToken, removeToken, toggleLocalTheme, setInsets } =
   authSlice.actions;
 export default authSlice.reducer;

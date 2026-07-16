@@ -15,6 +15,9 @@ import OrderSuccessScreen from '../screen/order/OrderSuccessScreen';
 import MyFilesScreen from '../screen/profile/MyFilesScreen';
 import { HAS_SEEN_ONBOARDING } from '../utils/onboarding';
 import { useThemeColors } from '../theme/useThemeColors';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAppDispatch } from '../redux/hooks';
+import { setInsets } from '../redux/slices/authSlice';
 
 export type AppStackParamList = {
   BottomTabNavigator: undefined;
@@ -41,10 +44,12 @@ const Stack = createNativeStackNavigator<AppStackParamList>();
 
 export default function AppStack() {
   const { colors } = useThemeColors();
+  const dispatch = useAppDispatch();
 
   const [initialRoute, setInitialRoute] = useState<keyof AppStackParamList | null>(null);
-
+  const insets = useSafeAreaInsets();
   useEffect(() => {
+    dispatch(setInsets(insets));
     AsyncStorage.getItem(HAS_SEEN_ONBOARDING).then((val) => {
       setInitialRoute(val === 'true' ? 'BottomTabNavigator' : 'Onboarding');
     });

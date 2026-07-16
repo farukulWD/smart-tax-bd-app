@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { toggleLocalTheme } from '../redux/slices/authSlice';
 
 export const useThemeColors = () => {
-  const { theme } = useAppSelector((state) => state.auth);
+  const { theme, insets } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const isDark = theme === 'dark';
 
@@ -19,5 +19,7 @@ export const useThemeColors = () => {
     colorScheme: theme,
     isDark,
     toggleColorScheme: themeToggle,
+    top: insets?.top || 0,
+    bottom: insets?.bottom || 0,
   };
 };
