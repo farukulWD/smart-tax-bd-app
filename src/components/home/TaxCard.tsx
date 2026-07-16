@@ -86,7 +86,7 @@ const TaxCard = ({ item, index }: { item: TaxTypeItem; index: number }) => {
         <View className="flex-grow" />
         <View className="flex-row items-center justify-between">
           <View style={{ backgroundColor: cardColor + 30 }} className="rounded-full px-2 py-1">
-            <Text numberOfLines={1} className="text-[9px] font-medium" style={{ color: cardColor }}>
+            <Text numberOfLines={1} className="text-[8px] font-medium" style={{ color: cardColor }}>
               {snakeToTitleCase(item.value)}
             </Text>
           </View>

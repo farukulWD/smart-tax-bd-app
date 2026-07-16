@@ -20,6 +20,7 @@ import { AppStackParamList } from '@/src/navigation/AppStack';
 import { navigateToStack, replace } from '@/src/utils/NavigationUtils';
 import { useTranslation } from 'react-i18next';
 import { BackButton } from '@/src/components/global/BackButton';
+import { toast } from '@/src/utils/ToastConfig';
 
 const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
   const { t } = useTranslation();
@@ -77,7 +78,8 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
         })
       );
       handleNavigation();
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error.data.message);
       console.log(error);
     }
   };
