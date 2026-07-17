@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useGetAllTaxTypesQuery } from '@/src/services/publicApi';
 import TaxCard from './TaxCard';
 import { TaxTypeItem } from '@/src/types/publicTypes';
+import { useLocale } from '@/src/localization/useLocale';
 
 const NUM_COLUMNS = 2;
 
@@ -13,16 +14,31 @@ const getPaddedData = (data: TaxTypeItem[], columns: number): (TaxTypeItem | nul
   return [...data, ...Array(columns - remainder).fill(null)];
 };
 
-const TaxTypeSection = () => {
+const TaxTypeSection = ({ searchQuery = '' }: { searchQuery?: string }) => {
   const { t } = useTranslation();
+  const { locale } = useLocale();
   const { data, isLoading, error } = useGetAllTaxTypesQuery();
   const types = data?.data || [];
 
-  const paddedTypes = useMemo(() => getPaddedData(types, NUM_COLUMNS), [types]);
+  const q = searchQuery.trim().toLowerCase();
+  const filtered = useMemo(
+    () =>
+      q
+        ? types.filter((item) => {
+            const title = (
+              item.title[locale as keyof typeof item.title] || item.title.en
+            ).toLowerCase();
+            return title.includes(q) || item.value.toLowerCase().includes(q);
+          })
+        : types,
+    [types, q, locale]
+  );
 
-  const renderItem = useCallback(({ item, index }: { item: TaxTypeItem | null; index: number }) => {
+  const paddedTypes = useMemo(() => getPaddedData(filtered, NUM_COLUMNS), [filtered]);
+
+  const renderItem = useCallback(({ item }: { item: TaxTypeItem | null }) => {
     if (!item) return <View style={{ flex: 1 }} />;
-    return <TaxCard item={item} index={index} />;
+    return <TaxCard item={item} />;
   }, []);
 
   const keyExtractor = useCallback(
@@ -57,13 +73,21 @@ const TaxTypeSection = () => {
 
   return (
     <View className="bg-background px-4">
-      <Text className="text-xl font-bold text-foreground">{t('home.taxTypes')}</Text>
+      <View className="mb-3">
+        <Text className="text-2xl font-bold text-foreground">{t('home.taxCategories')}</Text>
+        <Text className="text-sm text-mutedForeground">{t('home.taxCategoriesSubtitle')}</Text>
+      </View>
+      {!filtered.length ? (
+        <View className="py-10">
+          <Text className="text-center text-sm text-mutedForeground">{t('home.notFound')}</Text>
+        </View>
+      ) : null}
       <FlatList
         data={paddedTypes}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         numColumns={NUM_COLUMNS}
-        contentContainerClassName="gap-1"
+        contentContainerClassName="gap-3"
         columnWrapperClassName="gap-3 items-start"
         scrollEnabled={false}
         removeClippedSubviews

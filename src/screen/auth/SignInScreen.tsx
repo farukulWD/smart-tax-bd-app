@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -6,13 +6,20 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import { Input } from '@/components/ui/input';
-import { EyeOff, Eye, Home, Mail, Phone } from 'lucide-react-native';
+import { Button } from '@/components/ui/button';
+import { EyeOff, Eye } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
 import { useThemeColors } from '@/src/theme/useThemeColors';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { useLoginMutation } from '@/src/services/auth';
+import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { useAppDispatch } from '@/src/redux/hooks';
 import { setCredentials } from '@/src/redux/slices/authSlice';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -20,35 +27,38 @@ import { AppStackParamList } from '@/src/navigation/AppStack';
 import { navigateToStack, replace } from '@/src/utils/NavigationUtils';
 import { useTranslation } from 'react-i18next';
 import { BackButton } from '@/src/components/global/BackButton';
-import { toast } from '@/src/utils/ToastConfig';
+
+// ─── Schema ───────────────────────────────────────────────────────────────────
+
+const createSignInSchema = (t: (key: string) => string) =>
+  z.object({
+    mobile: z.string().regex(/^01[3-9]\d{8}$/, { message: t('auth.mobileInvalid') }),
+    password: z.string().min(6, { message: t('auth.passwordMin') }),
+  });
+
+export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>;
+
+// ─── SignInScreen ─────────────────────────────────────────────────────────────
 
 const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
   const { t } = useTranslation();
   const { colors } = useThemeColors();
   const route = useRoute<RouteProp<AppStackParamList, 'Auth'>>();
-  const TEST_ACCOUNTS = {
-    dev: {
-      mobile: '01949887896',
-      password: 'Shuvajit#1',
-    },
+  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
 
-    default: {
+  const [showPassword, setShowPassword] = useState(false);
+  const [login, { isLoading }] = useLoginMutation();
+
+  const signInSchema = useMemo(() => createSignInSchema(t), [t]);
+
+  const form = useForm<SignInFormValues>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
       mobile: '',
       password: '',
     },
-  } as const;
-
-  const ACTIVE_ACCOUNT = TEST_ACCOUNTS.dev;
-
-  const [mobile, setMobile] = useState<string>(ACTIVE_ACCOUNT.mobile);
-  const [password, setPassword] = useState<string>(ACTIVE_ACCOUNT.password);
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const navigation = useNavigation();
-
-  const [login, { isLoading }] = useLoginMutation();
-
-  const dispatch = useAppDispatch();
+  });
 
   const handleNavigation = () => {
     if (route?.params?.shouldGoBack) {
@@ -64,11 +74,11 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
     }
   };
 
-  const handleLogin = async () => {
+  const onSubmit = async (data: SignInFormValues) => {
     try {
       const res = await login({
-        mobile,
-        password,
+        mobile: data.mobile,
+        password: data.password,
       }).unwrap();
 
       dispatch(
@@ -78,164 +88,134 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
         })
       );
       handleNavigation();
-    } catch (error: any) {
-      toast.error(error.data.message);
-      console.log(error);
+    } catch (error) {
+      globalErrorHandler(error);
     }
   };
+
+  const inputClass =
+    'h-14 w-full rounded-xl border border-border bg-card px-4 text-base text-foreground';
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-card">
+      className="flex-1 bg-background">
       <View className="mx-4 mt-14">
-        <BackButton
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
+        <BackButton onPress={() => navigation.goBack()} />
       </View>
+
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled">
-        <View className="flex-1 px-5">
-          {/* Logo Section */}
-          <View className="items-center pb-8 pt-6">
-            <View className="h-28 w-28 items-center justify-center overflow-hidden rounded-full">
-              <Image
-                resizeMode="contain"
-                className="h-full w-full"
-                source={require('../../../assets/images/logo-small.png')}
-              />
-            </View>
-            <Text className="text-base text-foreground">Easy | Accurate | Secure</Text>
+        <View className="flex-1 justify-center px-6">
+          {/* Logo + Heading */}
+          <View className="items-center pb-10">
+            <Image
+              resizeMode="contain"
+              className="h-24 w-24"
+              source={require('../../../assets/images/logo-small.png')}
+            />
+            <Text className="mt-5 text-3xl font-bold text-foreground">{t('auth.welcomeBack')}</Text>
+            <Text className="mt-2 text-center text-base text-mutedForeground">
+              {t('auth.welcomeBackDesc')}
+            </Text>
           </View>
 
-          {/* Form Section */}
-          <View className="gap-3">
-            {/* Mobile Input */}
-
-            <Input
-              placeholder={t('auth.mobilePlaceholder')}
-              value={mobile}
-              onChangeText={setMobile}
-              keyboardType="number-pad"
-              placeholderClassName="text-mutedForeground"
-              autoCapitalize="none"
-              className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-foreground"
+          {/* Form */}
+          <View className="gap-4">
+            {/* Mobile */}
+            <FormField
+              control={form.control}
+              name="mobile"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('auth.mobileLabel')}</FormLabel>
+                  <FormControl>
+                    <Input
+                      className={inputClass}
+                      placeholder={t('auth.mobileHint')}
+                      placeholderTextColor={colors.mutedForeground}
+                      value={field.value as string}
+                      onChangeText={field.onChange}
+                      onBlur={field.onBlur}
+                      keyboardType="number-pad"
+                      autoCapitalize="none"
+                    />
+                  </FormControl>
+                  <FormMessage message={form.formState.errors.mobile?.message} />
+                </FormItem>
+              )}
             />
 
-            {/* Password Input */}
-            <View className="relative justify-center">
-              <Input
-                className="h-12 w-full rounded-lg border border-border bg-card px-4 text-base text-foreground"
-                placeholder={t('auth.passwordPlaceholder')}
-                placeholderClassName="text-mutedForeground"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-                autoCapitalize="none"
-              />
-              <TouchableOpacity
-                onPress={() => setShowPassword(!showPassword)}
-                className="absolute right-4">
-                {showPassword ? (
-                  <Eye size={20} color={colors.mutedForeground} />
-                ) : (
-                  <EyeOff size={20} color={colors.mutedForeground} />
-                )}
-              </TouchableOpacity>
-            </View>
+            {/* Password */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('auth.passwordLabel')}</FormLabel>
+                  <FormControl>
+                    <View className="relative justify-center">
+                      <Input
+                        className={inputClass}
+                        placeholder={t('auth.passwordLabel')}
+                        placeholderTextColor={colors.mutedForeground}
+                        value={field.value as string}
+                        onChangeText={field.onChange}
+                        onBlur={field.onBlur}
+                        secureTextEntry={!showPassword}
+                        autoCapitalize="none"
+                      />
+                      <TouchableOpacity
+                        onPress={() => setShowPassword((p) => !p)}
+                        className="absolute right-4"
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                        {showPassword ? (
+                          <Eye size={20} color={colors.mutedForeground} />
+                        ) : (
+                          <EyeOff size={20} color={colors.mutedForeground} />
+                        )}
+                      </TouchableOpacity>
+                    </View>
+                  </FormControl>
+                  <FormMessage message={form.formState.errors.password?.message} />
+                </FormItem>
+              )}
+            />
 
-            {/* Remember Me Checkbox */}
-            <View className="flex-row items-center justify-between">
-              <TouchableOpacity
-                onPress={() => setRememberMe(!rememberMe)}
-                className="flex-row items-center">
-                <View
-                  className={`mr-2 h-6 w-6 items-center justify-center rounded border-2 ${
-                    rememberMe ? 'border-green-600 bg-green-600' : 'border-border bg-accent'
-                  }`}>
-                  {rememberMe && <Text className="text-xs text-foreground">✓</Text>}
-                </View>
-                <Text className="text-base text-mutedForeground">{t('auth.rememberMe')}</Text>
-              </TouchableOpacity>
-              {/* Forgot Password Link */}
-              <TouchableOpacity
-                onPress={() => {
-                  setScreen(SCREEN_NAME.FORGOT_PASSWORD);
-                }}
-                className="items-center">
-                <Text className="text-sm text-green-600">{t('auth.forgotPasswordLink')}</Text>
-              </TouchableOpacity>
-            </View>
+            {/* Forgot Password */}
+            <TouchableOpacity
+              onPress={() => setScreen(SCREEN_NAME.FORGOT_PASSWORD)}
+              className="self-end"
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <Text className="text-sm font-semibold text-primary">
+                {t('auth.forgotPasswordLink')}
+              </Text>
+            </TouchableOpacity>
 
             {/* Login Button */}
-            <TouchableOpacity
-              onPress={handleLogin}
-              className="h-12 flex-row items-center justify-center rounded-xl bg-green-600">
-              <Home size={20} color="white" />
-              <Text className="ml-2 text-center text-base font-semibold text-white">
-                {isLoading ? t('auth.signingIn') : t('auth.signInButton')}
-              </Text>
-            </TouchableOpacity>
-            <View>
-              {/* Create Account Link */}
-              <View className="flex-row items-center justify-center">
-                <Text className="text-sm text-mutedForeground">{t('auth.signUpLink')} </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    setScreen(SCREEN_NAME.SIGNUP);
-                  }}>
-                  <Text className="text-sm font-semibold text-green-600">
-                    {t('auth.signUpLinkAction')}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* 100% Accurate Badge */}
-              <View className="my-1 h-20 w-20 self-center overflow-hidden rounded-full">
-                <Image
-                  className="h-full w-full resize"
-                  source={require('../../../assets/images/accuracy.jpg')}
-                />
-              </View>
-
-              {/* Contact Info */}
-              <View className="items-center">
-                <View className="flex-row items-center">
-                  <Mail size={16} color={colors.mutedForeground} />
-                  <Text className="ml-2 text-sm text-mutedForeground">
-                    support@smarttaxbd.com.bd
-                  </Text>
-                </View>
-                <View className="flex-row items-center">
-                  <Phone size={16} color={colors.mutedForeground} />
-                  <Text className="ml-2 text-sm text-mutedForeground">01409-991225</Text>
-                </View>
-              </View>
-            </View>
-
-            {/* Footer Text */}
-            <View className="px-2">
-              <Text className="text-center text-xs leading-5 text-mutedForeground">
-                {t('auth.copyright')}
-              </Text>
-            </View>
-
-            {/* Made in Bangladesh */}
-            <View className="mb-2 flex-row items-center justify-center">
-              <Text className="mr-2 text-sm text-mutedForeground">{t('auth.madeIn')}</Text>
-              <View className="h-6 w-6 items-center justify-center rounded bg-green-600">
-                <View className="h-3 w-3 rounded-full bg-red-600" />
-              </View>
-            </View>
-
-            {/* Terms & Conditions */}
-            <TouchableOpacity className="mb-8 items-center">
-              <Text className="text-sm text-green-600 underline">Terms & Conditions</Text>
-            </TouchableOpacity>
+            <Button
+              onPress={form.handleSubmit(onSubmit)}
+              disabled={isLoading}
+              className="mt-2 h-14 rounded-xl bg-primary">
+              {isLoading ? (
+                <ActivityIndicator color="#ffffff" />
+              ) : (
+                <Text className="text-base font-bold text-white">{t('auth.signInButton')}</Text>
+              )}
+            </Button>
           </View>
+        </View>
+
+        {/* Create Account */}
+        <View className="flex-row items-center justify-center pb-8 pt-6">
+          <Text className="text-sm text-mutedForeground">{t('auth.signUpLink')} </Text>
+          <TouchableOpacity
+            onPress={() => setScreen(SCREEN_NAME.SIGNUP)}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Text className="text-sm font-bold text-primary">{t('auth.signUpLinkAction')}</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

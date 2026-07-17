@@ -13,11 +13,11 @@ function Input({ className, ...props }: TextInputProps & React.RefAttributes<Tex
           ),
         Platform.select({
           web: cn(
-            'placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground outline-none transition-[color,box-shadow] md:text-sm',
+            'placeholder:text-mutedForeground selection:bg-primary selection:text-primaryForeground outline-none transition-[color,box-shadow] md:text-sm',
             'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
             'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive'
           ),
-          native: 'placeholder:text-muted-foreground/50',
+          native: 'placeholder:text-mutedForeground/50',
         }),
         className
       )}

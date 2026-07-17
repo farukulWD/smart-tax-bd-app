@@ -1,6 +1,9 @@
 import { StyleSheet, View, Text, ViewStyle, TextStyle } from 'react-native';
 import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react-native';
 import Toast, { BaseToast, ErrorToast, ToastConfig } from 'react-native-toast-message';
+import type { lightColors } from '@/src/theme/colors';
+
+type ThemeColors = typeof lightColors;
 
 interface CustomToastLayoutProps {
   text1?: string;
@@ -18,68 +21,79 @@ const CustomToastLayout = ({ text1, icon, bgStyle, textStyle }: CustomToastLayou
   </View>
 );
 
-export const createToastConfig = (colors: {
-  border: string;
-}): ToastConfig => ({
-  success: (props) => (
-    <BaseToast
-      {...props}
-      style={[styles.successContainer, { borderColor: colors.border }]}
-      contentContainerStyle={styles.contentContainer}
-      text1Style={styles.title}
-      text2Style={styles.description}
-      text2NumberOfLines={3}
-    />
-  ),
-  error: (props) => (
-    <ErrorToast
-      {...props}
-      style={[styles.errorContainer, { borderColor: colors.border }]}
-      contentContainerStyle={styles.contentContainer}
-      text1Style={styles.title}
-      text2Style={styles.description}
-      text2NumberOfLines={3}
-    />
-  ),
+export const createToastConfig = (colors: ThemeColors): ToastConfig => {
+  // The capsule sits on the theme's card surface with a status-tinted border and
+  // label, so it stays legible in both themes. A fixed pastel fill could not.
+  const capsule = (accent: string): { bg: ViewStyle; text: TextStyle } => ({
+    bg: { backgroundColor: colors.card, borderColor: accent },
+    text: { color: accent },
+  });
 
-  customSuccess: ({ text1 }) => (
-    <CustomToastLayout
-      text1={text1}
-      icon={<CheckCircle size={30} color="#15803D" />}
-      bgStyle={styles.customSuccessBg}
-      textStyle={styles.customSuccessText}
-    />
-  ),
-  customError: ({ text1 }) => (
-    <CustomToastLayout
-      text1={text1}
-      icon={<XCircle size={30} color="#B91C1C" />}
-      bgStyle={styles.customErrorBg}
-      textStyle={styles.customErrorText}
-    />
-  ),
-  customWarning: ({ text1 }) => (
-    <CustomToastLayout
-      text1={text1}
-      icon={<AlertTriangle size={30} color="#C2410C" />}
-      bgStyle={styles.customWarningBg}
-      textStyle={styles.customWarningText}
-    />
-  ),
-});
+  const success = capsule(colors.success);
+  const error = capsule(colors.destructive);
+  const warning = capsule(colors.warning);
+
+  return {
+    success: (props) => (
+      <BaseToast
+        {...props}
+        style={[
+          styles.baseContainer,
+          { borderColor: colors.border, backgroundColor: colors.card, borderLeftColor: colors.success },
+        ]}
+        contentContainerStyle={styles.contentContainer}
+        text1Style={[styles.title, { color: colors.foreground }]}
+        text2Style={[styles.description, { color: colors.mutedForeground }]}
+        text2NumberOfLines={3}
+      />
+    ),
+    error: (props) => (
+      <ErrorToast
+        {...props}
+        style={[
+          styles.baseContainer,
+          {
+            borderColor: colors.border,
+            backgroundColor: colors.card,
+            borderLeftColor: colors.destructive,
+          },
+        ]}
+        contentContainerStyle={styles.contentContainer}
+        text1Style={[styles.title, { color: colors.foreground }]}
+        text2Style={[styles.description, { color: colors.mutedForeground }]}
+        text2NumberOfLines={3}
+      />
+    ),
+
+    customSuccess: ({ text1 }) => (
+      <CustomToastLayout
+        text1={text1}
+        icon={<CheckCircle size={30} color={colors.success} />}
+        bgStyle={success.bg}
+        textStyle={success.text}
+      />
+    ),
+    customError: ({ text1 }) => (
+      <CustomToastLayout
+        text1={text1}
+        icon={<XCircle size={30} color={colors.destructive} />}
+        bgStyle={error.bg}
+        textStyle={error.text}
+      />
+    ),
+    customWarning: ({ text1 }) => (
+      <CustomToastLayout
+        text1={text1}
+        icon={<AlertTriangle size={30} color={colors.warning} />}
+        bgStyle={warning.bg}
+        textStyle={warning.text}
+      />
+    ),
+  };
+};
 
 const styles = StyleSheet.create({
-  // --- Classic Design Styles ---
-  successContainer: {
-    borderLeftColor: '#6366F1',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    minHeight: 68,
-    borderWidth: 1,
-  },
-  errorContainer: {
-    borderLeftColor: '#EF4444',
-    backgroundColor: '#FFFFFF',
+  baseContainer: {
     borderRadius: 16,
     minHeight: 68,
     borderWidth: 1,
@@ -90,15 +104,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#111827',
   },
   description: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#6B7280',
   },
 
-  // --- New Capsule Design Styles ---
+  // --- Capsule design ---
   customBaseContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -119,12 +131,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     flex: 1,
   },
-  customSuccessBg: { backgroundColor: '#DCFCE7', borderColor: '#9bfebe' },
-  customSuccessText: { color: '#15803D' },
-  customErrorBg: { backgroundColor: '#FEE2E2', borderColor: '#ff9191' },
-  customErrorText: { color: '#B91C1C' },
-  customWarningBg: { backgroundColor: '#FFEDD5', borderColor: '#ffc078' },
-  customWarningText: { color: '#C2410C' },
 });
 
 export const toast: Record<'success' | 'error' | 'warning', (message: string) => void> = {

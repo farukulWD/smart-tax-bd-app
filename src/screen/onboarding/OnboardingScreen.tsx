@@ -82,7 +82,7 @@ const OnboardingScreen = () => {
         </View>
         <View className="mt-12 items-center">
           <Text className="text-center text-2xl font-bold text-foreground">{item.title}</Text>
-          <Text className="text-muted-foreground mt-3 text-center text-base leading-6">
+          <Text className="text-mutedForeground mt-3 text-center text-base leading-6">
             {item.description}
           </Text>
         </View>

@@ -47,9 +47,9 @@ const statusConfig = {
   },
   pending: {
     label: 'Pending',
-    pillBg: 'bg-yellow-500/15',
-    pillText: 'text-yellow-500',
-    borderAccent: 'border-l-yellow-500',
+    pillBg: 'bg-warning/15',
+    pillText: 'text-warning',
+    borderAccent: 'border-l-warning',
     amountText: 'text-foreground',
   },
   failed: {
@@ -82,7 +82,7 @@ const SummaryBar = ({ payments }: { payments: IPayment[] }) => {
           <Text className="text-xs text-mutedForeground">{completed.length} Completed</Text>
         </View>
         <View className="flex-row items-center gap-2 rounded-xl bg-muted px-3 py-2">
-          <View className="h-2 w-2 rounded-full bg-yellow-500" />
+          <View className="h-2 w-2 rounded-full bg-warning" />
           <Text className="text-xs text-mutedForeground">{pending.length} Pending</Text>
         </View>
       </View>

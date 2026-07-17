@@ -27,6 +27,10 @@ import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { Button } from '@/components/ui/button';
 import { navigate } from '@/src/utils/NavigationUtils';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useThemeColors } from '@/src/theme/useThemeColors';
+import type { lightColors } from '@/src/theme/colors';
+
+type ThemeColors = typeof lightColors;
 
 type FilterStatus = 'all' | 'draft' | 'documents_uploaded' | 'order_placed';
 
@@ -51,60 +55,63 @@ const shortenId = (id: string) => `…${id.slice(-6)}`;
 
 // ─── status config ────────────────────────────────────────────────────────────
 
-const statusConfig: Record<
-  string,
-  {
-    label: string;
-    pillBg: string;
-    pillText: string;
-    borderAccent: string;
-    iconColor: string;
-    icon: React.ReactNode;
-  }
-> = {
-  draft: {
-    label: 'Draft',
-    pillBg: 'bg-muted',
-    pillText: 'text-mutedForeground',
-    borderAccent: 'border-l-border',
-    iconColor: 'hsl(0, 0%, 60%)',
-    icon: <FileText size={14} color="hsl(0, 0%, 60%)" />,
-  },
-  documents_uploaded: {
-    label: 'Docs Uploaded',
-    pillBg: 'bg-primary/15',
-    pillText: 'text-primary',
-    borderAccent: 'border-l-primary',
-    iconColor: 'hsl(125, 70%, 33%)',
-    icon: <CheckCircle2 size={14} color="hsl(125, 70%, 33%)" />,
-  },
-  order_placed: {
-    label: 'Order Placed',
-    pillBg: 'bg-primary/15',
-    pillText: 'text-primary',
-    borderAccent: 'border-l-primary',
-    iconColor: 'hsl(125, 70%, 33%)',
-    icon: <CheckCircle2 size={14} color="hsl(125, 70%, 33%)" />,
-  },
-  pending_payment: {
-    label: 'Pending Payment',
-    pillBg: 'bg-yellow-500/15',
-    pillText: 'text-yellow-500',
-    borderAccent: 'border-l-yellow-500',
-    iconColor: 'hsl(48, 96%, 53%)',
-    icon: <Clock size={14} color="hsl(48, 96%, 53%)" />,
-  },
+type StatusConfig = {
+  label: string;
+  pillBg: string;
+  pillText: string;
+  borderAccent: string;
+  iconColor: string;
+  icon: React.ReactNode;
 };
 
-const getStatusConfig = (status: string) =>
-  statusConfig[status] ?? {
-    label: formatStatus(status),
-    pillBg: 'bg-muted',
-    pillText: 'text-mutedForeground',
-    borderAccent: 'border-l-border',
-    iconColor: 'hsl(0, 0%, 60%)',
-    icon: <CircleDot size={14} color="hsl(0, 0%, 60%)" />,
+// Takes colors so icon tints track the theme — the pill classes already do.
+const getStatusConfig = (status: string, colors: ThemeColors): StatusConfig => {
+  const map: Record<string, StatusConfig> = {
+    draft: {
+      label: 'Draft',
+      pillBg: 'bg-muted',
+      pillText: 'text-mutedForeground',
+      borderAccent: 'border-l-border',
+      iconColor: colors.mutedForeground,
+      icon: <FileText size={14} color={colors.mutedForeground} />,
+    },
+    documents_uploaded: {
+      label: 'Docs Uploaded',
+      pillBg: 'bg-success/15',
+      pillText: 'text-success',
+      borderAccent: 'border-l-success',
+      iconColor: colors.success,
+      icon: <CheckCircle2 size={14} color={colors.success} />,
+    },
+    order_placed: {
+      label: 'Order Placed',
+      pillBg: 'bg-success/15',
+      pillText: 'text-success',
+      borderAccent: 'border-l-success',
+      iconColor: colors.success,
+      icon: <CheckCircle2 size={14} color={colors.success} />,
+    },
+    pending_payment: {
+      label: 'Pending Payment',
+      pillBg: 'bg-warning/15',
+      pillText: 'text-warning',
+      borderAccent: 'border-l-warning',
+      iconColor: colors.warning,
+      icon: <Clock size={14} color={colors.warning} />,
+    },
   };
+
+  return (
+    map[status] ?? {
+      label: formatStatus(status),
+      pillBg: 'bg-muted',
+      pillText: 'text-mutedForeground',
+      borderAccent: 'border-l-border',
+      iconColor: colors.mutedForeground,
+      icon: <CircleDot size={14} color={colors.mutedForeground} />,
+    }
+  );
+};
 
 // ─── Step indicator ───────────────────────────────────────────────────────────
 
@@ -148,7 +155,7 @@ const SummaryBar = ({ orders }: { orders: IOrder[] }) => {
             <Text className="text-xs text-mutedForeground">{placed} Placed</Text>
           </View>
           <View className="flex-row items-center gap-2 rounded-xl bg-muted px-3 py-2">
-            <View className="h-2 w-2 rounded-full bg-yellow-500" />
+            <View className="h-2 w-2 rounded-full bg-warning" />
             <Text className="text-xs text-mutedForeground">{inProgress} In Progress</Text>
           </View>
         </View>
@@ -220,7 +227,8 @@ const FilterTabs = ({
 // ─── Order Card ───────────────────────────────────────────────────────────────
 
 const OrderCard = ({ item, onPress }: { item: IOrder; onPress: () => void }) => {
-  const cfg = getStatusConfig(item.status);
+  const { colors } = useThemeColors();
+  const cfg = getStatusConfig(item.status, colors);
 
   return (
     <TouchableOpacity
@@ -359,7 +367,7 @@ const MyOrdersScreen = () => {
   return (
     <ProtectedScreen>
     <View className="flex-1 bg-background">
-      <ScreenHeader className="mb-3" title="My Orders" />
+      <ScreenHeader className="mb-3" title="My Orders" showBack={navigation.canGoBack()} />
 
       {isLoading ? (
         <View className="flex-1 items-center justify-center gap-3">
@@ -498,7 +506,7 @@ const MyOrdersScreen = () => {
                         if (id) navigation.navigate('OrderPaymentStatus', { taxId: id });
                       }}
                       activeOpacity={0.8}
-                      className="flex-row items-center justify-center gap-2 rounded-2xl bg-indigo-600 py-4">
+                      className="flex-row items-center justify-center gap-2 rounded-2xl bg-primary py-4">
                       <Text className="text-base font-bold text-white">Start Payment</Text>
                     </TouchableOpacity>
                   </View>

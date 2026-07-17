@@ -61,14 +61,14 @@ const buttonTextVariants = cva(
   {
     variants: {
       variant: {
-        default: 'text-primary-foreground',
+        default: 'text-primaryForeground',
         destructive: 'text-white',
         outline: cn(
-          'group-active:text-accent-foreground',
-          Platform.select({ web: 'group-hover:text-accent-foreground' })
+          'group-active:text-accentForeground',
+          Platform.select({ web: 'group-hover:text-accentForeground' })
         ),
-        secondary: 'text-secondary-foreground',
-        ghost: 'group-active:text-accent-foreground',
+        secondary: 'text-secondaryForeground',
+        ghost: 'group-active:text-accentForeground',
         link: cn(
           'text-primary group-active:underline',
           Platform.select({ web: 'underline-offset-4 hover:underline group-hover:underline' })

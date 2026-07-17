@@ -1,15 +1,8 @@
 // src/components/CustomTabBar.tsx
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, TouchableOpacity, Text, Platform, Dimensions, Vibration } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-  runOnJS,
-} from 'react-native-reanimated';
-import { CircleQuestionMark, Home, LayoutGrid, User } from 'lucide-react-native';
+import { CircleQuestionMark, FileText, Home, Newspaper, User } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { gGap } from '../utils/Sizes';
 import { cn } from '@/lib/utils';
@@ -28,39 +21,22 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
   const { colors } = useThemeColors();
 
   const iconColor = isFocused ? colors.primary : colors.mutedForeground;
+  const labelColor = isFocused ? colors.primary : colors.mutedForeground;
 
   const getIconContent = () => {
     switch (routeName) {
       case 'HomeStack':
         return <Home size={20} color={iconColor} />;
-      case 'DocumentStack':
-        return <LayoutGrid size={20} color={iconColor} />;
+      case 'FilingStack':
+        return <FileText size={20} color={iconColor} />;
+      case 'BlogStack':
+        return <Newspaper size={20} color={iconColor} />;
       case 'FAQStack':
         return <CircleQuestionMark size={20} color={iconColor} />;
       case 'ProfileStack':
         return <User size={20} color={iconColor} />;
       default:
-        return (
-          <View
-            style={{
-              width: 24,
-              height: 24,
-              borderRadius: 8,
-              backgroundColor: iconColor,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: 4,
-            }}>
-            <View
-              style={{
-                width: 12,
-                height: 12,
-                backgroundColor: iconColor,
-                borderRadius: 2,
-              }}
-            />
-          </View>
-        );
+        return <Home size={20} color={iconColor} />;
     }
   };
 
@@ -68,8 +44,10 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
     switch (routeName) {
       case 'HomeStack':
         return t('common.tabHome');
-      case 'DocumentStack':
-        return t('common.tabNews');
+      case 'FilingStack':
+        return t('common.tabFiling');
+      case 'BlogStack':
+        return t('common.tabBlogs');
       case 'FAQStack':
         return t('common.tabFaq');
       case 'ProfileStack':
@@ -80,17 +58,21 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
   };
 
   return (
-    <View
-      style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      {getIconContent()}
+    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+      <View
+        style={{
+          height: 24,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        {getIconContent()}
+      </View>
       <Text
         className={cn('font-okra font-semibold')}
         style={{
           fontSize: 10,
-          color: iconColor,
+          marginTop: 2,
+          color: labelColor,
         }}>
         {getTabLabel()}
       </Text>
@@ -100,25 +82,7 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
 
 const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
   const { colors } = useThemeColors();
-
-  const tabWidth = screenWidth / state.routes.length;
-  const indicatorPosition = useSharedValue(0);
-  const indicatorOpacity = useSharedValue(0);
   const { bottom } = useSafeAreaInsets();
-
-  useEffect(() => {
-    indicatorPosition.value = withSpring(state.index * tabWidth, {
-      damping: 60,
-      stiffness: 400,
-    });
-
-    indicatorOpacity.value = withTiming(1, { duration: 300 });
-  }, [indicatorOpacity, indicatorPosition, state.index, tabWidth]);
-
-  const indicatorStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: indicatorPosition.value }],
-    opacity: indicatorOpacity.value,
-  }));
 
   const triggerVibration = () => {
     if (Platform.OS === 'android') {
@@ -136,27 +100,12 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
         borderTopWidth: 1,
         borderTopColor: colors.border,
       }}>
-      <Animated.View
-        style={[
-          indicatorStyle,
-          {
-            position: 'absolute',
-            bottom: gGap(bottom / 1.5),
-            width: tabWidth * 0.6,
-            marginLeft: tabWidth * 0.2,
-            height: 3,
-            backgroundColor: colors.primary,
-            borderRadius: 1.5,
-          },
-        ]}
-      />
-
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
 
         const handlePress = () => {
-          runOnJS(triggerVibration)();
+          triggerVibration();
 
           const event = navigation.emit({
             type: 'tabPress',

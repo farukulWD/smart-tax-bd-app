@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 
 // ─── Preview Modal ────────────────────────────────────────────────────────────
 
@@ -29,6 +30,7 @@ const PreviewModal = ({
   isDownloading: boolean;
 }) => {
   const { t } = useTranslation();
+  const { colors } = useThemeColors();
   if (!file) return null;
 
   return (
@@ -53,23 +55,23 @@ const PreviewModal = ({
           <TouchableOpacity
             onPress={onClose}
             className="h-9 w-9 items-center justify-center rounded-full bg-destructive">
-            <X size={18} color="#374151" />
+            <X size={18} color="#fff" />
           </TouchableOpacity>
         </View>
 
         {/* Content */}
-        <View className="m-4 flex-1 items-center justify-center overflow-hidden rounded-2xl bg-gray-50">
+        <View className="m-4 flex-1 items-center justify-center overflow-hidden rounded-2xl bg-muted">
           {file.type === 'image' ? (
             <Image source={{ uri: file.url }} className="h-full w-full" resizeMode="contain" />
           ) : file.type === 'pdf' ? (
             <View className="items-center gap-4 p-6">
-              <FileText size={56} color="#ef4444" />
+              <FileText size={56} color={colors.destructive} />
               <Text className="text-center text-sm text-mutedForeground">
                 {t('common.pdfNotSupported')}
               </Text>
               <TouchableOpacity
                 onPress={() => Linking.openURL(file.url)}
-                className="rounded-xl bg-indigo-600 px-5 py-3">
+                className="rounded-xl bg-primary px-5 py-3">
                 <Text className="text-sm font-semibold text-white">
                   {t('common.openPdfBrowser')}
                 </Text>
@@ -77,7 +79,7 @@ const PreviewModal = ({
             </View>
           ) : (
             <View className="items-center gap-3 p-6">
-              <FileText size={48} color="#9ca3af" />
+              <FileText size={48} color={colors.mutedForeground} />
               <Text className="text-center text-sm text-mutedForeground">
                 {t('common.previewNotAvailable')}
               </Text>
@@ -89,15 +91,15 @@ const PreviewModal = ({
         <View className="flex-row gap-3 px-4 pb-8 pt-2">
           <TouchableOpacity
             onPress={onClose}
-            className="flex-1 items-center rounded-xl border border-gray-200 py-3">
-            <Text className="text-sm font-semibold text-gray-600">{t('common.close')}</Text>
+            className="flex-1 items-center rounded-xl border border-border py-3">
+            <Text className="text-sm font-semibold text-mutedForeground">{t('common.close')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={onDownload}
             disabled={isDownloading}
             className={[
               'flex-1 flex-row items-center justify-center gap-2 rounded-xl py-3',
-              isDownloading ? 'bg-indigo-300' : 'bg-indigo-600',
+              isDownloading ? 'bg-primary/50' : 'bg-primary',
             ].join(' ')}>
             {isDownloading ? (
               <ActivityIndicator size="small" color="#fff" />

@@ -16,7 +16,7 @@ const LanguageToggle = () => {
       <Text
         className={cn(
           'text-xs font-medium',
-          isEnglish ? 'text-primary-foreground rounded-full bg-primary px-1' : 'text-foreground'
+          isEnglish ? 'text-primaryForeground rounded-full bg-primary px-1' : 'text-foreground'
         )}>
         EN
       </Text>
@@ -24,7 +24,7 @@ const LanguageToggle = () => {
       <Text
         className={cn(
           'text-xs font-medium',
-          isBangla ? 'text-primary-foreground rounded-full bg-primary px-1' : 'text-foreground'
+          isBangla ? 'text-primaryForeground rounded-full bg-primary px-1' : 'text-foreground'
         )}>
         BN
       </Text>

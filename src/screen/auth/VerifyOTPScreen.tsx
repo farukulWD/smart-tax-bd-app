@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, Dispatch, SetStateAction } from 'react';
 import {
   View,
-  Text,
   TextInput,
   TouchableOpacity,
   ScrollView,
@@ -9,11 +8,14 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import { ArrowLeft, Phone } from 'lucide-react-native';
+import { MailCheck } from 'lucide-react-native';
+import { Button } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';
 import { SCREEN_NAME, TAuth, TVerifyPurpose } from '@/src/types/authTypes';
 import { useThemeColors } from '@/src/theme/useThemeColors';
-import { goBack } from '@/src/utils/NavigationUtils';
-import { toast } from '@/src/utils/commonFunction';
+import { BackButton } from '@/src/components/global/BackButton';
+import { toast } from '@/src/utils/ToastConfig';
+import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import {
   useVerifyRegisterOtpMutation,
   useResendRegisterOtpMutation,
@@ -23,30 +25,30 @@ import {
 import { useTranslation } from 'react-i18next';
 
 const RESEND_COOLDOWN = 240; // 4 minutes
+const OTP_LENGTH = 6;
+const EMPTY_OTP = Array(OTP_LENGTH).fill('') as string[];
 
 const VerifyOTPScreen = ({
   setScreen,
   mobile,
   verifyType,
+  setResetToken,
 }: {
   setScreen: Dispatch<SetStateAction<TAuth>>;
   mobile: string;
   verifyType: TVerifyPurpose;
+  setResetToken: Dispatch<SetStateAction<string>>;
 }) => {
   const { t } = useTranslation();
   const { colors } = useThemeColors();
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [otp, setOtp] = useState<string[]>(EMPTY_OTP);
   const [timer, setTimer] = useState(RESEND_COOLDOWN);
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
-  const [verifyRegisterOtp, { isLoading: isVerifyingRegister }] =
-    useVerifyRegisterOtpMutation();
-  const [resendRegisterOtp, { isLoading: isResendingRegister }] =
-    useResendRegisterOtpMutation();
-  const [verifyForgotOtp, { isLoading: isVerifyingForgot }] =
-    useVerifyForgotOtpMutation();
-  const [forgotPassword, { isLoading: isResendingForgot }] =
-    useForgotPasswordMutation();
+  const [verifyRegisterOtp, { isLoading: isVerifyingRegister }] = useVerifyRegisterOtpMutation();
+  const [resendRegisterOtp, { isLoading: isResendingRegister }] = useResendRegisterOtpMutation();
+  const [verifyForgotOtp, { isLoading: isVerifyingForgot }] = useVerifyForgotOtpMutation();
+  const [forgotPassword, { isLoading: isResendingForgot }] = useForgotPasswordMutation();
 
   const isVerifying = verifyType === 'register' ? isVerifyingRegister : isVerifyingForgot;
   const isResending = verifyType === 'register' ? isResendingRegister : isResendingForgot;
@@ -61,15 +63,25 @@ const VerifyOTPScreen = ({
   }, [timer]);
 
   const handleOtpChange = (text: string, index: number) => {
-    if (text && !/^\d+$/.test(text)) return;
+    const digits = text.replace(/\D/g, '');
 
+    if (!digits) {
+      const newOtp = [...otp];
+      newOtp[index] = '';
+      setOtp(newOtp);
+      return;
+    }
+
+    // A single keystroke advances one box; a paste or SMS autofill arrives as the
+    // whole code at once and spreads across the remaining boxes.
     const newOtp = [...otp];
-    newOtp[index] = text;
+    for (let i = 0; i < digits.length && index + i < OTP_LENGTH; i++) {
+      newOtp[index + i] = digits[i];
+    }
     setOtp(newOtp);
 
-    if (text && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
+    const nextIndex = Math.min(index + digits.length, OTP_LENGTH - 1);
+    inputRefs.current[nextIndex]?.focus();
   };
 
   const handleKeyPress = (key: string, index: number) => {
@@ -85,13 +97,16 @@ const VerifyOTPScreen = ({
       if (verifyType === 'register') {
         await verifyRegisterOtp({ mobile, otp: otpCode }).unwrap();
         toast.success(t('auth.otpVerified'));
+        setOtp(EMPTY_OTP);
+        setTimer(RESEND_COOLDOWN);
+        setScreen(SCREEN_NAME.SIGNIN);
       } else {
         const res = await verifyForgotOtp({ mobile, otp: otpCode }).unwrap();
-        toast.success(res?.message ?? t('auth.otpVerified'));
+        setResetToken(res.data.resetToken);
+        setOtp(EMPTY_OTP);
+        setTimer(RESEND_COOLDOWN);
+        setScreen(SCREEN_NAME.RESET_PASSWORD);
       }
-      setOtp(['', '', '', '', '', '']);
-      setTimer(RESEND_COOLDOWN);
-      setScreen(SCREEN_NAME.SIGNIN);
     } catch (error) {
       const err = error as { data?: { message?: string } };
       toast.error(err?.data?.message ?? t('auth.verifyFail'));
@@ -112,133 +127,135 @@ const VerifyOTPScreen = ({
         await forgotPassword({ mobile }).unwrap();
       }
       setTimer(RESEND_COOLDOWN);
-      setOtp(['', '', '', '', '', '']);
+      setOtp(EMPTY_OTP);
       inputRefs.current[0]?.focus();
       toast.success(t('auth.otpSent'));
     } catch (error) {
-      const err = error as { data?: { message?: string } };
-      toast.error(err?.data?.message ?? t('auth.resendFail'));
+      globalErrorHandler(error);
     }
   };
 
   const isOtpComplete = otp.every((digit) => digit !== '');
 
+  const renderBox = (index: number) => (
+    <View
+      key={index}
+      className={`h-14 flex-1 items-center justify-center rounded-xl border-2 ${
+        otp[index] ? 'border-primary bg-primary/5' : 'border-border bg-card'
+      }`}>
+      <TextInput
+        ref={(ref) => {
+          inputRefs.current[index] = ref;
+        }}
+        className="h-full w-full text-center text-2xl font-bold text-foreground"
+        value={otp[index]}
+        onChangeText={(text) => handleOtpChange(text, index)}
+        onKeyPress={({ nativeEvent: { key } }) => handleKeyPress(key, index)}
+        keyboardType="number-pad"
+        // Not 1: iOS autofill and paste deliver all six digits to a single box,
+        // and maxLength would clip them before handleOtpChange could spread them.
+        maxLength={OTP_LENGTH}
+        textContentType="oneTimeCode"
+        autoComplete={Platform.OS === 'android' ? 'sms-otp' : 'one-time-code'}
+        importantForAutofill="yes"
+        selectTextOnFocus
+      />
+    </View>
+  );
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className="flex-1 bg-background">
+      <View className="mx-4 mt-14">
+        <BackButton
+          onPress={() =>
+            setScreen(
+              verifyType === 'forgotPassword' ? SCREEN_NAME.FORGOT_PASSWORD : SCREEN_NAME.SIGNUP
+            )
+          }
+        />
+      </View>
+
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled">
-        <View className="flex-1 px-6">
-          {/* Back Button */}
-          <TouchableOpacity
-            onPress={() => {
-              goBack();
-            }}
-            className="mb-8 mt-12">
-            <ArrowLeft size={24} color={colors.foreground} />
-          </TouchableOpacity>
-
+        <View className="flex-1 justify-center px-6">
           {/* Header */}
-          <View className="mb-8">
-            <Text className="mb-3 text-3xl font-bold text-foreground">
-              {t('auth.verifyOtpTitle')}
+          <View className="items-center pb-10">
+            <View className="h-24 w-24 items-center justify-center rounded-full bg-muted">
+              <MailCheck size={32} color={colors.mutedForeground} />
+            </View>
+            <Text className="mt-5 text-3xl font-bold text-foreground">
+              {t('auth.verificationCodeTitle')}
             </Text>
-            <Text className="text-base leading-6 text-mutedForeground">
-              {t('auth.verifyOtpDesc')}
-              {'\n'}
+            <Text className="mt-2 text-center text-base text-mutedForeground">
+              {t('auth.verificationCodeDesc')}{' '}
               <Text className="font-semibold text-mutedForeground">
                 {mobile || t('auth.mobileNumberDefault')}
               </Text>
             </Text>
           </View>
 
-          {/* OTP Input Boxes */}
-          <View className="mb-8">
-            <View className="mb-4 flex-row justify-between">
-              {otp.map((digit, index) => (
-                <View
-                  key={index}
-                  className={`h-14 w-14 items-center justify-center rounded-xl border-2 ${
-                    digit ? 'border-green-600 bg-green-50' : 'border-border bg-accent'
-                  }`}>
-                  <TextInput
-                    ref={(ref) => {
-                      inputRefs.current[index] = ref;
-                    }}
-                    className="h-full w-full text-center text-2xl font-bold text-foreground"
-                    value={digit}
-                    onChangeText={(text) => handleOtpChange(text, index)}
-                    onKeyPress={({ nativeEvent: { key } }) => handleKeyPress(key, index)}
-                    keyboardType="number-pad"
-                    maxLength={1}
-                    selectTextOnFocus
-                  />
+          {/* OTP boxes — 3 groups of 2 */}
+          <View className="gap-1.5">
+            <Text className="text-center text-sm font-medium text-foreground">
+              {t('auth.verificationCodeLabel')}
+            </Text>
+            <View className="flex-row items-center justify-center gap-2">
+              {[0, 2, 4].map((start, groupIndex) => (
+                <View key={start} className="flex-1 flex-row items-center gap-2">
+                  {renderBox(start)}
+                  {renderBox(start + 1)}
+                  {groupIndex < 2 && <View className="h-0.5 w-3 rounded bg-border" />}
                 </View>
               ))}
             </View>
           </View>
 
-          {/* Timer and Resend */}
-          <View className="mb-8">
-            {timer > 0 ? (
-              <View className="flex-row items-center justify-center">
-                <Text className="text-sm text-mutedForeground">
-                  {t('auth.resendCodeIn')}{' '}
-                  <Text className="font-semibold text-green-600">
-                    {Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')}
-                  </Text>
-                </Text>
-              </View>
-            ) : (
-              <View className="flex-row items-center justify-center">
-                <Text className="text-sm text-mutedForeground">{t('auth.didNotReceiveCode')} </Text>
-                <TouchableOpacity onPress={handleResend} disabled={isResending}>
-                  {isResending ? (
-                    <ActivityIndicator color={colors.primary} size="small" />
-                  ) : (
-                    <Text className="text-sm font-semibold text-green-600">{t('auth.resend')}</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-
           {/* Verify Button */}
-          <TouchableOpacity
+          <Button
             onPress={handleVerify}
             disabled={!isOtpComplete || isVerifying}
-            className={`mb-6 rounded-xl py-4 ${
-              isOtpComplete && !isVerifying ? 'bg-green-600' : 'bg-accent'
-            }`}>
+            className={`mt-6 h-14 rounded-xl ${isOtpComplete ? 'bg-primary' : 'bg-muted'}`}>
             {isVerifying ? (
               <ActivityIndicator color="#ffffff" />
             ) : (
-              <Text className="text-center text-base font-semibold text-white">
-                {t('auth.verifyOtpButton')}
+              <Text
+                className={`text-base font-bold ${
+                  isOtpComplete ? 'text-white' : 'text-mutedForeground'
+                }`}>
+                {t('auth.verifyCodeButton')}
               </Text>
             )}
-          </TouchableOpacity>
+          </Button>
+        </View>
 
-          {/* Help Text */}
-          <View className="mb-6 rounded-xl border border-border bg-accent p-4">
-            <Text className="text-center text-sm leading-5 text-accentForeground">
-              {t('auth.verifyOtpHelp')}
+        {/* Resend */}
+        <View className="flex-row items-center justify-center pb-8 pt-6">
+          {timer > 0 ? (
+            <Text className="text-sm text-mutedForeground">
+              {t('auth.resendCodeIn')}{' '}
+              <Text className="font-semibold text-primary">
+                {Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')}
+              </Text>
             </Text>
-          </View>
-
-          {/* Spacer */}
-          <View className="flex-1" />
-
-          {/* Bottom Info */}
-          <View className="items-center pb-8">
-            <View className="mb-2 flex-row items-center">
-              <Phone size={16} color={colors.mutedForeground} />
-              <Text className="ml-2 text-sm text-mutedForeground">support@smarttaxbd.com.bd</Text>
-            </View>
-          </View>
+          ) : (
+            <>
+              <Text className="text-sm text-mutedForeground">{t('auth.didNotGetCode')} </Text>
+              <TouchableOpacity
+                onPress={handleResend}
+                disabled={isResending}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                {isResending ? (
+                  <ActivityIndicator color={colors.primary} size="small" />
+                ) : (
+                  <Text className="text-sm font-bold text-primary">{t('auth.resend')}</Text>
+                )}
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

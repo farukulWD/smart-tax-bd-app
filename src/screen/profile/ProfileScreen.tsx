@@ -60,7 +60,7 @@ const ProfileScreen = () => {
       label: t('profile.payments'),
       value: paymentResponse?.data?.length ?? 0,
       icon: <CreditCard size={17} color="hsl(48, 96%, 53%)" />,
-      accent: 'bg-yellow-500/15',
+      accent: 'bg-warning/15',
     },
     {
       label: t('profile.documents'),
@@ -110,7 +110,7 @@ const ProfileScreen = () => {
                 </View>
 
                 {/* Status badge */}
-                <View className="rounded-full border border-[#3ca34d79] bg-[#3ca34d1f] px-3 py-1">
+                <View className="rounded-full border border-success/50 bg-success/10 px-3 py-1">
                   <Text className="text-xs font-bold capitalize text-primary">{user?.status}</Text>
                 </View>
               </View>
@@ -184,7 +184,7 @@ const ProfileScreen = () => {
           <MenuItem
             isFirst
             icon={<CreditCard size={16} color="hsl(48, 96%, 53%)" />}
-            accent="bg-yellow-500/15"
+            accent="bg-warning/15"
             label={t('profile.payments')}
             description={t('profile.paymentHistory')}
             onPress={() => navigate('MyPayments')}
@@ -218,7 +218,7 @@ const ProfileScreen = () => {
           <MenuItem
             isFirst
             icon={<BookOpen size={16} color="hsl(217, 91%, 55%)" />}
-            accent="bg-blue-500/15"
+            accent="bg-primary/15"
             label={t('profile.aboutUs')}
             description={t('profile.aboutUsDesc')}
             onPress={() => navigate('AboutUs')}
@@ -232,7 +232,7 @@ const ProfileScreen = () => {
           />
           <MenuItem
             icon={<Languages size={16} color="hsl(270, 60%, 55%)" />}
-            accent="bg-purple-500/15"
+            accent="bg-secondary/15"
             label={t('profile.language')}
             description={isEnglish ? 'English' : 'বাংলা'}
             onPress={() => setLocale(isEnglish ? 'bn' : 'en')}

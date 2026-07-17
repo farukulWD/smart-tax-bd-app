@@ -30,7 +30,7 @@ const TaxYearPicker = ({ value, onChange }: { value: string; onChange: (v: strin
                 }}>
                 <Text
                   className={`text-sm ${
-                    year === value ? 'font-semibold text-green-700' : 'text-mutedForeground'
+                    year === value ? 'font-semibold text-success' : 'text-mutedForeground'
                   }`}>
                   {year}
                 </Text>

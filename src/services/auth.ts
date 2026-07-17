@@ -33,7 +33,7 @@ export const authApi = baseApi.injectEndpoints({
         data,
       }),
     }),
-    resetPassword: builder.mutation<TResponse<any>, any>({
+    resetPassword: builder.mutation<TResponse<any>, { resetToken: string; newPassword: string }>({
       query: (data) => ({
         url: '/auth/reset-password',
         method: 'POST',
