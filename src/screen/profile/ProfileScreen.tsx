@@ -162,13 +162,6 @@ const ProfileScreen = () => {
             onPress={() => navigate('MyOrders')}
           />
           <MenuItem
-            icon={<LucideIcon name="FolderOpen" className="text-secondary" size={16} />}
-            accent="bg-secondary/15"
-            label={t('profile.documents')}
-            description={t('profile.uploadedFiles')}
-            onPress={() => navigate('UploadedDocuments')}
-          />
-          <MenuItem
             icon={<LucideIcon name="FilesIcon" className="text-chart4" size={16} />}
             accent="bg-chart4/15"
             label={t('profile.myFiles')}

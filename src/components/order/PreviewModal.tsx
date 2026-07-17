@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useThemeColors } from '@/src/theme/useThemeColors';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // ─── Preview Modal ────────────────────────────────────────────────────────────
 
@@ -34,12 +35,8 @@ const PreviewModal = ({
   if (!file) return null;
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      presentationStyle="pageSheet"
-      onRequestClose={onClose}>
-      <View className="flex-1 bg-card">
+    <Modal visible={visible} animationType="slide" statusBarTranslucent onRequestClose={onClose}>
+      <SafeAreaView className="flex-1 bg-card">
         {/* Header */}
         <View className="flex-row items-center justify-between border-b border-border px-4 pb-3 pt-5">
           <View className="mr-3 flex-1">
@@ -111,7 +108,7 @@ const PreviewModal = ({
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 };

@@ -4,6 +4,7 @@ import { Text } from '@/components/ui/text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 import { navigate } from '@/src/utils/NavigationUtils';
+import { BackButton } from '@/src/components/global/BackButton';
 
 const highlights = [
   {
@@ -39,6 +40,11 @@ const AboutUsScreen = () => {
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}>
+        {/* ── Back Button ──────────────────────────────────────────────── */}
+        <View className="px-5 pb-2 pt-2">
+          <BackButton />
+        </View>
+
         {/* ── Hero Section ─────────────────────────────────────────────── */}
         <View className="items-center px-5 py-5">
           {/* Badge */}

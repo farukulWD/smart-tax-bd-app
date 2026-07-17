@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 import { navigate } from '@/src/utils/NavigationUtils';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
+import { BackButton } from '@/src/components/global/BackButton';
 
 const contactCards = [
   {
@@ -36,6 +37,11 @@ const ContactUsScreen = () => {
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}>
+        {/* ── Back Button ──────────────────────────────────────────────── */}
+        <View className="px-5 pb-2 pt-2">
+          <BackButton />
+        </View>
+
         {/* ── Hero Section ─────────────────────────────────────────────── */}
         <View className="items-center px-5 py-5">
           {/* Badge */}
