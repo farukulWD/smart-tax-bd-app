@@ -1,6 +1,6 @@
 //src/redux/store.ts
 
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, Middleware } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -15,14 +15,22 @@ import {
 } from 'redux-persist';
 import { rootReducer } from './rootReducer';
 import { baseApi } from '../services/baseApi';
+import { logout } from './slices/authSlice';
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth'], // persist only auth slice
+  whitelist: ['auth'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const resetApiOnLogout: Middleware = (storeAPI) => (next) => (action) => {
+  if ((action as { type: string }).type === logout.type) {
+    storeAPI.dispatch(baseApi.util.resetApiState());
+  }
+  return next(action);
+};
 
 export const store = configureStore({
   reducer: persistedReducer,
@@ -31,7 +39,9 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(baseApi.middleware),
+    })
+      .concat(baseApi.middleware)
+      .concat(resetApiOnLogout),
 });
 
 export const persistor = persistStore(store);

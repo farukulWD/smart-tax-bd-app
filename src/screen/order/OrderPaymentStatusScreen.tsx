@@ -18,6 +18,7 @@ import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LucideIcon from '@/src/components/common/LucideIcon';
 import { useThemeColors } from '@/src/theme/useThemeColors';
+import { BackButton } from '@/src/components/global/BackButton';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -81,9 +82,7 @@ const OrderPaymentStatusScreen = () => {
     return (
       <View className="flex-1 items-center justify-center gap-4 bg-background px-6">
         <AlertCircle size={40} color={colors.destructive} />
-        <Text className="text-center text-sm text-destructive">
-          {t('payment.failedToLoad')}
-        </Text>
+        <Text className="text-center text-sm text-destructive">{t('payment.failedToLoad')}</Text>
         <TouchableOpacity onPress={() => refetch()} className="rounded-2xl bg-primary px-6 py-3">
           <Text className="font-semibold text-white">{t('payment.retry')}</Text>
         </TouchableOpacity>
@@ -119,9 +118,12 @@ const OrderPaymentStatusScreen = () => {
           showsVerticalScrollIndicator={false}>
           {/* Header */}
           <View className="mb-6">
-            <Text className="text-2xl font-bold tracking-tight text-foreground">
-              {t('payment.step3Title')}
-            </Text>
+            <View className="flex-row items-center gap-3">
+              {route.params.canGoBack && <BackButton />}
+              <Text className="text-2xl font-bold tracking-tight text-foreground">
+                {t('payment.step3Title')}
+              </Text>
+            </View>
             <Text className="mt-1 text-sm text-mutedForeground">
               {t('payment.step3Description')}
             </Text>
@@ -167,7 +169,9 @@ const OrderPaymentStatusScreen = () => {
                       activeOpacity={0.8}
                       className="flex-row items-center justify-center gap-2 rounded-2xl bg-primary py-4">
                       <CreditCard size={18} color="#fff" />
-                      <Text className="text-base font-bold text-white">{t('payment.startPayment')}</Text>
+                      <Text className="text-base font-bold text-white">
+                        {t('payment.startPayment')}
+                      </Text>
                     </TouchableOpacity>
 
                     {/* Refresh Status */}
@@ -176,7 +180,9 @@ const OrderPaymentStatusScreen = () => {
                       activeOpacity={0.8}
                       className="flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-muted py-4">
                       <LucideIcon name="RefreshCw" size={16} className="text-mutedForeground" />
-                      <Text className="text-sm font-semibold text-mutedForeground">{t('payment.refreshStatus')}</Text>
+                      <Text className="text-sm font-semibold text-mutedForeground">
+                        {t('payment.refreshStatus')}
+                      </Text>
                     </TouchableOpacity>
                   </>
                 )}
@@ -187,7 +193,9 @@ const OrderPaymentStatusScreen = () => {
                   activeOpacity={0.7}
                   className="flex-row items-center justify-center gap-2 py-3">
                   <ArrowLeft size={15} color={colors.primary} />
-                  <Text className="text-sm font-semibold text-primary">{t('payment.backToStep2')}</Text>
+                  <Text className="text-sm font-semibold text-primary">
+                    {t('payment.backToStep2')}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -212,15 +220,15 @@ const OrderPaymentStatusScreen = () => {
                 <TouchableOpacity
                   onPress={() => setShowBkashModal(false)}
                   className="flex-1 items-center rounded-2xl border border-border bg-muted py-3.5">
-                  <Text className="text-sm font-semibold text-mutedForeground">{t('payment.cancel')}</Text>
+                  <Text className="text-sm font-semibold text-mutedForeground">
+                    {t('payment.cancel')}
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handlePlaceManualOrder}
                   disabled={isPlacingOrder}
                   className="flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-primary py-3.5">
-                  {isPlacingOrder ? (
-                    <ActivityIndicator size="small" color="#fff" />
-                  ) : null}
+                  {isPlacingOrder ? <ActivityIndicator size="small" color="#fff" /> : null}
                   <Text className="text-sm font-bold text-white">{t('payment.ok')}</Text>
                 </TouchableOpacity>
               </View>

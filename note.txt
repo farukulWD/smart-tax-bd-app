@@ -1,2 +1,0 @@
-- Bottom Tab Navigator overflow issue fix.
-- Install app in 12 separate account.

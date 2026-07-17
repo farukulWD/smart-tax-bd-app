@@ -13,18 +13,7 @@ import { useLocale } from '@/src/localization/useLocale';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 import LucideIcon from '@/src/components/common/LucideIcon';
 import { useTranslation } from 'react-i18next';
-import {
-  CreditCard,
-  ClipboardList,
-  FolderOpen,
-  LogOut,
-  User,
-  Phone,
-  BookOpen,
-  Languages,
-  ChevronRight,
-  FilesIcon,
-} from 'lucide-react-native';
+
 import { useGetMyFilesQuery } from '@/src/services/fileApi';
 import {
   StatCard,
@@ -50,19 +39,19 @@ const ProfileScreen = () => {
     {
       label: t('profile.orders'),
       value: orderResponse?.data?.length ?? 0,
-      icon: <ClipboardList size={17} color="hsl(125, 70%, 33%)" />,
+      icon: <LucideIcon name="ClipboardList" className="text-primary" size={17} />,
       accent: 'bg-primary/15',
     },
     {
       label: t('profile.payments'),
       value: paymentResponse?.data?.length ?? 0,
-      icon: <CreditCard size={17} color="hsl(48, 96%, 53%)" />,
+      icon: <LucideIcon name="CreditCard" className="text-warning" size={17} />,
       accent: 'bg-warning/15',
     },
     {
       label: t('profile.documents'),
       value: filesResponse?.data?.length ?? 0,
-      icon: <FolderOpen size={17} color="hsl(0, 83%, 49%)" />,
+      icon: <LucideIcon name="FolderOpen" className="text-destructive" size={17} />,
       accent: 'bg-destructive/15',
     },
   ];
@@ -94,7 +83,7 @@ const ProfileScreen = () => {
             <View className="px-4 pb-4 pt-4">
               <View className="flex-row items-center">
                 {/* Avatar */}
-                <View className="bg-primary/20 h-14 w-14 items-center justify-center rounded-full border-2 border-primary">
+                <View className="h-14 w-14 items-center justify-center rounded-full border-2 border-primary bg-primary/20">
                   <Text className="text-lg font-bold text-primary">{initials}</Text>
                 </View>
 
@@ -105,18 +94,17 @@ const ProfileScreen = () => {
                 </View>
 
                 {/* Status badge */}
-                <View className="rounded-full border border-success/50 bg-success/10 px-3 py-1">
+                <View className="rounded-full border border-primary/50 bg-primary/10 px-3 py-1">
                   <Text className="text-xs font-bold capitalize text-primary">{user?.status}</Text>
                 </View>
               </View>
-
             </View>
           </View>
         ) : (
           /* ── Guest Card ─────────────────────────────────────────────── */
           <View className="mx-4 mt-2 rounded-3xl border border-border bg-card px-4 py-5">
             <View className="mb-3 h-14 w-14 items-center justify-center rounded-full border border-border bg-muted">
-              <User size={24} color="hsl(0, 0%, 60%)" />
+              <LucideIcon name="User" className="text-mutedForeground" size={24} />
             </View>
             <Text className="text-base font-bold text-foreground">{t('profile.notSignedIn')}</Text>
             <Text className="mt-1 text-xs leading-5 text-mutedForeground">
@@ -160,29 +148,29 @@ const ProfileScreen = () => {
         <View className="mx-4 overflow-hidden rounded-2xl border border-border bg-card">
           <MenuItem
             isFirst
-            icon={<CreditCard size={16} color="hsl(48, 96%, 53%)" />}
+            icon={<LucideIcon name="CreditCard" className="text-warning" size={16} />}
             accent="bg-warning/15"
             label={t('profile.payments')}
             description={t('profile.paymentHistory')}
             onPress={() => navigate('MyPayments')}
           />
           <MenuItem
-            icon={<ClipboardList size={16} color="hsl(125, 70%, 33%)" />}
+            icon={<LucideIcon name="ClipboardList" className="text-primary" size={16} />}
             accent="bg-primary/15"
             label={t('profile.orders')}
             description={t('profile.taxOrders')}
             onPress={() => navigate('MyOrders')}
           />
           <MenuItem
-            icon={<FolderOpen size={16} color="hsl(0, 83%, 49%)" />}
-            accent="bg-destructive/15"
+            icon={<LucideIcon name="FolderOpen" className="text-secondary" size={16} />}
+            accent="bg-secondary/15"
             label={t('profile.documents')}
             description={t('profile.uploadedFiles')}
             onPress={() => navigate('UploadedDocuments')}
           />
           <MenuItem
-            icon={<FilesIcon size={16} color="hsl(75, 90%, 49%)" />}
-            accent="bg-blue/15"
+            icon={<LucideIcon name="FilesIcon" className="text-chart4" size={16} />}
+            accent="bg-chart4/15"
             label={t('profile.myFiles')}
             description={t('profile.myFilesDesc')}
             onPress={() => navigate('MyFiles')}
@@ -194,22 +182,22 @@ const ProfileScreen = () => {
         <View className="mx-4 overflow-hidden rounded-2xl border border-border bg-card">
           <MenuItem
             isFirst
-            icon={<BookOpen size={16} color="hsl(217, 91%, 55%)" />}
-            accent="bg-primary/15"
+            icon={<LucideIcon name="BookOpen" className="text-warning" size={16} />}
+            accent="bg-warning/15"
             label={t('profile.aboutUs')}
             description={t('profile.aboutUsDesc')}
             onPress={() => navigate('AboutUs')}
           />
           <MenuItem
-            icon={<Phone size={16} color="hsl(125, 70%, 33%)" />}
-            accent="bg-primary/15"
+            icon={<LucideIcon name="Phone" className="text-secondary" size={16} />}
+            accent="bg-secondary/15"
             label={t('profile.contactUs')}
             description={t('profile.contactUsDesc')}
             onPress={() => navigate('ContactUs')}
           />
           <MenuItem
-            icon={<Languages size={16} color="hsl(270, 60%, 55%)" />}
-            accent="bg-secondary/15"
+            icon={<LucideIcon name="Languages" className="text-chart1" size={16} />}
+            accent="bg-chart1/15"
             label={t('profile.language')}
             description={isEnglish ? 'English' : 'বাংলা'}
             onPress={() => setLocale(isEnglish ? 'bn' : 'en')}
@@ -238,29 +226,28 @@ const ProfileScreen = () => {
               activeOpacity={0.75}
               className="flex-row items-center gap-3 px-4 py-3.5">
               <View className="h-9 w-9 items-center justify-center rounded-xl bg-muted">
-                <LogOut size={16} color="hsl(0, 0%, 60%)" />
+                <LucideIcon name="LogOut" className="text-mutedForeground" size={16} />
               </View>
               <Text className="flex-1 text-sm font-semibold text-foreground">
                 {t('profile.signOut')}
               </Text>
-              <ChevronRight size={15} color="hsl(0, 0%, 60%)" />
+              <LucideIcon name="ChevronRight" className="text-mutedForeground" size={15} />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
               onPress={() => navigate('Auth', { screen: 'SignIn', shouldGoBack: true })}
               activeOpacity={0.75}
               className="flex-row items-center gap-3 px-4 py-3.5">
-              <View className="bg-primary/15 h-9 w-9 items-center justify-center rounded-xl">
-                <User size={16} color="hsl(125, 70%, 33%)" />
+              <View className="h-9 w-9 items-center justify-center rounded-xl bg-primary/15">
+                <LucideIcon name="User" className="text-primary" size={16} />
               </View>
               <Text className="flex-1 text-sm font-semibold text-foreground">
                 {t('profile.signIn')}
               </Text>
-              <ChevronRight size={15} color="hsl(0, 0%, 60%)" />
+              <LucideIcon name="ChevronRight" className="text-mutedForeground" size={15} />
             </TouchableOpacity>
           )}
         </View>
-
       </ScrollView>
 
       <ConfirmModal

@@ -104,6 +104,19 @@ const ThemedApp = () => {
         'color-border': hslToRgbChannels(colors.border),
         'color-input': hslToRgbChannels(colors.input),
         'color-ring': hslToRgbChannels(colors.ring),
+        'color-chart1': hslToRgbChannels(colors.chart1),
+        'color-chart2': hslToRgbChannels(colors.chart2),
+        'color-chart3': hslToRgbChannels(colors.chart3),
+        'color-chart4': hslToRgbChannels(colors.chart4),
+        'color-chart5': hslToRgbChannels(colors.chart5),
+        'color-sidebar': hslToRgbChannels(colors.sidebar),
+        'color-sidebarForeground': hslToRgbChannels(colors.sidebarForeground),
+        'color-sidebarPrimary': hslToRgbChannels(colors.sidebarPrimary),
+        'color-sidebarPrimaryForeground': hslToRgbChannels(colors.sidebarPrimaryForeground),
+        'color-sidebarAccent': hslToRgbChannels(colors.sidebarAccent),
+        'color-sidebarAccentForeground': hslToRgbChannels(colors.sidebarAccentForeground),
+        'color-sidebarBorder': hslToRgbChannels(colors.sidebarBorder),
+        'color-sidebarRing': hslToRgbChannels(colors.sidebarRing),
       })}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} backgroundColor="transparent" />
       <Navigation />

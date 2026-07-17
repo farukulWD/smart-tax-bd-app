@@ -37,7 +37,11 @@ export type AppStackParamList = {
   MyFiles: undefined;
   CreateTaxOrder: { taxTypeId: string; redirectTo: { stack: string; screen: string } };
   RequireDocuments: { taxId: string; redirectTo?: { stack: string; screen: string } };
-  OrderPaymentStatus: { taxId: string; redirectTo?: { stack: string; screen: string } };
+  OrderPaymentStatus: {
+    taxId: string;
+    redirectTo?: { stack: string; screen: string };
+    canGoBack?: boolean;
+  };
   OrderPayment: { gatewayUrl: string; redirectTo?: { stack: string; screen: string } };
   OrderSuccess: { taxId: string } | undefined;
 };

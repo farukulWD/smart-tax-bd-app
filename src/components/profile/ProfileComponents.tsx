@@ -32,7 +32,8 @@ export const MenuItem = ({
     onPress={onPress}
     activeOpacity={0.72}
     className={`flex-row items-center gap-3 px-4 py-3.5 ${!isFirst ? 'border-t border-border' : ''}`}>
-    <View className={`h-9 w-9 items-center justify-center rounded-xl ${accent ?? 'bg-muted'}`}>
+    <View
+      className={`h-9 w-9 items-center justify-center overflow-hidden rounded-xl ${accent ?? 'bg-muted'}`}>
       {icon}
     </View>
     <View className="flex-1">

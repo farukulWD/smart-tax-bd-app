@@ -1,354 +1,22 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  ActivityIndicator,
-  RefreshControl,
-  Modal,
-  ScrollView,
-} from 'react-native';
+import { useState } from 'react';
+import { View, Text, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { IOrder, useGetMyOrdersQuery } from '@/src/services/orderApi';
-import {
-  FileText,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  ChevronRight,
-  ClipboardList,
-  CalendarDays,
-  Banknote,
-  CircleDot,
-} from 'lucide-react-native';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
-import { Button } from '@/components/ui/button';
-import { navigate } from '@/src/utils/NavigationUtils';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useThemeColors } from '@/src/theme/useThemeColors';
-import type { lightColors } from '@/src/theme/colors';
-
-type ThemeColors = typeof lightColors;
-
-type FilterStatus = 'all' | 'draft' | 'documents_uploaded' | 'order_placed';
-
-const formatAmount = (amount: number) => `৳ ${amount.toLocaleString('en-BD')}`;
-
-const formatDate = (dateStr?: string) => {
-  if (!dateStr) return '—';
-  return new Date(dateStr).toLocaleDateString('en-BD', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
-};
-
-const formatStatus = (status: string) =>
-  status
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-
-const shortenId = (id: string) => `…${id.slice(-6)}`;
-
-// ─── status config ────────────────────────────────────────────────────────────
-
-type StatusConfig = {
-  label: string;
-  pillBg: string;
-  pillText: string;
-  borderAccent: string;
-  iconColor: string;
-  icon: React.ReactNode;
-};
-
-// Takes colors so icon tints track the theme — the pill classes already do.
-const getStatusConfig = (status: string, colors: ThemeColors): StatusConfig => {
-  const map: Record<string, StatusConfig> = {
-    draft: {
-      label: 'Draft',
-      pillBg: 'bg-muted',
-      pillText: 'text-mutedForeground',
-      borderAccent: 'border-l-border',
-      iconColor: colors.mutedForeground,
-      icon: <FileText size={14} color={colors.mutedForeground} />,
-    },
-    documents_uploaded: {
-      label: 'Docs Uploaded',
-      pillBg: 'bg-success/15',
-      pillText: 'text-success',
-      borderAccent: 'border-l-success',
-      iconColor: colors.success,
-      icon: <CheckCircle2 size={14} color={colors.success} />,
-    },
-    order_placed: {
-      label: 'Order Placed',
-      pillBg: 'bg-success/15',
-      pillText: 'text-success',
-      borderAccent: 'border-l-success',
-      iconColor: colors.success,
-      icon: <CheckCircle2 size={14} color={colors.success} />,
-    },
-    pending_payment: {
-      label: 'Pending Payment',
-      pillBg: 'bg-warning/15',
-      pillText: 'text-warning',
-      borderAccent: 'border-l-warning',
-      iconColor: colors.warning,
-      icon: <Clock size={14} color={colors.warning} />,
-    },
-  };
-
-  return (
-    map[status] ?? {
-      label: formatStatus(status),
-      pillBg: 'bg-muted',
-      pillText: 'text-mutedForeground',
-      borderAccent: 'border-l-border',
-      iconColor: colors.mutedForeground,
-      icon: <CircleDot size={14} color={colors.mutedForeground} />,
-    }
-  );
-};
-
-// ─── Step indicator ───────────────────────────────────────────────────────────
-
-const StepDots = ({ current }: { current: 1 | 2 | 3 }) => (
-  <View className="flex-row items-center gap-1">
-    {[1, 2, 3].map((step) => (
-      <View
-        key={step}
-        className={[
-          'h-1.5 rounded-full',
-          step < current
-            ? 'w-4 bg-primary'
-            : step === current
-              ? 'bg-primary/60 w-4'
-              : 'w-2 bg-muted',
-        ].join(' ')}
-      />
-    ))}
-    <Text className="ml-1 text-xs text-mutedForeground">Step {current}/3</Text>
-  </View>
-);
-
-// ─── Summary Bar ──────────────────────────────────────────────────────────────
-
-const SummaryBar = ({ orders }: { orders: IOrder[] }) => {
-  const placed = orders.filter((o) => o.status === 'order_placed').length;
-  const inProgress = orders.filter((o) => o.status !== 'order_placed').length;
-
-  return (
-    <View className="mx-4 mb-4 rounded-3xl border border-border bg-card p-5">
-      <View className="flex-row items-center justify-between">
-        <View>
-          <Text className="mb-1 text-xs text-mutedForeground">Total Orders</Text>
-          <Text className="text-2xl font-bold text-foreground">{orders.length}</Text>
-          <Text className="mt-1 text-xs text-mutedForeground">{placed} completed</Text>
-        </View>
-
-        <View className="gap-2">
-          <View className="flex-row items-center gap-2 rounded-xl bg-muted px-3 py-2">
-            <View className="h-2 w-2 rounded-full bg-primary" />
-            <Text className="text-xs text-mutedForeground">{placed} Placed</Text>
-          </View>
-          <View className="flex-row items-center gap-2 rounded-xl bg-muted px-3 py-2">
-            <View className="h-2 w-2 rounded-full bg-warning" />
-            <Text className="text-xs text-mutedForeground">{inProgress} In Progress</Text>
-          </View>
-        </View>
-      </View>
-      <Button
-        className="mt-2"
-        onPress={() => {
-          navigate('CreateTaxOrder');
-        }}>
-        <Text className="font-semibold text-primaryForeground">Create New Order</Text>
-      </Button>
-    </View>
-  );
-};
-
-// ─── Filter Tabs ──────────────────────────────────────────────────────────────
-
-const FILTERS: { key: FilterStatus; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'draft', label: 'Draft' },
-  { key: 'documents_uploaded', label: 'Uploaded' },
-  { key: 'order_placed', label: 'Placed' },
-];
-
-const FilterTabs = ({
-  active,
-  onChange,
-  counts,
-}: {
-  active: FilterStatus;
-  onChange: (f: FilterStatus) => void;
-  counts: Record<FilterStatus, number>;
-}) => (
-  <View className="mb-4 flex-row gap-2 px-4">
-    {FILTERS.map((f) => {
-      const isActive = active === f.key;
-      return (
-        <TouchableOpacity
-          key={f.key}
-          onPress={() => onChange(f.key)}
-          activeOpacity={0.75}
-          className={[
-            'flex-row items-center gap-1.5 rounded-full px-3 py-2',
-            isActive ? 'bg-primary' : 'bg-muted',
-          ].join(' ')}>
-          <Text
-            className={`text-xs font-semibold ${
-              isActive ? 'text-primaryForeground' : 'text-mutedForeground'
-            }`}>
-            {f.label}
-          </Text>
-          <View
-            className={`h-4 w-4 items-center justify-center rounded-full ${
-              isActive ? 'bg-primaryForeground/20' : 'bg-background'
-            }`}>
-            <Text
-              className={`text-[10px] font-bold ${
-                isActive ? 'text-primaryForeground' : 'text-mutedForeground'
-              }`}>
-              {counts[f.key]}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      );
-    })}
-  </View>
-);
-
-// ─── Order Card ───────────────────────────────────────────────────────────────
-
-const OrderCard = ({ item, onPress }: { item: IOrder; onPress: () => void }) => {
-  const { colors } = useThemeColors();
-  const cfg = getStatusConfig(item.status, colors);
-
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      activeOpacity={0.8}
-      className={`mx-4 mb-3 border border-l-4 border-border bg-card ${cfg.borderAccent} overflow-hidden rounded-2xl`}>
-      <View className="px-4 py-4">
-        {/* Top row */}
-        <View className="mb-3 flex-row items-start justify-between">
-          <View className="mr-3 flex-1">
-            <Text className="mb-0.5 text-sm font-bold text-cardForeground" numberOfLines={1}>
-              {item.personal_information?.name}
-            </Text>
-            <Text className="text-xs text-mutedForeground" numberOfLines={1}>
-              #{item._id ? shortenId(item._id) : '—'} · {item.tax_year}
-            </Text>
-          </View>
-
-          {/* Status pill */}
-          <View className={`flex-row items-center gap-1 rounded-full px-2.5 py-1 ${cfg.pillBg}`}>
-            {cfg.icon}
-            <Text className={`text-xs font-semibold ${cfg.pillText}`}>{cfg.label}</Text>
-          </View>
-        </View>
-
-        {/* Info row */}
-        <View className="mb-3 flex-row items-center gap-4">
-          <View className="flex-row items-center gap-1">
-            <CalendarDays size={12} color="hsl(0, 0%, 60%)" />
-            <Text className="text-xs text-mutedForeground">{formatDate(item.createdAt)}</Text>
-          </View>
-          <View className="flex-row items-center gap-1">
-            <Banknote size={12} color="hsl(0, 0%, 60%)" />
-            <Text className="text-xs text-mutedForeground">{formatAmount(item.fee_amount)}</Text>
-          </View>
-        </View>
-
-        {/* Income sources */}
-        {item.source_of_income?.length > 0 && (
-          <View className="mb-3 flex-row flex-wrap gap-1.5">
-            {item.source_of_income.slice(0, 2).map((src) => (
-              <View key={src} className="rounded-lg bg-muted px-2 py-0.5">
-                <Text className="text-xs text-mutedForeground" numberOfLines={1}>
-                  {src}
-                </Text>
-              </View>
-            ))}
-            {item.source_of_income.length > 2 && (
-              <View className="rounded-lg bg-muted px-2 py-0.5">
-                <Text className="text-xs text-mutedForeground">
-                  +{item.source_of_income.length - 2}
-                </Text>
-              </View>
-            )}
-          </View>
-        )}
-
-        {/* Bottom row */}
-        <View className="flex-row items-center justify-between">
-          <StepDots current={item.current_step} />
-          <ChevronRight size={16} color="hsl(0, 0%, 60%)" />
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
-// ─── Empty State ──────────────────────────────────────────────────────────────
-
-const EmptyState = ({
-  filter,
-  onCreateOrder,
-}: {
-  filter: FilterStatus;
-  onCreateOrder: () => void;
-}) => (
-  <View className="flex-1 items-center justify-center gap-3 px-8 py-16">
-    <View className="mb-2 h-16 w-16 items-center justify-center rounded-full bg-muted">
-      <ClipboardList size={28} color="hsl(0, 0%, 60%)" />
-    </View>
-    <Text className="text-center text-base font-bold text-foreground">No orders found</Text>
-    <Text className="text-center text-sm text-mutedForeground">
-      {filter === 'all'
-        ? "You haven't placed any tax orders yet."
-        : `No ${formatStatus(filter)} orders to show.`}
-    </Text>
-    {filter === 'all' && (
-      <TouchableOpacity
-        onPress={onCreateOrder}
-        className="mt-2 rounded-2xl bg-primary px-6 py-3"
-        activeOpacity={0.85}>
-        <Text className="font-semibold text-primaryForeground">Create Order</Text>
-      </TouchableOpacity>
-    )}
-  </View>
-);
-
-// ─── Error State ──────────────────────────────────────────────────────────────
-
-const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
-  <View className="flex-1 items-center justify-center gap-4 px-8">
-    <AlertCircle size={40} color="hsl(0, 83%, 49%)" />
-    <Text className="text-center text-base font-bold text-foreground">Failed to load orders</Text>
-    <Text className="text-center text-sm text-mutedForeground">
-      Something went wrong. Please try again.
-    </Text>
-    <TouchableOpacity onPress={onRetry} className="rounded-2xl bg-primary px-6 py-3">
-      <Text className="font-semibold text-primaryForeground">Retry</Text>
-    </TouchableOpacity>
-  </View>
-);
-
-// ─── Main Screen ──────────────────────────────────────────────────────────────
+import { FilterStatus } from '@/src/components/profile/orders/types';
+import { SummaryBar } from '@/src/components/profile/orders/SummaryBar';
+import { FilterTabs } from '@/src/components/profile/orders/FilterTabs';
+import { OrderCard } from '@/src/components/profile/orders/OrderCard';
+import { EmptyState } from '@/src/components/profile/orders/EmptyState';
+import { ErrorState } from '@/src/components/profile/orders/ErrorState';
+import { OrderDetailModal } from '@/src/components/profile/orders/OrderDetailModal';
 
 const MyOrdersScreen = () => {
   const navigation = useNavigation<any>();
   const [filter, setFilter] = useState<FilterStatus>('all');
 
   const { data, isLoading, error, refetch, isFetching } = useGetMyOrdersQuery(undefined);
-
   const orders: IOrder[] = data?.data ?? [];
   const filtered = filter === 'all' ? orders : orders.filter((o) => o.status === filter);
 
@@ -360,169 +28,58 @@ const MyOrdersScreen = () => {
   };
 
   const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
-  const handleOrderPress = (order: IOrder) => {
-    setSelectedOrder(order);
-  };
 
   return (
     <ProtectedScreen>
-    <View className="flex-1 bg-background">
-      <ScreenHeader className="mb-3" title="My Orders" showBack={navigation.canGoBack()} />
+      <View className="flex-1 bg-background">
+        <ScreenHeader className="mb-3" title="My Orders" showBack={navigation.canGoBack()} />
 
-      {isLoading ? (
-        <View className="flex-1 items-center justify-center gap-3">
-          <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
-          <Text className="text-sm text-mutedForeground">Loading orders…</Text>
-        </View>
-      ) : error ? (
-        <ErrorState onRetry={refetch} />
-      ) : (
-        <>
-          {orders.length > 0 && <SummaryBar orders={orders} />}
-
-          <FilterTabs active={filter} onChange={setFilter} counts={counts} />
-
-          <FlatList
-            data={filtered}
-            keyExtractor={(item) => item._id ?? Math.random().toString()}
-            renderItem={({ item }) => (
-              <OrderCard item={item} onPress={() => handleOrderPress(item)} />
-            )}
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
-              <EmptyState
-                filter={filter}
-                onCreateOrder={() => navigation.navigate('CreateTaxOrder')}
-              />
-            }
-            refreshControl={
-              <RefreshControl
-                refreshing={isFetching && !isLoading}
-                onRefresh={refetch}
-                tintColor="hsl(125, 70%, 33%)"
-              />
-            }
-          />
-        </>
-      )}
-
-      {/* Order detail modal */}
-      <Modal
-        visible={!!selectedOrder}
-        animationType="slide"
-        presentationStyle="pageSheet"
-        onRequestClose={() => setSelectedOrder(null)}>
-        <SafeAreaView className="flex-1 bg-background">
-          <View className="flex-row items-center justify-between border-b border-border px-4 pb-3">
-            <Text className="text-lg font-bold text-foreground">Order Details</Text>
+        {isLoading ? (
+          <View className="flex-1 items-center justify-center gap-3">
+            <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
+            <Text className="text-sm text-mutedForeground">Loading orders\u2026</Text>
           </View>
-          <ScrollView contentContainerStyle={{ padding: 16 }} showsVerticalScrollIndicator={false}>
-            {selectedOrder && (
-              <View className="gap-4">
-                <View className="rounded-3xl border border-border bg-card p-5">
-                  <Text className="mb-3 text-base font-bold text-foreground">
-                    Personal Information
-                  </Text>
-                  <View className="gap-2">
-                    <Text className="text-sm text-mutedForeground">
-                      Name:{' '}
-                      <Text className="font-semibold text-foreground">
-                        {selectedOrder.personal_information?.name || '—'}
-                      </Text>
-                    </Text>
-                    <Text className="text-sm text-mutedForeground">
-                      Email:{' '}
-                      <Text className="font-semibold text-foreground">
-                        {selectedOrder.personal_information?.email || '—'}
-                      </Text>
-                    </Text>
-                    <Text className="text-sm text-mutedForeground">
-                      Phone:{' '}
-                      <Text className="font-semibold text-foreground">
-                        {selectedOrder.personal_information?.phone || '—'}
-                      </Text>
-                    </Text>
-                  </View>
-                </View>
+        ) : error ? (
+          <ErrorState onRetry={refetch} />
+        ) : (
+          <>
+            {orders.length > 0 && <SummaryBar orders={orders} />}
 
-                <View className="rounded-3xl border border-border bg-card p-5">
-                  <Text className="mb-3 text-base font-bold text-foreground">Order Info</Text>
-                  <View className="gap-2">
-                    <Text className="text-sm text-mutedForeground">
-                      Tax Year:{' '}
-                      <Text className="font-semibold text-foreground">
-                        {selectedOrder.tax_year || '—'}
-                      </Text>
-                    </Text>
-                    <Text className="text-sm text-mutedForeground">
-                      Status:{' '}
-                      <Text className="font-semibold text-foreground">
-                        {formatStatus(selectedOrder.status)}
-                      </Text>
-                    </Text>
-                    <Text className="text-sm text-mutedForeground">
-                      Fee:{' '}
-                      <Text className="font-semibold text-foreground">
-                        {formatAmount(selectedOrder.fee_amount)}
-                      </Text>
-                    </Text>
-                    <Text className="text-sm text-mutedForeground">
-                      Total:{' '}
-                      <Text className="font-semibold text-foreground">
-                        {formatAmount(selectedOrder.total_amount)}
-                      </Text>
-                    </Text>
-                    <Text className="text-sm text-mutedForeground">
-                      Created:{' '}
-                      <Text className="font-semibold text-foreground">
-                        {formatDate(selectedOrder.createdAt)}
-                      </Text>
-                    </Text>
-                  </View>
-                </View>
+            <FilterTabs active={filter} onChange={setFilter} counts={counts} />
 
-                {selectedOrder.source_of_income?.length > 0 && (
-                  <View className="rounded-3xl border border-border bg-card p-5">
-                    <Text className="mb-3 text-base font-bold text-foreground">
-                      Source of Income
-                    </Text>
-                    <View className="flex-row flex-wrap gap-1.5">
-                      {selectedOrder.source_of_income.map((src) => (
-                        <View key={src} className="rounded-lg bg-muted px-3 py-1.5">
-                          <Text className="text-xs text-mutedForeground">{src}</Text>
-                        </View>
-                      ))}
-                    </View>
-                  </View>
-                )}
+            <FlatList
+              data={filtered}
+              keyExtractor={(item) => item._id ?? Math.random().toString()}
+              renderItem={({ item }) => (
+                <OrderCard item={item} onPress={() => setSelectedOrder(item)} />
+              )}
+              contentContainerStyle={{ flexGrow: 1 }}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                <EmptyState
+                  filter={filter}
+                  onCreateOrder={() => navigation.navigate('CreateTaxOrder')}
+                />
+              }
+              refreshControl={
+                <RefreshControl
+                  refreshing={isFetching && !isLoading}
+                  onRefresh={refetch}
+                  tintColor="hsl(125, 70%, 33%)"
+                />
+              }
+            />
+          </>
+        )}
 
-                {selectedOrder.status === 'payment_pending' && (
-                  <View className="gap-2">
-                    <TouchableOpacity
-                      onPress={() => {
-                        const id = selectedOrder._id;
-                        setSelectedOrder(null);
-                        if (id) navigation.navigate('OrderPaymentStatus', { taxId: id });
-                      }}
-                      activeOpacity={0.8}
-                      className="flex-row items-center justify-center gap-2 rounded-2xl bg-primary py-4">
-                      <Text className="text-base font-bold text-white">Start Payment</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-                <TouchableOpacity
-                  onPress={() => setSelectedOrder(null)}
-                  activeOpacity={0.7}
-                  className="flex-row items-center justify-center py-3">
-                  <Text className="text-sm font-semibold text-mutedForeground">Close</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </ScrollView>
-        </SafeAreaView>
-      </Modal>
-    </View>
+        <OrderDetailModal
+          selectedOrder={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          onStartPayment={(id) =>
+            navigation.navigate('OrderPaymentStatus', { taxId: id, canGoBack: true })
+          }
+        />
+      </View>
     </ProtectedScreen>
   );
 };

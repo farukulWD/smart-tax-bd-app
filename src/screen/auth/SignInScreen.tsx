@@ -55,8 +55,8 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      mobile: '',
-      password: '',
+      mobile: '01949887896',
+      password: 'Shuvajit#1',
     },
   });
 
@@ -80,7 +80,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
         mobile: data.mobile,
         password: data.password,
       }).unwrap();
-
+      console.log('res', JSON.stringify(res, null, 2));
       dispatch(
         setCredentials({
           token: res.data.accessToken,
@@ -89,6 +89,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
       );
       handleNavigation();
     } catch (error) {
+      console.log('error', JSON.stringify(error, null, 2));
       globalErrorHandler(error);
     }
   };

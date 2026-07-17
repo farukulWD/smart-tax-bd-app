@@ -23,6 +23,7 @@ export default function ProfileStack() {
 
   return (
     <Stack.Navigator
+      initialRouteName="Profile"
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: colors.background },
