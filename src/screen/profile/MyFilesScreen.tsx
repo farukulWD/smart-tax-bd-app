@@ -8,32 +8,30 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
 import { File, Directory, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import {
-  Upload,
   FolderOpen,
   AlertCircle,
 } from 'lucide-react-native';
 import PreviewModal from '@/src/components/order/PreviewModal';
 import ConfirmModal from '@/src/components/global/ConfirmModal';
 import FileCard from '@/src/components/profile/FileCard';
-import RenameModal from '@/src/components/profile/RenameModal';
+// import RenameModal from '@/src/components/profile/RenameModal';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
 import {
   useGetMyFilesQuery,
-  useUploadFileMutation,
+  // useUploadFileMutation,
   useDeleteFileMutation,
-  useUpdateFileMutation,
+  // useUpdateFileMutation,
 } from '@/src/services/fileApi';
-import { useGetMyOrdersQuery } from '@/src/services/orderApi';
+// import { useGetMyOrdersQuery } from '@/src/services/orderApi';
 import { IFile } from '@/src/types/filesTypes';
 import { toPreviewFile } from '@/src/utils/fileHelpers';
 import { toast } from '@/src/utils/ToastConfig';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 
-const EmptyState = ({ onUpload }: { onUpload: () => void }) => (
+const EmptyState = () => (
   <View className="flex-1 items-center justify-center gap-3 px-8 py-16">
     <View className="mb-2 h-16 w-16 items-center justify-center rounded-full bg-muted">
       <FolderOpen size={28} color="hsl(0, 0%, 60%)" />
@@ -42,76 +40,37 @@ const EmptyState = ({ onUpload }: { onUpload: () => void }) => (
     <Text className="text-center text-sm text-mutedForeground">
       Upload your first file to get started.
     </Text>
-    <TouchableOpacity
-      onPress={onUpload}
-      className="mt-2 flex-row items-center gap-2 rounded-2xl bg-primary px-6 py-3"
-      activeOpacity={0.85}>
-      <Upload size={16} color="#fff" />
-      <Text className="font-semibold text-primaryForeground">Upload File</Text>
-    </TouchableOpacity>
   </View>
 );
 
 const MyFilesScreen = () => {
   const [selectedFile, setSelectedFile] = useState<IFile | null>(null);
   const [previewVisible, setPreviewVisible] = useState(false);
-  const [renameFile, setRenameFile] = useState<IFile | null>(null);
+  // const [renameFile, setRenameFile] = useState<IFile | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<IFile | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-
   const { data, isLoading, error, refetch, isFetching } = useGetMyFilesQuery(undefined);
-  const { data: ordersData } = useGetMyOrdersQuery(undefined);
-  const [uploadFile, { isLoading: isUploading }] = useUploadFileMutation();
   const [deleteFile] = useDeleteFileMutation();
-  const [updateFile, { isLoading: isUpdating }] = useUpdateFileMutation();
+  // const [updateFile, { isLoading: isUpdating }] = useUpdateFileMutation();
 
   const files: IFile[] = data?.data ?? [];
 
-  const handleUpload = useCallback(async () => {
-    if (isUploading) return;
-
-    const orders = ordersData?.data ?? [];
-    const orderId = orders.length > 0 ? orders[0]._id : null;
-
-    if (!orderId) {
-      toast.error('No order found. Please create an order first.');
-      return;
-    }
-
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: ['image/*', 'application/pdf'],
-        copyToCacheDirectory: true,
-      });
-
-      if (result.canceled || !result.assets?.[0]) return;
-
-      const asset = result.assets[0];
-
-      const formData = new FormData();
-      formData.append(
-        'data',
-        JSON.stringify({
-          name: asset.name.replace(/\.[^/.]+$/, ''),
-          type: asset.mimeType?.split('/')[1] || 'file',
-          orderId,
-        })
-      );
-      formData.append('file', {
-        uri: asset.uri,
-        name: asset.name,
-        type: asset.mimeType || 'application/octet-stream',
-      } as any);
-
-      await uploadFile(formData).unwrap();
-      toast.success('File uploaded successfully');
-    } catch (err: any) {
-      const message =
-        err?.data?.message || err?.data?.error || err?.message || 'File upload failed';
-      toast.error(message);
-    }
-  }, [isUploading, uploadFile, ordersData]);
+  // const handleRename = useCallback(
+  //   async (name: string) => {
+  //     if (!renameFile || !name || name === renameFile.name) return;
+  //     try {
+  //       await updateFile({ id: renameFile._id, data: { name } }).unwrap();
+  //       toast.success('File renamed successfully');
+  //       setRenameFile(null);
+  //     } catch (err: any) {
+  //       const message =
+  //         err?.data?.message || err?.data?.error || err?.message || 'Failed to rename file';
+  //       toast.error(message);
+  //     }
+  //   },
+  //   [renameFile, updateFile]
+  // );
 
   const handleConfirmDelete = useCallback(async () => {
     if (!deleteTarget) return;
@@ -134,22 +93,21 @@ const MyFilesScreen = () => {
     setDeleteTarget(null);
   }, []);
 
-  const handleRename = useCallback(
-    async (name: string) => {
-      if (!renameFile || !name || name === renameFile.name) return;
-
-      try {
-        await updateFile({ id: renameFile._id, data: { name } }).unwrap();
-        toast.success('File renamed successfully');
-        setRenameFile(null);
-      } catch (err: any) {
-        const message =
-          err?.data?.message || err?.data?.error || err?.message || 'Failed to rename file';
-        toast.error(message);
-      }
-    },
-    [renameFile, updateFile]
-  );
+  // const handleRename = useCallback(
+  //   async (name: string) => {
+  //     if (!renameFile || !name || name === renameFile.name) return;
+  //     try {
+  //       await updateFile({ id: renameFile._id, data: { name } }).unwrap();
+  //       toast.success('File renamed successfully');
+  //       setRenameFile(null);
+  //     } catch (err: any) {
+  //       const message =
+  //         err?.data?.message || err?.data?.error || err?.message || 'Failed to rename file';
+  //       toast.error(message);
+  //     }
+  //   },
+  //   [renameFile, updateFile]
+  // );
 
   const downloadFile = useCallback(async (url: string, name?: string) => {
     try {
@@ -207,13 +165,13 @@ const MyFilesScreen = () => {
               item={item}
               onPreview={() => openPreview(item)}
               onDelete={() => setDeleteTarget(item)}
-              onRename={() => setRenameFile(item)}
+              onRename={() => {}} // commented out
               isDeleting={deleteTarget?._id === item._id}
             />
           )}
           contentContainerStyle={{ paddingTop: 8, paddingBottom: 100, flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
-          ListEmptyComponent={<EmptyState onUpload={handleUpload} />}
+          ListEmptyComponent={<EmptyState />}
           refreshControl={
             <RefreshControl
               refreshing={isFetching && !isLoading}
@@ -224,27 +182,6 @@ const MyFilesScreen = () => {
         />
       )}
 
-      {files.length > 0 && (
-        <TouchableOpacity
-          onPress={handleUpload}
-          disabled={isUploading}
-          activeOpacity={0.85}
-          className="absolute bottom-6 right-6 h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 6,
-            elevation: 8,
-          }}>
-          {isUploading ? (
-            <ActivityIndicator size="small" color="#fff" />
-          ) : (
-            <Upload size={22} color="#fff" />
-          )}
-        </TouchableOpacity>
-      )}
-
       <PreviewModal
         visible={previewVisible}
         file={selectedFile ? toPreviewFile(selectedFile) : null}
@@ -253,6 +190,7 @@ const MyFilesScreen = () => {
         isDownloading={isDownloading}
       />
 
+      {/*
       <RenameModal
         visible={!!renameFile}
         currentName={renameFile?.name ?? ''}
@@ -260,6 +198,7 @@ const MyFilesScreen = () => {
         onClose={() => setRenameFile(null)}
         onSave={handleRename}
       />
+      */}
 
       <ConfirmModal
         visible={!!deleteTarget}

@@ -1,27 +1,44 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  Image,
-} from 'react-native';
-import {
-  FileText,
-  Pencil,
-  Trash2,
-  Eye,
-  Calendar,
-  Hash,
-  Tag,
-} from 'lucide-react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
+import { FileText, Trash2, Calendar, Hash, Eye } from 'lucide-react-native';
+// import { Pencil } from 'lucide-react-native';
 import { IFile } from '@/src/types/filesTypes';
 import { getFileType, getExtension, formatDate, shortenId } from '@/src/utils/fileHelpers';
+
+const FILE_STYLES = {
+  image: {
+    accent: 'border-l-secondary',
+    iconBg: 'bg-secondary/10',
+    iconColor: 'hsl(131, 56%, 33%)',
+    badgeBg: 'bg-secondary/15',
+    badgeText: 'text-secondary',
+  },
+  pdf: {
+    accent: 'border-l-destructive',
+    iconBg: 'bg-destructive/10',
+    iconColor: 'hsl(0, 83%, 49%)',
+    badgeBg: 'bg-destructive/15',
+    badgeText: 'text-destructive',
+  },
+  other: {
+    accent: 'border-l-warning',
+    iconBg: 'bg-warning/10',
+    iconColor: 'hsl(38, 92%, 40%)',
+    badgeBg: 'bg-warning/15',
+    badgeText: 'text-warning',
+  },
+};
+
+const ACTION_STYLES = [
+  { icon: Eye, color: 'hsl(131, 56%, 33%)', textClass: 'text-secondary', label: 'Preview' },
+  // { icon: Pencil, color: 'hsl(220, 70%, 50%)', textClass: 'text-[hsl(220,70%,50%)]', label: 'Rename' },
+  { icon: Trash2, color: 'hsl(0, 83%, 49%)', textClass: 'text-destructive', label: 'Delete' },
+];
 
 const FileCard = ({
   item,
   onPreview,
   onDelete,
-  onRename,
+  // onRename,
   isDeleting,
 }: {
   item: IFile;
@@ -32,65 +49,46 @@ const FileCard = ({
 }) => {
   const fileType = getFileType(item.file);
   const ext = getExtension(item.file);
+  const fg = FILE_STYLES[fileType];
 
   return (
     <View className="mx-4 mb-3 overflow-hidden rounded-2xl border border-border bg-card">
-      <View className="flex-row">
-        <View className="h-20 w-20 flex-shrink-0 items-center justify-center bg-muted">
-          {fileType === 'image' ? (
-            <Image source={{ uri: item.file }} className="h-full w-full" resizeMode="cover" />
-          ) : fileType === 'pdf' ? (
-            <View className="items-center gap-1">
-              <FileText size={26} color="hsl(0, 83%, 49%)" />
-              <Text className="text-[10px] font-bold text-destructive">PDF</Text>
-            </View>
-          ) : (
-            <View className="items-center gap-1">
-              <FileText size={26} color="hsl(0, 0%, 60%)" />
-              <Text className="text-[10px] font-bold text-mutedForeground">{ext}</Text>
-            </View>
-          )}
-        </View>
+      <View className={`border-l-4 ${fg.accent}`}>
+        <View className="flex-row items-center gap-3 p-4 pb-3">
+          <View className={`h-14 w-14 items-center justify-center rounded-xl ${fg.iconBg}`}>
+            {fileType === 'image' ? (
+              <Image source={{ uri: item.file }} className="h-full w-full rounded-xl" resizeMode="cover" />
+            ) : (
+              <FileText size={24} color={fg.iconColor} />
+            )}
+          </View>
 
-        <View className="flex-1 justify-center px-3 py-3">
-          <Text className="mb-0.5 text-sm font-bold text-cardForeground" numberOfLines={1}>
-            {item.name}
-          </Text>
-          <View className="mb-1 flex-row items-center gap-1">
-            <Tag size={11} color="hsl(0, 0%, 60%)" />
-            <Text className="text-xs text-mutedForeground" numberOfLines={1}>
-              {item.type}
+          <View className="flex-1 gap-1">
+            <Text className="text-[15px] font-bold text-cardForeground" numberOfLines={1}>
+              {item.name}
             </Text>
-          </View>
-          <View className="mb-1 flex-row items-center gap-1">
-            <Calendar size={11} color="hsl(0, 0%, 60%)" />
-            <Text className="text-xs text-mutedForeground">{formatDate(item.createdAt)}</Text>
-          </View>
-          <View className="flex-row items-center gap-1">
-            <Hash size={11} color="hsl(0, 0%, 60%)" />
-            <Text className="text-xs text-mutedForeground">Order {shortenId(item.orderId)}</Text>
-          </View>
-        </View>
 
-        <View className="pr-3 pt-3">
-          <View
-            className={`rounded-lg px-2 py-0.5 ${
-              fileType === 'image'
-                ? 'bg-primary/15'
-                : fileType === 'pdf'
-                  ? 'bg-destructive/15'
-                  : 'bg-muted'
-            }`}>
-            <Text
-              className={`text-[10px] font-bold ${
-                fileType === 'image'
-                  ? 'text-primary'
-                  : fileType === 'pdf'
-                    ? 'text-destructive'
-                    : 'text-mutedForeground'
-              }`}>
-              {fileType === 'image' ? 'IMG' : fileType === 'pdf' ? 'PDF' : ext}
-            </Text>
+            <View className="flex-row items-center gap-2">
+              <View className={`rounded-full px-2 py-px ${fg.badgeBg}`}>
+                <Text className={`text-[10px] font-bold ${fg.badgeText}`}>
+                  {fileType === 'image' ? 'IMG' : fileType === 'pdf' ? 'PDF' : ext}
+                </Text>
+              </View>
+              <Text className="text-xs capitalize text-mutedForeground" numberOfLines={1}>
+                {item.type.replace(/_/g, ' ')}
+              </Text>
+            </View>
+
+            <View className="flex-row items-center gap-3">
+              <View className="flex-row items-center gap-1">
+                <Calendar size={11} color="hsl(0, 0%, 60%)" />
+                <Text className="text-xs text-mutedForeground">{formatDate(item.createdAt)}</Text>
+              </View>
+              <View className="flex-row items-center gap-1">
+                <Hash size={11} color="hsl(0, 0%, 60%)" />
+                <Text className="text-xs text-mutedForeground">{shortenId(item.orderId)}</Text>
+              </View>
+            </View>
           </View>
         </View>
       </View>
@@ -98,36 +96,29 @@ const FileCard = ({
       <View className="border-t border-border" />
 
       <View className="flex-row">
-        <TouchableOpacity
-          onPress={onPreview}
-          activeOpacity={0.75}
-          className="flex-1 flex-row items-center justify-center gap-2 border-r border-border py-3">
-          <Eye size={15} color="hsl(125, 70%, 33%)" />
-          <Text className="text-xs font-semibold text-primary">Preview</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={onRename}
-          activeOpacity={0.75}
-          className="flex-1 flex-row items-center justify-center gap-2 border-r border-border py-3">
-          <Pencil size={15} color="hsl(220, 70%, 50%)" />
-          <Text className="text-xs font-semibold text-[hsl(220,70%,50%)]">Rename</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={onDelete}
-          disabled={isDeleting}
-          activeOpacity={0.75}
-          className="flex-1 flex-row items-center justify-center gap-2 py-3">
-          {isDeleting ? (
-            <ActivityIndicator size="small" color="hsl(0, 83%, 49%)" />
-          ) : (
-            <Trash2 size={15} color="hsl(0, 83%, 49%)" />
-          )}
-          <Text className="text-xs font-semibold text-destructive">
-            {isDeleting ? 'Deleting\u2026' : 'Delete'}
-          </Text>
-        </TouchableOpacity>
+        {[onPreview, onDelete].map((handler, i, arr) => {
+          const action = ACTION_STYLES[i];
+          const isLast = i === arr.length - 1;
+          return (
+            <TouchableOpacity
+              key={action.label}
+              onPress={handler}
+              disabled={isDeleting && isLast}
+              activeOpacity={0.7}
+              className={`flex-1 flex-row items-center justify-center gap-2 py-3.5 ${
+                !isLast ? 'border-r border-border' : ''
+              }`}>
+              {isLast && isDeleting ? (
+                <ActivityIndicator size="small" color={action.color} />
+              ) : (
+                <action.icon size={15} color={action.color} />
+              )}
+              <Text className={`text-xs font-semibold ${action.textClass}`}>
+                {isLast && isDeleting ? 'Deleting\u2026' : action.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </View>
   );
