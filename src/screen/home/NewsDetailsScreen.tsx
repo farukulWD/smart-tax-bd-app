@@ -138,14 +138,14 @@ const NewsDetailsScreen = () => {
         <View className="mb-4 flex-row">
           <View
             className={`flex-row items-center gap-1.5 rounded-full px-3 py-1.5 ${
-              news.isActive ? 'bg-primary' : 'bg-destructive'
+              news.isActive ? 'bg-success' : 'bg-destructive'
             }`}>
             {news.isActive ? (
               <CheckCircle2 size={13} color="white" />
             ) : (
               <XCircle size={13} color="white" />
             )}
-            <Text className={`text-xs font-bold ${news.isActive ? 'text-white' : 'text-white'}`}>
+            <Text className="text-xs font-bold text-white">
               {news.isActive ? 'Active' : 'Inactive'}
             </Text>
           </View>

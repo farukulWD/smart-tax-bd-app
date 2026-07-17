@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
-  Linking,
   Alert,
   Modal,
 } from 'react-native';
@@ -12,16 +11,13 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { skipToken } from '@reduxjs/toolkit/query';
-import {
-  useGetTaxOrderByIdQuery,
-  useInitTaxStepThreePaymentMutation,
-  usePlaceManualOrderMutation,
-} from '@/src/services/orderApi';
+import { useGetTaxOrderByIdQuery, usePlaceManualOrderMutation } from '@/src/services/orderApi';
 import { AppStackParamList } from '@/src/navigation/AppStack';
 import { CheckCircle2, AlertCircle, ArrowLeft, CreditCard } from 'lucide-react-native';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LucideIcon from '@/src/components/common/LucideIcon';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -32,9 +28,9 @@ const formatBDT = (amount: number) =>
 
 const InfoRow = ({ label, value }: { label: string; value: string }) => (
   <View className="flex-row items-center justify-between border-b border-border py-3">
-    <Text className="text-sm text-gray-400">{label}</Text>
-    <View className="rounded-lg bg-gray-100 px-3 py-1">
-      <Text className="text-sm font-semibold text-gray-700">{value}</Text>
+    <Text className="text-sm text-mutedForeground">{label}</Text>
+    <View className="rounded-lg bg-muted px-3 py-1">
+      <Text className="text-sm font-semibold text-foreground">{value}</Text>
     </View>
   </View>
 );
@@ -47,23 +43,22 @@ const OrderPaymentStatusScreen = () => {
   const taxId = route.params?.taxId;
   const { top } = useSafeAreaInsets();
   const { t } = useTranslation();
+  const { colors } = useThemeColors();
 
   const [showBkashModal, setShowBkashModal] = useState(false);
 
   const { data, isLoading, isError, refetch } = useGetTaxOrderByIdQuery(taxId ?? skipToken);
-  const [initTaxStepThreePayment, { isLoading: isStartingPayment }] =
-    useInitTaxStepThreePaymentMutation();
   const [placeManualOrder, { isLoading: isPlacingOrder }] = usePlaceManualOrderMutation();
 
   // ── no taxId ──────────────────────────────────────────────────────────────
 
   if (!taxId) {
     return (
-      <View className="flex-1 items-center justify-center bg-gray-50 px-6">
-        <Text className="mb-4 text-sm text-gray-400">{t('payment.noOrderSelected')}</Text>
+      <View className="flex-1 items-center justify-center bg-background px-6">
+        <Text className="mb-4 text-sm text-mutedForeground">{t('payment.noOrderSelected')}</Text>
         <TouchableOpacity
           onPress={() => navigation.navigate('CreateOrder')}
-          className="rounded-2xl bg-indigo-600 px-6 py-3">
+          className="rounded-2xl bg-primary px-6 py-3">
           <Text className="font-semibold text-white">{t('payment.createOrder')}</Text>
         </TouchableOpacity>
       </View>
@@ -74,8 +69,8 @@ const OrderPaymentStatusScreen = () => {
 
   if (isLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-gray-50">
-        <ActivityIndicator size="large" color="#6366f1" />
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -84,12 +79,12 @@ const OrderPaymentStatusScreen = () => {
 
   if (isError || !data?.data?.tax_order) {
     return (
-      <View className="flex-1 items-center justify-center gap-4 bg-gray-50 px-6">
-        <AlertCircle size={40} color="#ef4444" />
-        <Text className="text-center text-sm text-red-500">
+      <View className="flex-1 items-center justify-center gap-4 bg-background px-6">
+        <AlertCircle size={40} color={colors.destructive} />
+        <Text className="text-center text-sm text-destructive">
           {t('payment.failedToLoad')}
         </Text>
-        <TouchableOpacity onPress={() => refetch()} className="rounded-2xl bg-indigo-600 px-6 py-3">
+        <TouchableOpacity onPress={() => refetch()} className="rounded-2xl bg-primary px-6 py-3">
           <Text className="font-semibold text-white">{t('payment.retry')}</Text>
         </TouchableOpacity>
       </View>
@@ -111,31 +106,6 @@ const OrderPaymentStatusScreen = () => {
       const message =
         error?.data?.message || error?.data?.error || error?.message || 'Failed to place order';
       Alert.alert('Error', message);
-    }
-  };
-
-  const handleStartPayment = async () => {
-    try {
-      const res = await initTaxStepThreePayment(taxId).unwrap();
-      const gatewayUrl = res?.data?.gatewayPageURL;
-      if (!gatewayUrl) {
-        Alert.alert('Error', 'Payment link was not found');
-        return;
-      }
-      const supported = await Linking.canOpenURL(gatewayUrl);
-      if (supported) {
-        // await Linking.openURL(gatewayUrl);
-        navigation.navigate('OrderPayment', { gatewayUrl });
-      } else {
-        Alert.alert('Error', 'Cannot open payment gateway URL');
-      }
-    } catch (error: any) {
-      const message =
-        error?.data?.message ||
-        error?.data?.error ||
-        error?.message ||
-        'Payment initialization failed';
-      Alert.alert('Payment failed', message);
     }
   };
 
@@ -172,16 +142,16 @@ const OrderPaymentStatusScreen = () => {
 
               {/* Payment status banner */}
               {isPaid ? (
-                <View className="mt-4 flex-row items-center gap-3 rounded-2xl border border-green-200 bg-green-50/10 px-4 py-3">
-                  <CheckCircle2 size={20} color="#16a34a" />
-                  <Text className="flex-1 text-sm font-semibold text-green-700">
+                <View className="mt-4 flex-row items-center gap-3 rounded-2xl border border-success/30 bg-success/10 px-4 py-3">
+                  <CheckCircle2 size={20} color={colors.success} />
+                  <Text className="flex-1 text-sm font-semibold text-success">
                     {t('payment.paymentSuccessful')}
                   </Text>
                 </View>
               ) : (
-                <View className="mt-4 flex-row items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50/10 px-4 py-3">
-                  <AlertCircle size={20} color="#d97706" />
-                  <Text className="flex-1 text-sm font-semibold text-amber-700">
+                <View className="mt-4 flex-row items-center gap-3 rounded-2xl border border-warning/30 bg-warning/10 px-4 py-3">
+                  <AlertCircle size={20} color={colors.warning} />
+                  <Text className="flex-1 text-sm font-semibold text-warning">
                     {t('payment.paymentPending')}
                   </Text>
                 </View>
@@ -195,7 +165,7 @@ const OrderPaymentStatusScreen = () => {
                     <TouchableOpacity
                       onPress={() => setShowBkashModal(true)}
                       activeOpacity={0.8}
-                      className="flex-row items-center justify-center gap-2 rounded-2xl bg-indigo-600 py-4">
+                      className="flex-row items-center justify-center gap-2 rounded-2xl bg-primary py-4">
                       <CreditCard size={18} color="#fff" />
                       <Text className="text-base font-bold text-white">{t('payment.startPayment')}</Text>
                     </TouchableOpacity>
@@ -216,8 +186,8 @@ const OrderPaymentStatusScreen = () => {
                   onPress={() => navigation.navigate('RequireDocuments', { taxId })}
                   activeOpacity={0.7}
                   className="flex-row items-center justify-center gap-2 py-3">
-                  <ArrowLeft size={15} color="#6366f1" />
-                  <Text className="text-sm font-semibold text-indigo-600">{t('payment.backToStep2')}</Text>
+                  <ArrowLeft size={15} color={colors.primary} />
+                  <Text className="text-sm font-semibold text-primary">{t('payment.backToStep2')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -247,7 +217,7 @@ const OrderPaymentStatusScreen = () => {
                 <TouchableOpacity
                   onPress={handlePlaceManualOrder}
                   disabled={isPlacingOrder}
-                  className="flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-indigo-600 py-3.5">
+                  className="flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-primary py-3.5">
                   {isPlacingOrder ? (
                     <ActivityIndicator size="small" color="#fff" />
                   ) : null}

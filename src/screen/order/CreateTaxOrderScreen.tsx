@@ -22,6 +22,7 @@ import { toast } from '@/src/utils/ToastConfig';
 import TaxYearPicker from '@/src/components/order/TaxYearPicker';
 import { BackButton } from '@/src/components/global/BackButton';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 import { cn } from '@/lib/utils';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
@@ -91,7 +92,7 @@ const FieldLabel = ({ label }: { label: string }) => (
 );
 
 const ErrorText = ({ message }: { message?: string }) =>
-  message ? <Text className="mt-1 text-xs text-red-600">{message}</Text> : null;
+  message ? <Text className="mt-1 text-xs text-destructive">{message}</Text> : null;
 
 const CheckboxItem = ({
   label,
@@ -101,28 +102,29 @@ const CheckboxItem = ({
   label: string;
   checked: boolean;
   onPress: () => void;
-}) => (
+}) => {
+  const { colors } = useThemeColors();
+
+  return (
   <Pressable
     onPress={onPress}
     className={`flex-row items-center gap-3 rounded-xl border px-4 py-3 ${
-      checked ? 'border-green-700 bg-green-700/10' : 'border-border bg-muted'
+      checked ? 'border-success bg-success/10' : 'border-border bg-muted'
     }`}
-    android_ripple={{ color: '#d1fae5' }}>
+    android_ripple={{ color: colors.muted }}>
     <View
       className={`h-5 w-5 items-center justify-center rounded-[5px] border-2 ${
-        checked ? 'border-green-700 bg-green-700' : 'border-mutedForeground bg-card'
+        checked ? 'border-success bg-success' : 'border-mutedForeground bg-card'
       }`}>
       {checked && <Text className="text-xs font-bold text-white">✓</Text>}
     </View>
     <Text
-      className={cn(
-        'flex-1 text-[13.5px] text-gray-700',
-        checked ? 'text-green-700' : 'text-mutedForeground'
-      )}>
+      className={cn('flex-1 text-[13.5px]', checked ? 'text-success' : 'text-mutedForeground')}>
       {label}
     </Text>
   </Pressable>
-);
+  );
+};
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
@@ -206,8 +208,8 @@ const CreateTaxOrderScreen = () => {
           <BackButton />
 
           <View className="flex-1">
-            <View className="mb-1.5 self-start rounded-full border border-green-100 bg-green-50 px-3 py-0.5">
-              <Text className="text-[11px] font-bold text-green-700">TAX STEP 1</Text>
+            <View className="mb-1.5 self-start rounded-full border border-success/30 bg-success/10 px-3 py-0.5">
+              <Text className="text-[11px] font-bold text-success">TAX STEP 1</Text>
             </View>
             <Text className="text-2xl font-extrabold tracking-tight text-foreground">
               Create Tax Order
@@ -335,21 +337,21 @@ const CreateTaxOrderScreen = () => {
 
           {/* Order Summary */}
           <View className="gap-3 rounded-3xl border border-border bg-card p-6">
-            <Text className="text-[18px] font-bold text-white">Order Summary</Text>
+            <Text className="text-[18px] font-bold text-foreground">Order Summary</Text>
             <Text className="-mt-1 text-[13px] text-mutedForeground">
               Step 1 will create a draft order.
             </Text>
 
             <View className="flex-row justify-between">
               <Text className="text-[13px] text-mutedForeground">Income sources</Text>
-              <Text className="text-[13px] font-bold text-white">
+              <Text className="text-[13px] font-bold text-foreground">
                 {selectedIncomeSources.length} selected
               </Text>
             </View>
 
             <View className="flex-row justify-between">
               <Text className="text-[13px] text-mutedForeground">Tax year</Text>
-              <Text className="text-[13px] font-bold text-white">{selectedTaxYear}</Text>
+              <Text className="text-[13px] font-bold text-foreground">{selectedTaxYear}</Text>
             </View>
 
             <TouchableOpacity

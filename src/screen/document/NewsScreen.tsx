@@ -30,7 +30,7 @@ const getInitials = (title: string) =>
 // Cycle through a few accent shades based on index
 const ACCENT_SETS = [
   { bg: 'bg-primary/15', text: 'text-primary' },
-  { bg: 'bg-yellow-500/15', text: 'text-yellow-500' },
+  { bg: 'bg-warning/15', text: 'text-warning' },
   { bg: 'bg-destructive/15', text: 'text-destructive' },
   { bg: 'bg-primary/10', text: 'text-primary' },
 ];

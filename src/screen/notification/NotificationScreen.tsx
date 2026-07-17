@@ -28,16 +28,23 @@ import {
   TNotificationType,
 } from '@/src/services/notificationApi';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
+import { useThemeColors } from '@/src/theme/useThemeColors';
+import type { lightColors } from '@/src/theme/colors';
 
 type UITheme = 'tax_reminder' | 'news' | 'payment' | 'system' | 'deadline';
 
-const NOTIFICATION_ICONS: Record<UITheme, { icon: React.ReactNode; color: string }> = {
-  tax_reminder: { icon: <AlertCircle size={20} color="#d97706" />, color: 'bg-amber-100' },
-  news: { icon: <Megaphone size={20} color="#2563eb" />, color: 'bg-blue-100' },
-  payment: { icon: <CreditCard size={20} color="#059669" />, color: 'bg-green-100' },
-  system: { icon: <Bell size={20} color="#7c3aed" />, color: 'bg-purple-100' },
-  deadline: { icon: <FileText size={20} color="#dc2626" />, color: 'bg-red-100' },
-};
+type ThemeColors = typeof lightColors;
+
+// `news` uses secondary to match the green news badge on the home screen.
+const getNotificationIcons = (
+  colors: ThemeColors
+): Record<UITheme, { icon: React.ReactNode; color: string }> => ({
+  tax_reminder: { icon: <AlertCircle size={20} color={colors.warning} />, color: 'bg-warning/15' },
+  news: { icon: <Megaphone size={20} color={colors.secondary} />, color: 'bg-secondary/15' },
+  payment: { icon: <CreditCard size={20} color={colors.success} />, color: 'bg-success/15' },
+  system: { icon: <Bell size={20} color={colors.mutedForeground} />, color: 'bg-muted' },
+  deadline: { icon: <FileText size={20} color={colors.destructive} />, color: 'bg-destructive/15' },
+});
 
 const mapNotificationType = (type: TNotificationType): UITheme => {
   if (
@@ -130,8 +137,9 @@ const NotificationCard = React.memo(
     onPress: () => void;
     onDelete: () => void;
   }) => {
+    const { colors } = useThemeColors();
     const uiType = mapNotificationType(item.type);
-    const meta = NOTIFICATION_ICONS[uiType];
+    const meta = getNotificationIcons(colors)[uiType];
 
     return (
       <TouchableOpacity
@@ -172,6 +180,7 @@ const NotificationCard = React.memo(
 );
 
 const NotificationScreen = () => {
+  const { colors } = useThemeColors();
   const [page, setPage] = useState(1);
   const [allNotifications, setAllNotifications] = useState<INotification[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -320,7 +329,7 @@ const NotificationScreen = () => {
             rightButton={
               unreadCount > 0
                 ? {
-                    icon: <CheckCheck size={20} color="white" />,
+                    icon: <CheckCheck size={20} color={colors.foreground} />,
                     onPress: handleMarkAllAsRead,
                   }
                 : undefined

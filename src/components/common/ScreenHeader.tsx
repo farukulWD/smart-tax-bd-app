@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ArrowLeftIcon } from 'lucide-react-native';
 import { cn } from '@/lib/utils';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 
 interface ScreenHeaderProps {
   title: string;
@@ -18,6 +19,7 @@ interface ScreenHeaderProps {
 const ScreenHeader = ({ title, onPress, showBack = true, className, rightButton }: ScreenHeaderProps) => {
   const navigation = useNavigation();
   const { top } = useSafeAreaInsets();
+  const { colors } = useThemeColors();
 
   const handleBack = () => {
     if (onPress) {
@@ -30,18 +32,21 @@ const ScreenHeader = ({ title, onPress, showBack = true, className, rightButton 
   return (
     <View
       style={{ paddingTop: top }}
-      className={cn('flex-row items-center justify-between gap-2 bg-primary px-4', className)}>
+      className={cn(
+        'flex-row items-center justify-between gap-2 bg-secondary/10 px-4 pb-3',
+        className
+      )}>
       {showBack ? (
         <TouchableOpacity
           onPress={handleBack}
           activeOpacity={0.7}
           className="mr-1 h-12 w-12 items-center justify-center">
-          <ArrowLeftIcon size={35} color="#FFFFFF" />
+          <ArrowLeftIcon size={35} color={colors.foreground} />
         </TouchableOpacity>
       ) : (
         <View className="h-12 w-12" />
       )}
-      <Text className="text-2xl font-bold tracking-tight text-white">{title}</Text>
+      <Text className="text-2xl font-bold tracking-tight text-foreground">{title}</Text>
       {rightButton ? (
         <TouchableOpacity
           onPress={rightButton.onPress}

@@ -7,6 +7,7 @@ import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { WebView, WebViewNavigation } from 'react-native-webview';
 import { CheckCircle2, XCircle, AlertTriangle } from 'lucide-react-native';
 import { navigateToStack } from '@/src/utils/NavigationUtils';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 
 // ─── types ───────────────────────────────────────────────────────────────────
 
@@ -43,29 +44,31 @@ const ResultModal = ({
   onGoToOrders: () => void;
   onViewPayments: () => void;
 }) => {
+  const { colors } = useThemeColors();
+
   if (!result) return null;
 
   const config = {
     success: {
-      icon: <CheckCircle2 size={56} color="#16a34a" />,
-      iconBg: 'bg-green-50',
+      icon: <CheckCircle2 size={56} color={colors.success} />,
+      iconBg: 'bg-success/10',
       title: 'Payment Successful',
       message: 'Your payment was completed successfully. Your order has been placed.',
-      primaryBg: 'bg-green-600',
+      primaryBg: 'bg-success',
     },
     failed: {
-      icon: <XCircle size={56} color="#dc2626" />,
-      iconBg: 'bg-red-50',
+      icon: <XCircle size={56} color={colors.destructive} />,
+      iconBg: 'bg-destructive/10',
       title: 'Payment Failed',
       message: 'Your payment could not be processed. Please try again from your orders.',
-      primaryBg: 'bg-red-500',
+      primaryBg: 'bg-destructive',
     },
     cancelled: {
-      icon: <AlertTriangle size={56} color="#f97316" />,
-      iconBg: 'bg-orange-50',
+      icon: <AlertTriangle size={56} color={colors.warning} />,
+      iconBg: 'bg-warning/10',
       title: 'Payment Cancelled',
       message: 'You cancelled the payment. You can try again from your orders.',
-      primaryBg: 'bg-green-600',
+      primaryBg: 'bg-primary',
     },
   }[result];
 
@@ -94,7 +97,7 @@ const ResultModal = ({
             <View className="mb-6 w-full rounded-xl border border-border bg-muted px-4 py-2.5">
               <Text className="text-center text-xs text-foreground">
                 Transaction ID:{' '}
-                <Text className="font-semibold text-indigo-600">{transactionId}</Text>
+                <Text className="font-semibold text-primary">{transactionId}</Text>
               </Text>
             </View>
           )}
@@ -124,6 +127,7 @@ const OrderPaymentScreen = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'OrderPayment'>>();
   const gatewayUrl = route.params?.gatewayUrl;
   const { top } = useSafeAreaInsets();
+  const { colors } = useThemeColors();
 
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -158,8 +162,8 @@ const OrderPaymentScreen = () => {
         <View
           style={{ paddingTop: top }}
           className="flex-1 items-center justify-center gap-4 bg-background px-6">
-          <Text className="text-center text-sm text-red-500">No payment URL found.</Text>
-          <TouchableOpacity onPress={goHome} className="rounded-2xl bg-indigo-600 px-6 py-3">
+          <Text className="text-center text-sm text-destructive">No payment URL found.</Text>
+          <TouchableOpacity onPress={goHome} className="rounded-2xl bg-primary px-6 py-3">
             <Text className="font-semibold text-white">Go to Home</Text>
           </TouchableOpacity>
         </View>
@@ -190,7 +194,7 @@ const OrderPaymentScreen = () => {
           {/* Loading overlay */}
           {isLoading && (
             <View className="absolute inset-0 items-center justify-center gap-3 bg-background">
-              <ActivityIndicator size="large" color="#6366f1" />
+              <ActivityIndicator size="large" color={colors.primary} />
               <Text className="text-sm text-foreground">Loading payment gateway…</Text>
             </View>
           )}
@@ -198,12 +202,12 @@ const OrderPaymentScreen = () => {
           {/* Error overlay */}
           {hasError && (
             <View className="absolute inset-0 items-center justify-center gap-4 bg-background px-6">
-              <XCircle size={40} color="#ef4444" />
+              <XCircle size={40} color={colors.destructive} />
               <Text className="text-base font-bold text-foreground">Failed to load</Text>
               <Text className="text-center text-sm text-mutedForeground">
                 Could not load the payment gateway. Please check your connection.
               </Text>
-              <TouchableOpacity onPress={goHome} className="rounded-2xl bg-indigo-600 px-6 py-3">
+              <TouchableOpacity onPress={goHome} className="rounded-2xl bg-primary px-6 py-3">
                 <Text className="font-semibold text-white">Go to Home</Text>
               </TouchableOpacity>
             </View>

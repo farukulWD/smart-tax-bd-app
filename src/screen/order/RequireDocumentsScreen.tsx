@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { skipToken } from '@reduxjs/toolkit/query';
@@ -24,10 +24,12 @@ import UploadOptionModal from '@/src/components/order/UploadOptionModal';
 import { isImageUrl, isPdfUrl } from '@/src/utils/commonFunction';
 import { PreviewFile } from '@/src/types/commonTypes';
 import PreviewModal from '@/src/components/order/PreviewModal';
+import { useThemeColors } from '@/src/theme/useThemeColors';
 
 const RequireDocumentsScreen = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'RequireDocuments'>>();
   const navigation = useNavigation<any>();
+  const { colors } = useThemeColors();
   const taxId = route.params?.taxId;
   const { top, bottom } = useSafeAreaInsets();
 
@@ -254,7 +256,7 @@ const RequireDocumentsScreen = () => {
             <View className="flex-1 p-4">
               {requiredDocuments.length === 0 ? (
                 <View className="items-center gap-2 py-10">
-                  <ActivityIndicator color="#6366f1" />
+                  <ActivityIndicator color={colors.primary} />
                   <Text className="text-sm text-mutedForeground">Loading required documents…</Text>
                 </View>
               ) : (
@@ -288,18 +290,18 @@ const RequireDocumentsScreen = () => {
 
               {/* Missing notice */}
               {!stepTwoReady && missingDocuments.length > 0 && (
-                <View className="mt-4 flex-row items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-                  <AlertCircle size={15} color="#d97706" />
-                  <Text className="flex-1 text-xs text-amber-700">
+                <View className="mt-4 flex-row items-center gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3">
+                  <AlertCircle size={15} color={colors.warning} />
+                  <Text className="flex-1 text-xs text-warning">
                     Missing: <Text className="font-semibold">{missingDocuments.join(', ')}</Text>
                   </Text>
                 </View>
               )}
 
               {stepTwoReady && (
-                <View className="mt-4 flex-row items-center gap-2 rounded-xl border border-green-500 bg-green-50/20 px-4 py-3">
-                  <CheckCircle2 size={15} color="#16a34a" />
-                  <Text className="text-xs font-medium text-green-500">
+                <View className="mt-4 flex-row items-center gap-2 rounded-xl border border-success/30 bg-success/10 px-4 py-3">
+                  <CheckCircle2 size={15} color={colors.success} />
+                  <Text className="text-xs font-medium text-success">
                     All documents uploaded — ready to proceed!
                   </Text>
                 </View>
@@ -314,8 +316,8 @@ const RequireDocumentsScreen = () => {
           className={[
             'mx-4 mt-3 flex-row items-center justify-center gap-2 rounded-2xl py-3',
             isSubmittingStepTwo || isFilesLoading || !stepTwoReady
-              ? 'bg-indigo-300'
-              : 'bg-indigo-600',
+              ? 'bg-primary/50'
+              : 'bg-primary',
           ].join(' ')}
           activeOpacity={0.8}>
           {(isSubmittingStepTwo || isFilesLoading) && (
@@ -330,7 +332,7 @@ const RequireDocumentsScreen = () => {
           disabled={isSkipping}
           className="mx-4 mt-2 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3"
           activeOpacity={0.7}>
-          {isSkipping ? <ActivityIndicator size="small" color="hsl(0, 0%, 60%)" /> : null}
+          {isSkipping ? <ActivityIndicator size="small" color={colors.mutedForeground} /> : null}
           <Text className="text-sm font-semibold text-mutedForeground">
             {isSkipping ? 'Skipping…' : 'Upload File Later'}
           </Text>
@@ -339,8 +341,8 @@ const RequireDocumentsScreen = () => {
           onPress={() => navigation.goBack()}
           activeOpacity={0.7}
           className="mx-4 flex-row items-center justify-center gap-2 py-3">
-          <ArrowLeft size={15} color="#6366f1" />
-          <Text className="font-semibold text-indigo-600">Back to Create Tax Order</Text>
+          <ArrowLeft size={15} color={colors.primary} />
+          <Text className="font-semibold text-primary">Back to Create Tax Order</Text>
         </TouchableOpacity>
 
         {/* Upload option modal */}
