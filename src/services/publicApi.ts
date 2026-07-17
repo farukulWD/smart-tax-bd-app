@@ -21,7 +21,7 @@ const publicApi = baseApi.injectEndpoints({
       query: () => ({ url: '/faqs' }),
     }),
   }),
-  overrideExisting: false,
+  overrideExisting: true,
 });
 
 export const {

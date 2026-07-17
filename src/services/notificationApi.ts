@@ -91,6 +91,7 @@ const notificationApi = baseApi.injectEndpoints({
       invalidatesTags: ['notifications'],
     }),
   }),
+  overrideExisting: true,
 });
 
 export const {

@@ -27,7 +27,7 @@ const blogApi = baseApi.injectEndpoints({
       providesTags: ['blogs'],
     }),
   }),
-  overrideExisting: false,
+  overrideExisting: true,
 });
 
 export const { useGetAllBlogsQuery, useGetSingleBlogQuery } = blogApi;

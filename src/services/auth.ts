@@ -69,7 +69,7 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
   }),
-  overrideExisting: false,
+  overrideExisting: true,
 });
 
 export const {
