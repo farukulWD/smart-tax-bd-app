@@ -52,3 +52,20 @@ export type GetAllTaxTypesResponse = {
   message: string;
   data: TaxTypeItem[];
 };
+
+export type FaqItemType = {
+  _id: string;
+  question: string;
+  answer: string;
+  order: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
+
+export type GetAllFaqsResponse = {
+  success: boolean;
+  message: string;
+  data: FaqItemType[];
+};

@@ -6,6 +6,7 @@ import OnboardingScreen from '../screen/onboarding/OnboardingScreen';
 import BottomTabNavigator from './BottomTabNavigator';
 import PackagesScreen from '../screen/home/PackageScreen';
 import NewsDetailsScreen from '../screen/home/NewsDetailsScreen';
+import BlogDetailsScreen from '../screen/blog/BlogDetailsScreen';
 import NotificationScreen from '../screen/notification/NotificationScreen';
 import CreateTaxOrderScreen from '../screen/order/CreateTaxOrderScreen';
 import RequireDocumentsScreen from '../screen/order/RequireDocumentsScreen';
@@ -31,6 +32,7 @@ export type AppStackParamList = {
     | undefined;
   Packages: undefined;
   NewsDetails: { newsId: string };
+  BlogDetails: { slug: string };
   Notification: undefined;
   MyFiles: undefined;
   CreateTaxOrder: { taxTypeId: string; redirectTo: { stack: string; screen: string } };
@@ -76,6 +78,7 @@ export default function AppStack() {
       <Stack.Screen name="Onboarding" component={OnboardingScreen} />
       <Stack.Screen name="Packages" component={PackagesScreen} />
       <Stack.Screen name="NewsDetails" component={NewsDetailsScreen} />
+      <Stack.Screen name="BlogDetails" component={BlogDetailsScreen} />
       <Stack.Screen name="Notification" component={NotificationScreen} />
       <Stack.Screen name="CreateTaxOrder" component={CreateTaxOrderScreen} />
       <Stack.Screen name="RequireDocuments" component={RequireDocumentsScreen} />

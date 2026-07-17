@@ -1,8 +1,8 @@
 import { View, Text, Pressable } from 'react-native';
 import { useState } from 'react';
-import { FAQItem } from '@/src/screen/faq/FAQScreen';
+import { FaqItemType } from '@/src/types/publicTypes';
 
-const FaqItem = ({ item }: { item: FAQItem }) => {
+const FaqItem = ({ item }: { item: FaqItemType }) => {
   const [openIndex, setOpenIndex] = useState(false);
   return (
     <View className="mb-3 rounded-xl border border-border bg-card px-3 py-4">
@@ -17,12 +17,6 @@ const FaqItem = ({ item }: { item: FAQItem }) => {
       {openIndex ? (
         <View className="mt-2">
           <Text className="leading-5 text-mutedForeground">{item.answer}</Text>
-
-          {!!item.note && (
-            <View className="mt-2 rounded-lg bg-muted px-3 py-2">
-              <Text className="text-foreground">{item.note}</Text>
-            </View>
-          )}
         </View>
       ) : null}
     </View>
