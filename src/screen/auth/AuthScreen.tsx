@@ -4,10 +4,12 @@ import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
 import ForgotPasswordScreen from './ForgotPasswordScreen';
 import VerifyOTPScreen from './VerifyOTPScreen';
+import ResetPasswordScreen from './ResetPasswordScreen';
 
 const AuthScreen = ({ initialScreen }: { initialScreen: TAuth }) => {
   const [screen, setScreen] = useState<TAuth>(SCREEN_NAME.SIGNIN);
   const [authMobile, setAuthMobile] = useState('');
+  const [resetToken, setResetToken] = useState('');
   const [verifyType, setVerifyType] = useState<TVerifyPurpose>('register');
   const prevScreenRef = useRef<TAuth>(SCREEN_NAME.SIGNIN);
 
@@ -43,7 +45,18 @@ const AuthScreen = ({ initialScreen }: { initialScreen: TAuth }) => {
     return <ForgotPasswordScreen setScreen={setScreen} setAuthMobile={setAuthMobile} />;
   }
   if (screen === SCREEN_NAME.VERIFY_USER) {
-    return <VerifyOTPScreen setScreen={setScreen} mobile={authMobile} verifyType={verifyType} />;
+    return (
+      <VerifyOTPScreen
+        setScreen={setScreen}
+        mobile={authMobile}
+        verifyType={verifyType}
+        setResetToken={setResetToken}
+      />
+    );
+  }
+
+  if (screen === SCREEN_NAME.RESET_PASSWORD) {
+    return <ResetPasswordScreen setScreen={setScreen} resetToken={resetToken} />;
   }
 
   return <SignInScreen setScreen={setScreen} />;

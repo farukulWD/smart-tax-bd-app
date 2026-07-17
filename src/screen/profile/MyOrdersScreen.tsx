@@ -359,7 +359,7 @@ const MyOrdersScreen = () => {
   return (
     <ProtectedScreen>
     <View className="flex-1 bg-background">
-      <ScreenHeader className="mb-3" title="My Orders" />
+      <ScreenHeader className="mb-3" title="My Orders" showBack={navigation.canGoBack()} />
 
       {isLoading ? (
         <View className="flex-1 items-center justify-center gap-3">

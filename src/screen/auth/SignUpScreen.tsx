@@ -1,91 +1,39 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Eye, EyeOff, Mail, Phone } from 'lucide-react-native';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { View, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
+import { Eye, EyeOff } from 'lucide-react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import { Input } from '@/components/ui/input';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { Checkbox } from '@/components/ui/checkbox';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
 import { useThemeColors } from '@/src/theme/useThemeColors';
-import { z } from 'zod';
-import { useForm, Controller, Control, FieldPath, FieldValues } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useRegisterMutation } from '@/src/services/auth';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { toast } from '@/src/utils/ToastConfig';
-import { useTranslation } from 'react-i18next';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
-const registerSchema = z
-  .object({
-    name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-    email: z.string().email({ message: 'Invalid email address' }).optional().or(z.literal('')),
-    mobile: z
-      .string()
-      .regex(/^01[3-9]\d{8}$/, {
-        message: 'Enter a valid Bangladeshi mobile number (e.g. 01712345678)',
-      }),
-    password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
-    confirmPassword: z.string(),
-    terms: z.boolean().refine((val) => val === true, {
-      message: 'You must accept the terms and conditions',
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  });
+const createRegisterSchema = (t: (key: string) => string) =>
+  z
+    .object({
+      name: z.string().min(2, { message: t('auth.nameMin') }),
+      email: z.string().email({ message: t('auth.emailInvalid') }).optional().or(z.literal('')),
+      mobile: z.string().regex(/^01[3-9]\d{8}$/, { message: t('auth.mobileInvalid') }),
+      password: z.string().min(6, { message: t('auth.passwordMin') }),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t('auth.passwordsMismatch'),
+      path: ['confirmPassword'],
+    });
 
-export type RegisterFormValues = z.infer<typeof registerSchema>;
-
-// ─── FormField ────────────────────────────────────────────────────────────────
-
-interface FormFieldProps<T extends FieldValues> {
-  control: Control<T>;
-  name: FieldPath<T>;
-  render: (props: {
-    field: {
-      onChange: (...event: unknown[]) => void;
-      onBlur: () => void;
-      value: unknown;
-    };
-  }) => React.ReactElement;
-}
-
-function FormField<T extends FieldValues>({
-  control,
-  name,
-  render,
-}: FormFieldProps<T>): React.ReactElement {
-  return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field }): React.ReactElement => render({ field })}
-    />
-  );
-}
-
-// ─── FormItem ─────────────────────────────────────────────────────────────────
-
-const FormItem = ({ children }: { children: React.ReactNode }): React.ReactElement => (
-  <View className="gap-1">{children}</View>
-);
-
-// ─── FormControl ─────────────────────────────────────────────────────────────
-
-const FormControl = ({ children }: { children: React.ReactNode }): React.ReactElement => (
-  <View>{children}</View>
-);
-
-// ─── FormMessage ─────────────────────────────────────────────────────────────
-
-const FormMessage = ({ message }: { message?: string }): React.ReactElement | null => {
-  if (!message) return null;
-  return <Text className="ml-1 text-xs text-red-500">{message}</Text>;
-};
+export type RegisterFormValues = z.infer<ReturnType<typeof createRegisterSchema>>;
 
 // ─── SignUpScreen ─────────────────────────────────────────────────────────────
 
@@ -103,6 +51,8 @@ const SignUpScreen = ({
 
   const [register, { isLoading }] = useRegisterMutation();
 
+  const registerSchema = useMemo(() => createRegisterSchema(t), [t]);
+
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -111,7 +61,6 @@ const SignUpScreen = ({
       mobile: '',
       password: '',
       confirmPassword: '',
-      terms: false,
     },
   });
 
@@ -121,42 +70,53 @@ const SignUpScreen = ({
       const { confirmPassword, ...payload } = data;
       const res = await register(payload).unwrap();
       if (res) {
-        console.log('res.data', JSON.stringify(res.data, null, 2));
         toast.success(t('auth.otpSent'));
         setAuthMobile(data.mobile || res.data.mobile);
         form.reset();
         setScreen(SCREEN_NAME.VERIFY_USER);
       }
     } catch (error) {
-      console.error('Registration failed:', error);
       globalErrorHandler(error);
     }
   };
 
-  const inputClass = 'h-12 w-full rounded-lg border border-border bg-card px-4 text-foreground';
+  const inputClass =
+    'h-14 w-full rounded-xl border border-border bg-card px-4 text-base text-foreground';
 
   return (
     <SafeAreaView className="flex-1 bg-background">
-      <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-1 bg-background">
+      <KeyboardAwareScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled">
+        <View className="flex-1 px-6 pt-6">
           {/* Header */}
-          <View className="items-center px-4 pb-6 pt-8">
-            <Text variant="h3">{t('auth.softwareSlogan')}</Text>
-            <Text className="text-mutedForeground">{t('auth.createAccountSlogan')}</Text>
+          <View className="items-center pb-8">
+            <Image
+              resizeMode="contain"
+              className="h-24 w-24"
+              source={require('../../../assets/images/logo-small.png')}
+            />
+            <Text className="mt-5 text-3xl font-bold text-foreground">
+              {t('auth.signUpTitle')}
+            </Text>
+            <Text className="mt-2 text-center text-base text-mutedForeground">
+              {t('auth.createAccountDesc')}
+            </Text>
           </View>
 
           {/* Form */}
-          <View className="mb-6 gap-4 px-5">
+          <View className="gap-4">
             {/* Full Name */}
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>{t('auth.fullNameLabel')}</FormLabel>
                   <FormControl>
                     <Input
                       className={inputClass}
-                      placeholder={t('auth.fullNamePlaceholder')}
+                      placeholder={t('auth.fullNameHint')}
                       placeholderTextColor={colors.mutedForeground}
                       value={field.value as string}
                       onChangeText={field.onChange}
@@ -169,21 +129,23 @@ const SignUpScreen = ({
               )}
             />
 
-            {/* Phone */}
+            {/* Mobile */}
             <FormField
               control={form.control}
               name="mobile"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>{t('auth.mobileLabel')}</FormLabel>
                   <FormControl>
                     <Input
                       className={inputClass}
-                      placeholder={t('auth.mobilePlaceholder')}
+                      placeholder={t('auth.mobileHintFull')}
                       placeholderTextColor={colors.mutedForeground}
                       value={field.value as string}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
-                      keyboardType="phone-pad"
+                      keyboardType="number-pad"
+                      autoCapitalize="none"
                     />
                   </FormControl>
                   <FormMessage message={form.formState.errors.mobile?.message} />
@@ -197,10 +159,11 @@ const SignUpScreen = ({
               name="email"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>{t('auth.emailLabel')}</FormLabel>
                   <FormControl>
                     <Input
                       className={inputClass}
-                      placeholder={t('auth.emailPlaceholder')}
+                      placeholder={t('auth.emailHint')}
                       placeholderTextColor={colors.mutedForeground}
                       value={field.value as string}
                       onChangeText={field.onChange}
@@ -220,11 +183,12 @@ const SignUpScreen = ({
               name="password"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>{t('auth.passwordLabel')}</FormLabel>
                   <FormControl>
                     <View className="relative justify-center">
                       <Input
                         className={inputClass}
-                        placeholder={t('auth.passwordPlaceholder')}
+                        placeholder={t('auth.passwordLabel')}
                         placeholderTextColor={colors.mutedForeground}
                         value={field.value as string}
                         onChangeText={field.onChange}
@@ -234,7 +198,7 @@ const SignUpScreen = ({
                       />
                       <TouchableOpacity
                         onPress={() => setShowPassword((p) => !p)}
-                        className="absolute right-3"
+                        className="absolute right-4"
                         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                         {showPassword ? (
                           <Eye size={20} color={colors.mutedForeground} />
@@ -255,11 +219,12 @@ const SignUpScreen = ({
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>{t('auth.confirmPasswordLabel')}</FormLabel>
                   <FormControl>
                     <View className="relative justify-center">
                       <Input
                         className={inputClass}
-                        placeholder={t('auth.confirmPasswordPlaceholder')}
+                        placeholder={t('auth.confirmPasswordLabel')}
                         placeholderTextColor={colors.mutedForeground}
                         value={field.value as string}
                         onChangeText={field.onChange}
@@ -269,7 +234,7 @@ const SignUpScreen = ({
                       />
                       <TouchableOpacity
                         onPress={() => setShowConfirmPassword((p) => !p)}
-                        className="absolute right-3"
+                        className="absolute right-4"
                         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                         {showConfirmPassword ? (
                           <Eye size={20} color={colors.mutedForeground} />
@@ -284,73 +249,35 @@ const SignUpScreen = ({
               )}
             />
 
-            {/* Terms & Conditions */}
-            <FormField
-              control={form.control}
-              name="terms"
-              render={({ field }) => (
-                <FormItem>
-                  <View className="flex-row items-start gap-2">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value as boolean}
-                        onCheckedChange={field.onChange}
-                        className="mt-0.5 border-border"
-                      />
-                    </FormControl>
-                    <Text className="flex-1 text-sm leading-5 text-mutedForeground">
-                      {t('auth.termsAndConditions')}
-                    </Text>
-                  </View>
-                  <FormMessage message={form.formState.errors.terms?.message} />
-                </FormItem>
-              )}
-            />
-
-            {/* Submit Button */}
-            <TouchableOpacity
-              className="mb-4 w-full items-center rounded-lg bg-green-600 py-4"
+            {/* Submit */}
+            <Button
               onPress={form.handleSubmit(onSubmit)}
               disabled={isLoading}
-              activeOpacity={0.8}>
+              className="mt-2 h-14 rounded-xl bg-primary">
               {isLoading ? (
                 <ActivityIndicator color="#ffffff" />
               ) : (
-                <Text className="text-center text-base font-bold text-white">
+                <Text className="text-base font-bold text-white">
                   {t('auth.createAccountButton')}
                 </Text>
               )}
-            </TouchableOpacity>
+            </Button>
 
-            {/* Login Link */}
-            <View className="mb-6 flex-row items-center justify-center">
-              <Text className="text-sm text-gray-600">{t('auth.signUpLink')} </Text>
-              <TouchableOpacity onPress={() => setScreen(SCREEN_NAME.SIGNIN)}>
-                <Text className="text-sm font-semibold text-green-600">
-                  {t('auth.signUpLinkAction')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Contact Info */}
-            <View className="mb-4 items-center gap-2">
-              <View className="flex-row items-center">
-                <Mail size={16} color={colors.mutedForeground} />
-                <Text className="ml-2 text-sm text-mutedForeground">support@smarttaxbd.com.bd</Text>
-              </View>
-              <View className="flex-row items-center">
-                <Phone size={16} color={colors.mutedForeground} />
-                <Text className="ml-2 text-sm text-mutedForeground">01409-991225</Text>
-              </View>
-            </View>
-
-            {/* Footer */}
-            <View className="mb-6 px-4">
-              <Text className="text-center text-xs leading-5 text-mutedForeground">
-                {t('auth.copyright')}
-              </Text>
-            </View>
+            {/* Terms consent */}
+            <Text className="px-2 text-center text-xs leading-5 text-mutedForeground">
+              {t('auth.termsConsent')}
+            </Text>
           </View>
+        </View>
+
+        {/* Login Link */}
+        <View className="flex-row items-center justify-center pb-8 pt-6">
+          <Text className="text-sm text-mutedForeground">{t('auth.alreadyHaveAccount')} </Text>
+          <TouchableOpacity
+            onPress={() => setScreen(SCREEN_NAME.SIGNIN)}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Text className="text-sm font-bold text-primary">{t('auth.signInButton')}</Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
     </SafeAreaView>

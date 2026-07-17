@@ -1,4 +1,4 @@
-export type TAuth = 'SignIn' | 'SignUp' | 'ForgotPassword' | 'VerifyUser';
+export type TAuth = 'SignIn' | 'SignUp' | 'ForgotPassword' | 'VerifyUser' | 'ResetPassword';
 export type TVerifyPurpose = 'register' | 'forgotPassword';
 
 export const SCREEN_NAME = {
@@ -6,6 +6,7 @@ export const SCREEN_NAME = {
   SIGNUP: 'SignUp' as TAuth,
   FORGOT_PASSWORD: 'ForgotPassword' as TAuth,
   VERIFY_USER: 'VerifyUser' as TAuth,
+  RESET_PASSWORD: 'ResetPassword' as TAuth,
 };
 
 type UserRole = 'user' | 'admin' | string;

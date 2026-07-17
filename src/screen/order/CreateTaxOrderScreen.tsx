@@ -37,9 +37,6 @@ const formSchema = z.object({
     .array(z.nativeEnum(IncomeSource))
     .min(1, 'Please select at least one source of income'),
   tax_year: z.string().min(1, 'Tax year is required'),
-  income_from_ldt_company: z.boolean(),
-  income_from_partnership_firm: z.boolean(),
-  are_you_get_notice_from_tax_office: z.boolean(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -153,9 +150,6 @@ const CreateTaxOrderScreen = () => {
       mobile: '',
       source_of_income: [],
       tax_year: `${CURRENT_YEAR}-${CURRENT_YEAR + 1}`,
-      income_from_ldt_company: false,
-      income_from_partnership_firm: false,
-      are_you_get_notice_from_tax_office: false,
     },
   });
 
@@ -189,9 +183,6 @@ const CreateTaxOrderScreen = () => {
         },
         tax_year: values.tax_year,
         source_of_income: values.source_of_income,
-        income_from_ldt_company: values.income_from_ldt_company,
-        income_from_partnership_firm: values.income_from_partnership_firm,
-        are_you_get_notice_from_tax_office: values.are_you_get_notice_from_tax_office,
       }).unwrap();
       const orderId = res?.data?.tax_order?._id;
       if (!orderId) {
@@ -340,35 +331,6 @@ const CreateTaxOrderScreen = () => {
               )}
             />
             <ErrorText message={errors.source_of_income?.message} />
-          </SectionCard>
-
-          {/* Additional Information */}
-          <SectionCard title="Additional Information">
-            <View className="gap-3">
-              {(
-                [
-                  { name: 'income_from_ldt_company', label: 'Income from LTD company' },
-                  { name: 'income_from_partnership_firm', label: 'Income from partnership firm' },
-                  {
-                    name: 'are_you_get_notice_from_tax_office',
-                    label: 'Received notice from tax office',
-                  },
-                ] as const
-              ).map((opt) => (
-                <Controller
-                  key={opt.name}
-                  control={control}
-                  name={opt.name}
-                  render={({ field: { value, onChange } }) => (
-                    <CheckboxItem
-                      label={opt.label}
-                      checked={value}
-                      onPress={() => onChange(!value)}
-                    />
-                  )}
-                />
-              ))}
-            </View>
           </SectionCard>
 
           {/* Order Summary */}
