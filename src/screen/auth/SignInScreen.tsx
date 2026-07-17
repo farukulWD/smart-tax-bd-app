@@ -51,12 +51,23 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
   const [login, { isLoading }] = useLoginMutation();
 
   const signInSchema = useMemo(() => createSignInSchema(t), [t]);
+  const TEST_ACCOUNTS = {
+    auto: {
+      mobile: '01949887896',
+      password: 'Shuvajit#1',
+    },
+    default: {
+      mobile: '',
+      password: '',
+    },
+  } as const;
 
+  const ACTIVE_ACCOUNT = TEST_ACCOUNTS.default;
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      mobile: '01949887896',
-      password: 'Shuvajit#1',
+      mobile: ACTIVE_ACCOUNT.mobile,
+      password: ACTIVE_ACCOUNT.password,
     },
   });
 
