@@ -1,4 +1,5 @@
 import {
+  GetAllFaqsResponse,
   GetAllNewsResponse,
   GetAllTaxTypesResponse,
   GetSingleNewsResponse,
@@ -16,8 +17,16 @@ const publicApi = baseApi.injectEndpoints({
     getAllTaxTypes: build.query<GetAllTaxTypesResponse, void>({
       query: () => ({ url: '/tax-types/get-all-tax-types' }),
     }),
+    getAllFaqs: build.query<GetAllFaqsResponse, void>({
+      query: () => ({ url: '/faqs' }),
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetAllNewsQuery, useGetSingleNewsQuery, useGetAllTaxTypesQuery } = publicApi;
+export const {
+  useGetAllNewsQuery,
+  useGetSingleNewsQuery,
+  useGetAllTaxTypesQuery,
+  useGetAllFaqsQuery,
+} = publicApi;

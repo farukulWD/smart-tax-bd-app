@@ -18,10 +18,7 @@ import {
   ClipboardList,
   FolderOpen,
   LogOut,
-  Trash2,
   User,
-  ShieldCheck,
-  Info,
   Phone,
   BookOpen,
   Languages,
@@ -43,7 +40,7 @@ const ProfileScreen = () => {
   const { setLocale, isEnglish } = useLocale();
   const { colorScheme, toggleColorScheme } = useThemeColors();
   const { isLoggedIn, user } = useAppSelector((state) => state.auth);
-  const [activeConfirm, setActiveConfirm] = useState<'logout' | 'delete-account' | null>(null);
+  const [activeConfirm, setActiveConfirm] = useState<'logout' | null>(null);
 
   const { data: filesResponse } = useGetMyFilesQuery(undefined);
   const { data: orderResponse } = useGetMyOrdersQuery(undefined);
@@ -71,8 +68,6 @@ const ProfileScreen = () => {
   ];
 
   const handleLogout = () => setActiveConfirm('logout');
-
-  const handleDeleteAccount = () => setActiveConfirm('delete-account');
 
   const initials = user?.name
     ? user.name
@@ -115,24 +110,6 @@ const ProfileScreen = () => {
                 </View>
               </View>
 
-              {/* Info row */}
-              <View className="mt-4 gap-2 rounded-2xl border border-border bg-muted px-4 py-3">
-                <View className="flex-row items-center justify-between">
-                  <Text className="text-xs text-mutedForeground">{t('profile.role')}</Text>
-                  <View className="flex-row items-center gap-1">
-                    <ShieldCheck size={12} color="hsl(125, 70%, 33%)" />
-                    <Text className="text-xs font-semibold capitalize text-foreground">
-                      {user?.role}
-                    </Text>
-                  </View>
-                </View>
-                <View className="flex-row items-center justify-between border-t border-border pt-2">
-                  <Text className="text-xs text-mutedForeground">{t('profile.location')}</Text>
-                  <Text className="text-xs font-semibold text-mutedForeground">
-                    {t('profile.locationNA')}
-                  </Text>
-                </View>
-              </View>
             </View>
           </View>
         ) : (
@@ -256,38 +233,18 @@ const ProfileScreen = () => {
         <SectionLabel label={t('profile.account')} />
         <View className="mx-4 overflow-hidden rounded-2xl border border-border bg-card">
           {isLoggedIn ? (
-            <>
-              <TouchableOpacity
-                onPress={handleLogout}
-                activeOpacity={0.75}
-                className="flex-row items-center gap-3 px-4 py-3.5">
-                <View className="h-9 w-9 items-center justify-center rounded-xl bg-muted">
-                  <LogOut size={16} color="hsl(0, 0%, 60%)" />
-                </View>
-                <Text className="flex-1 text-sm font-semibold text-foreground">
-                  {t('profile.signOut')}
-                </Text>
-                <ChevronRight size={15} color="hsl(0, 0%, 60%)" />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={handleDeleteAccount}
-                activeOpacity={0.75}
-                className="flex-row items-center gap-3 border-t border-border px-4 py-3.5">
-                <View className="bg-destructive/15 h-9 w-9 items-center justify-center rounded-xl">
-                  <Trash2 size={16} color="hsl(0, 83%, 49%)" />
-                </View>
-                <View className="flex-1">
-                  <Text className="text-sm font-semibold text-destructive">
-                    {t('profile.deleteAccount')}
-                  </Text>
-                  <Text className="mt-0.5 text-xs text-mutedForeground">
-                    {t('profile.deleteAccountDesc')}
-                  </Text>
-                </View>
-                <ChevronRight size={15} color="hsl(0, 83%, 49%)" />
-              </TouchableOpacity>
-            </>
+            <TouchableOpacity
+              onPress={handleLogout}
+              activeOpacity={0.75}
+              className="flex-row items-center gap-3 px-4 py-3.5">
+              <View className="h-9 w-9 items-center justify-center rounded-xl bg-muted">
+                <LogOut size={16} color="hsl(0, 0%, 60%)" />
+              </View>
+              <Text className="flex-1 text-sm font-semibold text-foreground">
+                {t('profile.signOut')}
+              </Text>
+              <ChevronRight size={15} color="hsl(0, 0%, 60%)" />
+            </TouchableOpacity>
           ) : (
             <TouchableOpacity
               onPress={() => navigate('Auth', { screen: 'SignIn', shouldGoBack: true })}
@@ -304,11 +261,6 @@ const ProfileScreen = () => {
           )}
         </View>
 
-        {/* ── App meta ─────────────────────────────────────────────────── */}
-        <View className="mx-4 mt-5 flex-row items-center justify-center gap-1.5">
-          <Info size={12} color="hsl(0, 0%, 60%)" />
-          <Text className="text-xs text-mutedForeground">{t('profile.version')}</Text>
-        </View>
       </ScrollView>
 
       <ConfirmModal
@@ -320,19 +272,6 @@ const ProfileScreen = () => {
         destructive
         onConfirm={() => {
           store.dispatch(logout());
-          setActiveConfirm(null);
-        }}
-        onCancel={() => setActiveConfirm(null)}
-      />
-
-      <ConfirmModal
-        visible={activeConfirm === 'delete-account'}
-        title={t('profile.deleteAccount')}
-        message={t('profile.deleteAccountDesc')}
-        confirmLabel={t('profile.deleteConfirm')}
-        cancelLabel={t('common.cancel')}
-        destructive
-        onConfirm={() => {
           setActiveConfirm(null);
         }}
         onCancel={() => setActiveConfirm(null)}
