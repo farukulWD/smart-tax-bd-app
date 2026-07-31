@@ -22,7 +22,7 @@ const contactCards = [
   },
   {
     title: 'Office',
-    value: 'Dhaka, Bangladesh',
+    value: '42/1 kha, Bakaul Mansion, Segunbagicha, Dhaka-1000',
     subtext: 'Remote and in-person consultation',
     icon: MapPin,
   },
