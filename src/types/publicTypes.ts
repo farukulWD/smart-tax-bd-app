@@ -39,6 +39,7 @@ export type TaxTypeItem = {
   title: LocalizedString;
   rate: number;
   value: string;
+  icon?: string;
   tax_orders_id: string[];
   description: LocalizedString;
   isActive: boolean;

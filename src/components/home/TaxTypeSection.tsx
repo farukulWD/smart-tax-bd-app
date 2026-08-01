@@ -4,9 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useGetAllTaxTypesQuery } from '@/src/services/publicApi';
 import TaxCard from './TaxCard';
 import { TaxTypeItem } from '@/src/types/publicTypes';
-import { useLocale } from '@/src/localization/useLocale';
 
-const NUM_COLUMNS = 2;
+const NUM_COLUMNS = 3;
 
 const getPaddedData = (data: TaxTypeItem[], columns: number): (TaxTypeItem | null)[] => {
   const remainder = data.length % columns;
@@ -14,27 +13,12 @@ const getPaddedData = (data: TaxTypeItem[], columns: number): (TaxTypeItem | nul
   return [...data, ...Array(columns - remainder).fill(null)];
 };
 
-const TaxTypeSection = ({ searchQuery = '' }: { searchQuery?: string }) => {
+const TaxTypeSection = () => {
   const { t } = useTranslation();
-  const { locale } = useLocale();
   const { data, isLoading, error } = useGetAllTaxTypesQuery();
   const types = data?.data || [];
 
-  const q = searchQuery.trim().toLowerCase();
-  const filtered = useMemo(
-    () =>
-      q
-        ? types.filter((item) => {
-            const title = (
-              item.title[locale as keyof typeof item.title] || item.title.en
-            ).toLowerCase();
-            return title.includes(q) || item.value.toLowerCase().includes(q);
-          })
-        : types,
-    [types, q, locale]
-  );
-
-  const paddedTypes = useMemo(() => getPaddedData(filtered, NUM_COLUMNS), [filtered]);
+  const paddedTypes = useMemo(() => getPaddedData(types, NUM_COLUMNS), [types]);
 
   const renderItem = useCallback(({ item }: { item: TaxTypeItem | null }) => {
     if (!item) return <View style={{ flex: 1 }} />;
@@ -77,7 +61,7 @@ const TaxTypeSection = ({ searchQuery = '' }: { searchQuery?: string }) => {
         <Text className="text-2xl font-bold text-foreground">{t('home.taxCategories')}</Text>
         <Text className="text-sm text-mutedForeground">{t('home.taxCategoriesSubtitle')}</Text>
       </View>
-      {!filtered.length ? (
+      {!types.length ? (
         <View className="py-10">
           <Text className="text-center text-sm text-mutedForeground">{t('home.notFound')}</Text>
         </View>
@@ -87,8 +71,8 @@ const TaxTypeSection = ({ searchQuery = '' }: { searchQuery?: string }) => {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         numColumns={NUM_COLUMNS}
-        contentContainerClassName="gap-3"
-        columnWrapperClassName="gap-3 items-start"
+        contentContainerClassName="gap-2"
+        columnWrapperClassName="gap-2 items-stretch"
         scrollEnabled={false}
         removeClippedSubviews
       />

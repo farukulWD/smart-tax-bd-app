@@ -1,6 +1,5 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import * as Localization from 'expo-localization';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import en from './locals/en';
 import bn from './locals/bn';
@@ -22,18 +21,13 @@ const locales = {
   bn: { translation: bn },
 };
 
-const getInitialLanguage = (): string => {
-  const locales = Localization.getLocales();
-  if (locales && locales.length > 0 && locales[0].languageCode) {
-    return locales[0].languageCode;
-  }
-  return 'en';
-};
+// Bangla is the default; a saved preference (loadSavedLocale) overrides it on startup.
+const DEFAULT_LANGUAGE = 'bn';
 
 i18n.use(initReactI18next).init({
   resources: locales,
-  lng: getInitialLanguage(),
-  fallbackLng: 'en',
+  lng: DEFAULT_LANGUAGE,
+  fallbackLng: DEFAULT_LANGUAGE,
   interpolation: {
     escapeValue: false,
   },

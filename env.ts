@@ -8,7 +8,7 @@ const CONFIG = {
     BASE_URL: 'https://api.dev.smarttaxbd.com/api/v1',
   },
   local: {
-    BASE_URL: 'http://localhost:5001/api/v1',
+    BASE_URL: 'http://192.168.0.102:5000/api/v1',
   },
 };
 

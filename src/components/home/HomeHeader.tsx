@@ -1,17 +1,12 @@
-import { View, Text, TouchableOpacity, Image, TextInput } from 'react-native';
-import { BellIcon, Search } from 'lucide-react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { BellIcon } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppNavigation } from '@/src/utils/NavigationUtils';
 import { useAppSelector } from '@/src/redux/hooks';
 import { useGetUnreadCountQuery } from '@/src/services/notificationApi';
 import { Images } from '@/src/utils/Images';
 
-type HomeHeaderProps = {
-  searchQuery: string;
-  onSearchChange: (value: string) => void;
-};
-
-const HomeHeader = ({ searchQuery, onSearchChange }: HomeHeaderProps) => {
+const HomeHeader = () => {
   const { top } = useSafeAreaInsets();
   const navigation = useAppNavigation();
   const { user } = useAppSelector((state) => state.auth);
@@ -46,17 +41,6 @@ const HomeHeader = ({ searchQuery, onSearchChange }: HomeHeaderProps) => {
             </View>
           ) : null}
         </TouchableOpacity>
-      </View>
-
-      <View className="mt-4 flex-row items-center gap-2 rounded-full bg-card px-4 py-3">
-        <Search color="#9CA3AF" size={20} />
-        <TextInput
-          value={searchQuery}
-          onChangeText={onSearchChange}
-          placeholder="Search tax categories"
-          placeholderTextColor="#9CA3AF"
-          className="flex-1 p-0 text-base text-foreground"
-        />
       </View>
     </View>
   );
