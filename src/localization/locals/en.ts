@@ -40,6 +40,13 @@ export default {
     theme: 'Theme',
     dark: 'Dark',
     light: 'Light',
+    version: 'Version {{version}}',
+  },
+  appUpdate: {
+    readyTitle: 'Update ready',
+    readyMessage: 'A new version has been downloaded. Restart the app to finish installing it.',
+    restart: 'Restart now',
+    later: 'Later',
   },
   common: {
     yes: 'Yes',
@@ -139,8 +146,7 @@ export default {
     passwordLabel: 'Password',
     confirmPasswordLabel: 'Confirm Password',
     newPasswordLabel: 'New Password',
-    termsConsent:
-      'By creating an account you agree to our Terms of Service and Privacy Policy.',
+    termsConsent: 'By creating an account you agree to our Terms of Service and Privacy Policy.',
     alreadyHaveAccount: 'Already have an account?',
     rememberedIt: 'Remembered it?',
     verificationCodeTitle: 'Enter Verification Code',
@@ -169,8 +175,7 @@ export default {
     madeIn: 'Made in',
     copyright:
       'Mobile App is developed by Smart Tax BD Technology Ltd. smarttaxbd.com.bd is copyrighted by Bangladesh Copyright and Patent office. Copyright registration number is 14748-COPR.',
-    forgotPasswordDesc:
-      "Enter the mobile number linked to your account and we'll send a OTP.",
+    forgotPasswordDesc: "Enter the mobile number linked to your account and we'll send a OTP.",
     mobileLabel: 'Mobile Number',
     sendOtpButton: 'Send OTP',
     rememberPassword: 'Remember your password?',

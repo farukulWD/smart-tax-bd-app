@@ -16,6 +16,7 @@ import LucideIcon from '@/src/components/common/LucideIcon';
 import { useTranslation } from 'react-i18next';
 
 import { useGetMyFilesQuery } from '@/src/services/fileApi';
+import { APP_VERSION } from '@/src/constants/appVersion';
 import {
   StatCard,
   MenuItem,
@@ -246,6 +247,11 @@ const ProfileScreen = () => {
             </TouchableOpacity>
           )}
         </View>
+
+        {/* ── App Version ───────────────────────────────────────────────── */}
+        <AppText className="mt-6 text-center text-xs text-mutedForeground">
+          {t('profile.version', { version: APP_VERSION })}
+        </AppText>
       </ScrollView>
 
       <ConfirmModal

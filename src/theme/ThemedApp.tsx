@@ -7,6 +7,7 @@ import Navigation from '../navigation/Navigation';
 import { StatusBar } from 'expo-status-bar';
 import Toast from 'react-native-toast-message';
 import { createToastConfig } from '../utils/ToastConfig';
+import useAppUpdate from '../hook/useAppUpdate';
 
 const hslToRgbChannels = (color: string) => {
   const match = color.match(/^hsla?\((.+)\)$/i);
@@ -72,6 +73,8 @@ const ThemedApp = () => {
   const { theme } = useAppSelector((state) => state.auth);
   const { setColorScheme } = useColorScheme();
   const colors = theme === 'dark' ? darkColors : lightColors;
+
+  useAppUpdate();
 
   useEffect(() => {
     setColorScheme(theme);
