@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { skipToken } from '@reduxjs/toolkit/query';
@@ -26,6 +26,25 @@ import { PreviewFile } from '@/src/types/commonTypes';
 import PreviewModal from '@/src/components/order/PreviewModal';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 
+type LocalPreview = { doc: string; uri: string; name: string; isImage: boolean };
+
+// axiosBaseQuery puts the raw axios message (a plain string) in `error.data`
+// whenever the server did not answer with JSON — timeouts, 413s and network
+// drops all land here, so reading `error.data.message` alone loses the reason.
+const errorMessage = (error: any, fallback: string) => {
+  const data = error?.data;
+  const detail =
+    (typeof data === 'string' && data) ||
+    data?.message ||
+    data?.error ||
+    error?.message ||
+    error?.error;
+  const status = error?.status;
+
+  if (!detail) return status ? `${fallback} (${status})` : fallback;
+  return status ? `${detail} (${status})` : detail;
+};
+
 const RequireDocumentsScreen = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'RequireDocuments'>>();
   const navigation = useNavigation<any>();
@@ -33,7 +52,8 @@ const RequireDocumentsScreen = () => {
   const taxId = route.params?.taxId;
   const { top, bottom } = useSafeAreaInsets();
 
-  const uploadingDocRef = useRef('');
+  const [activeDoc, setActiveDoc] = useState('');
+  const [localPreview, setLocalPreview] = useState<LocalPreview | null>(null);
   const [isLocalUploading, setIsLocalUploading] = useState(false);
   const [pendingDoc, setPendingDoc] = useState('');
   const [showUploadOptions, setShowUploadOptions] = useState(false);
@@ -105,6 +125,7 @@ const RequireDocumentsScreen = () => {
   };
 
   const uploadAsset = async (doc: string, uri: string, name: string, mimeType: string) => {
+    setActiveDoc(doc);
     setIsLocalUploading(true);
     try {
       const formData = new FormData();
@@ -116,7 +137,6 @@ const RequireDocumentsScreen = () => {
       } as any);
 
       await uploadFile(formData).unwrap();
-      uploadingDocRef.current = '';
       toast.success(`${doc} uploaded`);
       try {
         await refetchMyFiles();
@@ -125,12 +145,19 @@ const RequireDocumentsScreen = () => {
         await refetchOrder();
       } catch (_) {}
     } catch (error: any) {
-      const message =
-        error?.data?.message || error?.data?.error || error?.message || 'Upload failed';
-      toast.error(message);
+      console.log('upload error', JSON.stringify(error, null, 2));
+      toast.error(errorMessage(error, 'Upload failed'));
     } finally {
       setIsLocalUploading(false);
+      setActiveDoc('');
+      setLocalPreview(null);
     }
+  };
+
+  const resetUploadState = () => {
+    setIsLocalUploading(false);
+    setActiveDoc('');
+    setLocalPreview(null);
   };
 
   const pickFromFiles = async (doc: string) => {
@@ -140,14 +167,26 @@ const RequireDocumentsScreen = () => {
         copyToCacheDirectory: true,
       });
 
-      if (result.canceled || !result.assets?.[0]) return;
+      if (result.canceled || !result.assets?.[0]) {
+        resetUploadState();
+        return;
+      }
 
       const asset = result.assets[0];
-      await uploadAsset(doc, asset.uri, asset.name, asset.mimeType || 'application/octet-stream');
+      const mimeType = asset.mimeType || 'application/octet-stream';
+
+      // optimistic thumbnail from the local file while the upload runs
+      setLocalPreview({
+        doc,
+        uri: asset.uri,
+        name: asset.name,
+        isImage: mimeType.startsWith('image/') || isImageUrl(asset.uri),
+      });
+
+      await uploadAsset(doc, asset.uri, asset.name, mimeType);
     } catch (error: any) {
-      const message =
-        error?.data?.message || error?.data?.error || error?.message || 'Document upload failed';
-      toast.error(message);
+      toast.error(errorMessage(error, 'Document upload failed'));
+      resetUploadState();
     }
   };
 
@@ -156,24 +195,44 @@ const RequireDocumentsScreen = () => {
       const permission = await ImagePicker.requestCameraPermissionsAsync();
       if (!permission.granted) {
         Alert.alert('Permission required', 'Camera access is needed to take a photo.');
+        resetUploadState();
         return;
       }
 
+      // Compressed on purpose: a raw full-size capture was large enough to be
+      // rejected by the upload endpoint. expo-image-picker re-encodes before
+      // resolving, so the capture takes a moment — the card is already marked
+      // busy by startUpload() so the spinner is on screen when we come back.
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ['images'],
         quality: 0.8,
       });
 
-      if (result.canceled || !result.assets?.[0]) return;
+      if (result.canceled || !result.assets?.[0]) {
+        resetUploadState();
+        return;
+      }
 
       const asset = result.assets[0];
       const fileName = asset.fileName || `${doc.replace(/\s+/g, '_')}.jpg`;
+
+      setLocalPreview({ doc, uri: asset.uri, name: fileName, isImage: true });
+
       await uploadAsset(doc, asset.uri, fileName, asset.mimeType || 'image/jpeg');
     } catch (error: any) {
-      const message =
-        error?.data?.message || error?.data?.error || error?.message || 'Camera upload failed';
-      toast.error(message);
+      toast.error(errorMessage(error, 'Camera upload failed'));
+      resetUploadState();
     }
+  };
+
+  // The native camera/file picker resolves only after it has written and
+  // compressed the file, which takes a while. Marking the card busy before the
+  // picker is launched means the spinner is already on screen the moment the
+  // picker closes, instead of appearing seconds later.
+  const startUpload = (doc: string, launch: (doc: string) => Promise<void>) => {
+    setActiveDoc(doc);
+    setIsLocalUploading(true);
+    launch(doc);
   };
 
   const handleDocPress = (doc: string) => {
@@ -189,9 +248,7 @@ const RequireDocumentsScreen = () => {
       await skipUpload(taxId).unwrap();
       navigation.navigate('OrderPaymentStatus', { taxId });
     } catch (error: any) {
-      const message =
-        error?.data?.message || error?.data?.error || error?.message || 'Failed to skip upload';
-      toast.error(message);
+      toast.error(errorMessage(error, 'Failed to skip upload'));
     }
   };
 
@@ -222,9 +279,7 @@ const RequireDocumentsScreen = () => {
         await refetchOrder();
       } catch (_) {}
     } catch (error: any) {
-      const message =
-        error?.data?.message || error?.data?.error || error?.message || 'Step 2 submission failed';
-      toast.error(message);
+      toast.error(errorMessage(error, 'Step 2 submission failed'));
     }
   };
 
@@ -273,8 +328,10 @@ const RequireDocumentsScreen = () => {
                         doc={doc}
                         file={file}
                         isUploading={isLocalUploading}
-                        isActive={isLocalUploading && uploadingDocRef.current === doc}
+                        isActive={isLocalUploading && activeDoc === doc}
+                        localPreview={localPreview?.doc === doc ? localPreview : null}
                         onPress={() => handleDocPress(doc)}
+                        onReplace={() => handleDocPress(doc)}
                         onView={() =>
                           openPreview(
                             fileUrl,
@@ -351,13 +408,11 @@ const RequireDocumentsScreen = () => {
           doc={pendingDoc}
           onPickFromFiles={() => {
             setShowUploadOptions(false);
-            uploadingDocRef.current = pendingDoc;
-            pickFromFiles(pendingDoc);
+            startUpload(pendingDoc, pickFromFiles);
           }}
           onTakePhoto={() => {
             setShowUploadOptions(false);
-            uploadingDocRef.current = pendingDoc;
-            captureFromCamera(pendingDoc);
+            startUpload(pendingDoc, captureFromCamera);
           }}
           onCancel={() => {
             setShowUploadOptions(false);

@@ -42,7 +42,6 @@ export const showAlert = ({ message, color, background, type }: ToastOptions): v
   });
 };
 
-
 export const toast = {
   success: (message: string): void =>
     Toast.show({ type: 'success', text1: message, position: 'bottom' }),
@@ -177,3 +176,16 @@ export const TAX_YEARS = Array.from({ length: 10 }, (_, i) => {
 });
 export const isPdfUrl = (url: string) => /\.pdf$/i.test(url);
 export const isImageUrl = (url: string) => /\.(jpe?g|png|gif|webp|svg)$/i.test(url);
+
+// ─── Form input normalizers ───────────────────────────────────────────────────
+
+// Keyboards and autofill often append a space or capitalise the first letter,
+// which made valid addresses like `name+tag@gmail.com` fail validation.
+export const normalizeEmail = (value: string) => value.replace(/\s/g, '').toLowerCase();
+
+// Accepts `+8801…`, `8801…`, and numbers typed with spaces or dashes.
+export const normalizeMobile = (value: string) =>
+  value.replace(/\D/g, '').replace(/^88/, '').slice(0, 11);
+
+// Keeps inner spaces (names have them) but blocks leading ones while typing.
+export const trimLeading = (value: string) => value.replace(/^\s+/, '');

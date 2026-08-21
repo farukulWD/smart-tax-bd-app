@@ -1,11 +1,14 @@
 import { RegisterFormValues } from '../screen/auth/SignUpScreen';
-import { ILoginResponse } from '../types/authTypes';
+import { ILoginResponse, IUser } from '../types/authTypes';
 import { TResponse } from '../types/commonTypes';
 import { baseApi } from './baseApi';
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    register: builder.mutation<TResponse<any>, Omit<RegisterFormValues, 'confirmPassword'>>({
+    register: builder.mutation<
+      TResponse<any>,
+      Omit<RegisterFormValues, 'confirmPassword' | 'email'> & { email?: string }
+    >({
       query: (data) => ({
         url: '/users/register',
         method: 'POST',
@@ -62,11 +65,13 @@ export const authApi = baseApi.injectEndpoints({
         url: '/auth/logout',
         method: 'POST',
       }),
+      invalidatesTags: ['user'],
     }),
-    getUserInfo: builder.query<any, void>({
+    getUserInfo: builder.query<TResponse<IUser>, void>({
       query: () => ({
         url: '/users/get-me',
       }),
+      providesTags: ['user'],
     }),
   }),
   overrideExisting: true,

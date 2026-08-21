@@ -1,5 +1,5 @@
 import { isImageUrl, isPdfUrl } from '@/src/utils/commonFunction';
-import { AlertCircle, Eye, FileText } from 'lucide-react-native';
+import { AlertCircle, Eye, FileText, X } from 'lucide-react-native';
 import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useThemeColors } from '@/src/theme/useThemeColors';
@@ -11,6 +11,8 @@ const DocumentCard = ({
   isActive,
   onPress,
   onView,
+  onReplace,
+  localPreview,
 }: {
   doc: string;
   file: any;
@@ -18,13 +20,16 @@ const DocumentCard = ({
   isActive?: boolean;
   onPress: () => void;
   onView: () => void;
+  onReplace?: () => void;
+  localPreview?: { uri: string; name: string; isImage: boolean } | null;
 }) => {
   const { t } = useTranslation();
   const { colors } = useThemeColors();
   const fileUrl = file?.file;
-  const uploaded = !!file;
-  const isImg = uploaded && isImageUrl(fileUrl);
-  const isPdf = uploaded && isPdfUrl(fileUrl);
+  const pending = !!localPreview;
+  const uploaded = !!file || pending;
+  const isImg = !!file && isImageUrl(fileUrl);
+  const isPdf = !!file && isPdfUrl(fileUrl);
 
   return (
     <TouchableOpacity
@@ -37,9 +42,31 @@ const DocumentCard = ({
       style={{ flex: 1, margin: 6, minWidth: 140, maxWidth: '48%' }}>
       {/* Thumbnail area */}
       <View className="bg-muted/50 roundcard mb-2 flex-1 items-center justify-center overflow-hidden">
-        {isUploading && isActive ? (
+        {pending ? (
+          <View className="h-full w-full items-center justify-center">
+            {localPreview.isImage ? (
+              <Image
+                source={{ uri: localPreview.uri }}
+                className="h-full w-full"
+                resizeMode="contain"
+              />
+            ) : (
+              <View className="items-center gap-1">
+                <FileText size={32} color={colors.mutedForeground} />
+                <Text className="text-center text-xs text-foreground" numberOfLines={2}>
+                  {localPreview.name}
+                </Text>
+              </View>
+            )}
+            {isUploading && isActive && (
+              <View className="absolute inset-0 items-center justify-center bg-background/50">
+                <ActivityIndicator size="large" color={colors.primary} />
+              </View>
+            )}
+          </View>
+        ) : isUploading && isActive ? (
           <ActivityIndicator size="large" color={colors.primary} />
-        ) : uploaded ? (
+        ) : file ? (
           isImg ? (
             <Image source={{ uri: fileUrl }} className="h-full w-full" resizeMode="contain" />
           ) : isPdf ? (
@@ -72,7 +99,12 @@ const DocumentCard = ({
       </Text>
 
       {/* Status / View button */}
-      {uploaded ? (
+      {pending ? (
+        <View className="flex-row items-center justify-center gap-1 rounded-lg bg-primary/10 py-1.5">
+          <ActivityIndicator size="small" color={colors.primary} />
+          <Text className="text-xs font-semibold text-primary">{t('common.uploading')}</Text>
+        </View>
+      ) : file ? (
         <TouchableOpacity
           onPress={(e) => {
             e.stopPropagation?.();
@@ -86,6 +118,21 @@ const DocumentCard = ({
         <View className="items-center rounded-full bg-warning/20 py-1.5">
           <Text className="text-xs font-semibold text-warning">{t('common.missing')}</Text>
         </View>
+      )}
+
+      {/* Replace badge — hints the card can be tapped to swap the file */}
+      {!!file && !pending && (
+        <TouchableOpacity
+          onPress={(e) => {
+            e.stopPropagation?.();
+            (onReplace ?? onPress)();
+          }}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          accessibilityLabel={t('common.tapToReplace')}
+          className="absolute right-2 top-2 rounded-full bg-foreground/60 p-1"
+          style={{ zIndex: 10 }}>
+          <X size={14} color={colors.card} />
+        </TouchableOpacity>
       )}
 
       {/* Active ring overlay */}

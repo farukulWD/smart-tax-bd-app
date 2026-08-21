@@ -22,10 +22,14 @@ import { useForgotPasswordMutation } from '@/src/services/auth';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { toast } from '@/src/utils/ToastConfig';
 import { BackButton } from '@/src/components/global/BackButton';
+import { normalizeMobile } from '@/src/utils/commonFunction';
 
 const createForgotPasswordSchema = (t: (key: string) => string) =>
   z.object({
-    mobile: z.string().regex(/^01[3-9]\d{8}$/, { message: t('auth.mobileInvalid') }),
+    mobile: z
+      .string()
+      .trim()
+      .regex(/^01[3-9]\d{8}$/, { message: t('auth.mobileInvalid') }),
   });
 
 type ForgotPasswordFormValues = z.infer<ReturnType<typeof createForgotPasswordSchema>>;
@@ -103,7 +107,7 @@ const ForgotPasswordScreen = ({
                       placeholder={t('auth.mobileHint')}
                       placeholderTextColor={colors.mutedForeground}
                       value={field.value as string}
-                      onChangeText={field.onChange}
+                      onChangeText={(text) => field.onChange(normalizeMobile(text))}
                       onBlur={field.onBlur}
                       keyboardType="number-pad"
                       autoCapitalize="none"

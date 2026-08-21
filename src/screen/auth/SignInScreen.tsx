@@ -18,21 +18,25 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { useLoginMutation } from '@/src/services/auth';
+import { useLazyGetUserInfoQuery, useLoginMutation } from '@/src/services/auth';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { useAppDispatch } from '@/src/redux/hooks';
-import { setCredentials } from '@/src/redux/slices/authSlice';
+import { setCredentials, setUser } from '@/src/redux/slices/authSlice';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { AppStackParamList } from '@/src/navigation/AppStack';
 import { navigateToStack, replace } from '@/src/utils/NavigationUtils';
 import { useTranslation } from 'react-i18next';
 import { BackButton } from '@/src/components/global/BackButton';
+import { normalizeMobile } from '@/src/utils/commonFunction';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
 const createSignInSchema = (t: (key: string) => string) =>
   z.object({
-    mobile: z.string().regex(/^01[3-9]\d{8}$/, { message: t('auth.mobileInvalid') }),
+    mobile: z
+      .string()
+      .trim()
+      .regex(/^01[3-9]\d{8}$/, { message: t('auth.mobileInvalid') }),
     password: z.string().min(6, { message: t('auth.passwordMin') }),
   });
 
@@ -49,6 +53,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
 
   const [showPassword, setShowPassword] = useState(false);
   const [login, { isLoading }] = useLoginMutation();
+  const [fetchUserInfo, { isFetching: isFetchingUser }] = useLazyGetUserInfoQuery();
 
   const signInSchema = useMemo(() => createSignInSchema(t), [t]);
   const TEST_ACCOUNTS = {
@@ -91,13 +96,23 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
         mobile: data.mobile,
         password: data.password,
       }).unwrap();
-      console.log('res', JSON.stringify(res, null, 2));
       dispatch(
         setCredentials({
           token: res.data.accessToken,
           user: res.data.user,
         })
       );
+
+      // Refresh the profile from /users/get-me so the store holds the full user record.
+      try {
+        const profile = await fetchUserInfo().unwrap();
+        if (profile?.data) {
+          dispatch(setUser(profile.data));
+        }
+      } catch (profileError) {
+        console.log('profileError', JSON.stringify(profileError, null, 2));
+      }
+
       handleNavigation();
     } catch (error) {
       console.log('error', JSON.stringify(error, null, 2));
@@ -120,7 +135,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled">
-        <View className="flex-1 justify-center px-6">
+        <View className="flex-1 justify-start px-6">
           {/* Logo + Heading */}
           <View className="items-center pb-10">
             <Image
@@ -149,7 +164,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       placeholder={t('auth.mobileHint')}
                       placeholderTextColor={colors.mutedForeground}
                       value={field.value as string}
-                      onChangeText={field.onChange}
+                      onChangeText={(text) => field.onChange(normalizeMobile(text))}
                       onBlur={field.onBlur}
                       keyboardType="number-pad"
                       autoCapitalize="none"
@@ -209,9 +224,9 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             {/* Login Button */}
             <Button
               onPress={form.handleSubmit(onSubmit)}
-              disabled={isLoading}
+              disabled={isLoading || isFetchingUser}
               className="mt-2 h-14 rounded-xl bg-primary">
-              {isLoading ? (
+              {isLoading || isFetchingUser ? (
                 <ActivityIndicator color="#ffffff" />
               ) : (
                 <Text className="text-base font-bold text-white">{t('auth.signInButton')}</Text>
@@ -221,7 +236,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
         </View>
 
         {/* Create Account */}
-        <View className="flex-row items-center justify-center pb-8 pt-6">
+        <View className="flex-row items-center justify-center pb-20 pt-6">
           <Text className="text-sm text-mutedForeground">{t('auth.signUpLink')} </Text>
           <TouchableOpacity
             onPress={() => setScreen(SCREEN_NAME.SIGNUP)}

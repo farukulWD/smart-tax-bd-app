@@ -66,6 +66,7 @@ export default {
     fileUploaded: 'File uploaded',
     noFileYet: 'No file yet',
     tapToReplace: 'Tap to replace',
+    uploading: 'Uploading…',
     tapToUpload: 'Tap to upload',
     view: 'View',
     missing: 'Missing',

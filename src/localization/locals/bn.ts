@@ -68,6 +68,7 @@ export default {
     fileUploaded: 'ফাইল আপলোড করা হয়েছে',
     noFileYet: 'এখনো কোনো ফাইল নেই',
     tapToReplace: 'পরিবর্তন করতে ট্যাপ করুন',
+    uploading: 'আপলোড হচ্ছে…',
     tapToUpload: 'আপলোড করতে ট্যাপ করুন',
     view: 'দেখুন',
     missing: 'মিসিং',

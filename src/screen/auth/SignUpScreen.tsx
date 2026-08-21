@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, useMemo, useState } from 'react';
-import { View, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
+import { Dispatch, SetStateAction, useMemo, useRef, useState } from 'react';
+import { View, TouchableOpacity, ActivityIndicator, Image, TextInput } from 'react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,15 +16,28 @@ import { useThemeColors } from '@/src/theme/useThemeColors';
 import { useRegisterMutation } from '@/src/services/auth';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { toast } from '@/src/utils/ToastConfig';
+import { normalizeEmail, normalizeMobile, trimLeading } from '@/src/utils/commonFunction';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
 const createRegisterSchema = (t: (key: string) => string) =>
   z
     .object({
-      name: z.string().min(2, { message: t('auth.nameMin') }),
-      email: z.string().email({ message: t('auth.emailInvalid') }).optional().or(z.literal('')),
-      mobile: z.string().regex(/^01[3-9]\d{8}$/, { message: t('auth.mobileInvalid') }),
+      name: z
+        .string()
+        .trim()
+        .min(2, { message: t('auth.nameMin') }),
+      email: z
+        .string()
+        .trim()
+        .toLowerCase()
+        .refine((value) => value === '' || z.string().email().safeParse(value).success, {
+          message: t('auth.emailInvalid'),
+        }),
+      mobile: z
+        .string()
+        .trim()
+        .regex(/^01[3-9]\d{8}$/, { message: t('auth.mobileInvalid') }),
       password: z.string().min(6, { message: t('auth.passwordMin') }),
       confirmPassword: z.string(),
     })
@@ -51,6 +64,12 @@ const SignUpScreen = ({
 
   const [register, { isLoading }] = useRegisterMutation();
 
+  // Keyboard "next" chain: each field hands focus to the one below it.
+  const mobileRef = useRef<TextInput>(null);
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
+  const confirmPasswordRef = useRef<TextInput>(null);
+
   const registerSchema = useMemo(() => createRegisterSchema(t), [t]);
 
   const form = useForm<RegisterFormValues>({
@@ -67,11 +86,14 @@ const SignUpScreen = ({
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { confirmPassword, ...payload } = data;
+      const { confirmPassword, email, ...rest } = data;
+      // Send email only when filled — an empty string collides on the backend's
+      // unique email index once a second user registers without one.
+      const payload = email ? { ...rest, email } : rest;
       const res = await register(payload).unwrap();
       if (res) {
         toast.success(t('auth.otpSent'));
-        setAuthMobile(data.mobile || res.data.mobile);
+        setAuthMobile(data.mobile || res?.data?.mobile || '');
         form.reset();
         setScreen(SCREEN_NAME.VERIFY_USER);
       }
@@ -96,9 +118,7 @@ const SignUpScreen = ({
               className="h-24 w-24"
               source={require('../../../assets/images/logo-small.png')}
             />
-            <Text className="mt-5 text-3xl font-bold text-foreground">
-              {t('auth.signUpTitle')}
-            </Text>
+            <Text className="mt-5 text-3xl font-bold text-foreground">{t('auth.signUpTitle')}</Text>
             <Text className="mt-2 text-center text-base text-mutedForeground">
               {t('auth.createAccountDesc')}
             </Text>
@@ -119,9 +139,15 @@ const SignUpScreen = ({
                       placeholder={t('auth.fullNameHint')}
                       placeholderTextColor={colors.mutedForeground}
                       value={field.value as string}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
+                      onChangeText={(text) => field.onChange(trimLeading(text))}
+                      onBlur={() => {
+                        field.onChange((field.value as string).trim());
+                        field.onBlur();
+                      }}
                       autoCapitalize="words"
+                      returnKeyType="next"
+                      submitBehavior="submit"
+                      onSubmitEditing={() => mobileRef.current?.focus()}
                     />
                   </FormControl>
                   <FormMessage message={form.formState.errors.name?.message} />
@@ -141,11 +167,15 @@ const SignUpScreen = ({
                       className={inputClass}
                       placeholder={t('auth.mobileHintFull')}
                       placeholderTextColor={colors.mutedForeground}
+                      ref={mobileRef}
                       value={field.value as string}
-                      onChangeText={field.onChange}
+                      onChangeText={(text) => field.onChange(normalizeMobile(text))}
                       onBlur={field.onBlur}
                       keyboardType="number-pad"
                       autoCapitalize="none"
+                      returnKeyType="next"
+                      submitBehavior="submit"
+                      onSubmitEditing={() => emailRef.current?.focus()}
                     />
                   </FormControl>
                   <FormMessage message={form.formState.errors.mobile?.message} />
@@ -165,11 +195,17 @@ const SignUpScreen = ({
                       className={inputClass}
                       placeholder={t('auth.emailHint')}
                       placeholderTextColor={colors.mutedForeground}
+                      ref={emailRef}
                       value={field.value as string}
-                      onChangeText={field.onChange}
+                      onChangeText={(text) => field.onChange(normalizeEmail(text))}
                       onBlur={field.onBlur}
                       keyboardType="email-address"
                       autoCapitalize="none"
+                      autoCorrect={false}
+                      textContentType="emailAddress"
+                      returnKeyType="next"
+                      submitBehavior="submit"
+                      onSubmitEditing={() => passwordRef.current?.focus()}
                     />
                   </FormControl>
                   <FormMessage message={form.formState.errors.email?.message} />
@@ -190,11 +226,15 @@ const SignUpScreen = ({
                         className={inputClass}
                         placeholder={t('auth.passwordLabel')}
                         placeholderTextColor={colors.mutedForeground}
+                        ref={passwordRef}
                         value={field.value as string}
                         onChangeText={field.onChange}
                         onBlur={field.onBlur}
                         secureTextEntry={!showPassword}
                         autoCapitalize="none"
+                        returnKeyType="next"
+                        submitBehavior="submit"
+                        onSubmitEditing={() => confirmPasswordRef.current?.focus()}
                       />
                       <TouchableOpacity
                         onPress={() => setShowPassword((p) => !p)}
@@ -226,11 +266,14 @@ const SignUpScreen = ({
                         className={inputClass}
                         placeholder={t('auth.confirmPasswordLabel')}
                         placeholderTextColor={colors.mutedForeground}
+                        ref={confirmPasswordRef}
                         value={field.value as string}
                         onChangeText={field.onChange}
                         onBlur={field.onBlur}
                         secureTextEntry={!showConfirmPassword}
                         autoCapitalize="none"
+                        returnKeyType="done"
+                        onSubmitEditing={form.handleSubmit(onSubmit)}
                       />
                       <TouchableOpacity
                         onPress={() => setShowConfirmPassword((p) => !p)}
