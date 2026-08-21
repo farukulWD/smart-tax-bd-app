@@ -67,21 +67,32 @@ const VerifyOTPScreen = ({
     const digits = text.replace(/\D/g, '');
 
     if (!digits) {
-      const newOtp = [...otp];
-      newOtp[index] = '';
-      setOtp(newOtp);
+      setOtp((prev) => {
+        const next = [...prev];
+        next[index] = '';
+        return next;
+      });
       return;
     }
 
     // A single keystroke advances one box; a paste or SMS autofill arrives as the
-    // whole code at once and spreads across the remaining boxes.
-    const newOtp = [...otp];
-    for (let i = 0; i < digits.length && index + i < OTP_LENGTH; i++) {
-      newOtp[index + i] = digits[i];
-    }
-    setOtp(newOtp);
+    // whole code at once and spreads across the remaining boxes. Android delivers
+    // one autofill to several boxes, so a full-length code always starts at box 0
+    // instead of at the box that happened to receive the event — otherwise the
+    // delivery to a later box writes only its own digit and blanks the rest.
+    const start = digits.length === OTP_LENGTH ? 0 : index;
 
-    const nextIndex = Math.min(index + digits.length, OTP_LENGTH - 1);
+    // Functional update: the duplicate autofill events fire before a re-render,
+    // so a `[...otp]` copy would be stale on every call after the first.
+    setOtp((prev) => {
+      const next = [...prev];
+      for (let i = 0; i < digits.length && start + i < OTP_LENGTH; i++) {
+        next[start + i] = digits[i];
+      }
+      return next;
+    });
+
+    const nextIndex = Math.min(start + digits.length, OTP_LENGTH - 1);
     inputRefs.current[nextIndex]?.focus();
   };
 
@@ -141,7 +152,7 @@ const VerifyOTPScreen = ({
   const renderBox = (index: number) => (
     <View
       key={index}
-      className={`${CONTROL_HEIGHT} flex-1 items-center justify-center rounded-xl border-2 ${
+      className={`h-14 flex-1 items-center justify-center rounded-xl border-2 ${
         otp[index] ? 'border-primary bg-primary/5' : 'border-border bg-card'
       }`}>
       <TextInput
@@ -156,10 +167,16 @@ const VerifyOTPScreen = ({
         // Not 1: iOS autofill and paste deliver all six digits to a single box,
         // and maxLength would clip them before handleOtpChange could spread them.
         maxLength={OTP_LENGTH}
-        textContentType="oneTimeCode"
-        autoComplete={Platform.OS === 'android' ? 'sms-otp' : 'one-time-code'}
-        importantForAutofill="yes"
+        // Only the first box advertises itself to the autofill/SMS suggestion
+        // strip. Marking all six makes the platform deliver the same code to
+        // several of them, which fires redundant onChangeText events.
+        textContentType={index === 0 ? 'oneTimeCode' : 'none'}
+        autoComplete={
+          index === 0 ? (Platform.OS === 'android' ? 'sms-otp' : 'one-time-code') : 'off'
+        }
+        importantForAutofill={index === 0 ? 'yes' : 'no'}
         selectTextOnFocus
+        autoFocus={index === 0}
       />
     </View>
   );
@@ -205,11 +222,10 @@ const VerifyOTPScreen = ({
               {t('auth.verificationCodeLabel')}
             </Text>
             <View className="flex-row items-center justify-center gap-2">
-              {[0, 2, 4].map((start, groupIndex) => (
+              {[0, 2, 4].map((start) => (
                 <View key={start} className="flex-1 flex-row items-center gap-2">
                   {renderBox(start)}
                   {renderBox(start + 1)}
-                  {groupIndex < 2 && <View className="h-0.5 w-3 rounded bg-border" />}
                 </View>
               ))}
             </View>

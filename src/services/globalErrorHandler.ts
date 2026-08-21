@@ -22,3 +22,20 @@ export const globalErrorHandler = (error: unknown) => {
     toast.error('An unknown error occurred');
   }
 };
+
+/**
+ * Pulls a human-readable message out of an RTK Query / axiosBaseQuery error.
+ * Returns '' when nothing useful is available so callers can fall back to their
+ * own copy instead of showing "[object Object]".
+ */
+export const getApiErrorMessage = (error: unknown): string => {
+  const err = error as any;
+  if (!err) return '';
+
+  const data = err?.data;
+  if (typeof data === 'string') return data;
+
+  return (
+    data?.errorSources?.[0]?.message || data?.message || data?.error || err?.error || err?.message || ''
+  );
+};

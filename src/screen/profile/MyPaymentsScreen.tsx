@@ -12,6 +12,7 @@ import {
 } from 'lucide-react-native';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
+import { getApiErrorMessage } from '@/src/services/globalErrorHandler';
 
 // ─── types ────────────────────────────────────────────────────────────────────
 
@@ -202,14 +203,14 @@ const EmptyState = ({ filter }: { filter: FilterStatus }) => (
 
 // ─── Error State ──────────────────────────────────────────────────────────────
 
-const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
+const ErrorState = ({ onRetry, message }: { onRetry: () => void; message?: string }) => (
   <View className="flex-1 items-center justify-center gap-4 px-8">
     <AlertCircle size={40} color="hsl(0, 83%, 49%)" />
     <AppText className="text-center text-base font-bold text-foreground">
       Failed to load payments
     </AppText>
     <AppText className="text-center text-sm text-mutedForeground">
-      Something went wrong. Please try again.
+      {message || 'Something went wrong. Please try again.'}
     </AppText>
     <TouchableOpacity
       onPress={onRetry}
@@ -247,7 +248,7 @@ const MyPaymentsScreen = () => {
             <AppText className="text-sm text-mutedForeground">Loading payments…</AppText>
           </View>
         ) : error ? (
-          <ErrorState onRetry={refetch} />
+          <ErrorState onRetry={refetch} message={getApiErrorMessage(error)} />
         ) : (
           <>
             {payments.length > 0 && <SummaryBar payments={payments} />}

@@ -27,6 +27,7 @@ import { IFile } from '@/src/types/filesTypes';
 import { toPreviewFile } from '@/src/utils/fileHelpers';
 import { toast } from '@/src/utils/ToastConfig';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
+import { getApiErrorMessage } from '@/src/services/globalErrorHandler';
 
 const EmptyState = () => (
   <View className="flex-1 items-center justify-center gap-3 px-8 py-16">
@@ -52,6 +53,8 @@ const MyFilesScreen = () => {
   // const [updateFile, { isLoading: isUpdating }] = useUpdateFileMutation();
 
   const files: IFile[] = data?.data ?? [];
+
+  const errorMessage = getApiErrorMessage(error);
 
   // const handleRename = useCallback(
   //   async (name: string) => {
@@ -141,7 +144,7 @@ const MyFilesScreen = () => {
         {isLoading ? (
           <View className="flex-1 items-center justify-center gap-3">
             <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
-            <AppText className="text-sm text-mutedForeground">Loading files\u2026</AppText>
+            <AppText className="text-sm text-mutedForeground">Loading files…</AppText>
           </View>
         ) : error ? (
           <View className="flex-1 items-center justify-center gap-4 px-8">
@@ -149,8 +152,11 @@ const MyFilesScreen = () => {
             <AppText className="text-center text-base font-bold text-foreground">
               Failed to load files
             </AppText>
+            {!!errorMessage && (
+              <AppText className="text-center text-sm text-mutedForeground">{errorMessage}</AppText>
+            )}
             <TouchableOpacity
-              onPress={refetch}
+              onPress={() => refetch()}
               className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
               <AppText className="font-semibold text-primaryForeground">Retry</AppText>
             </TouchableOpacity>

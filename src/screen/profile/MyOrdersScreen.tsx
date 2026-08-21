@@ -4,6 +4,7 @@ import AppText from '@/src/components/common/AppText';
 import { useNavigation } from '@react-navigation/native';
 import { IOrder, useGetMyOrdersQuery } from '@/src/services/orderApi';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
+import { getApiErrorMessage } from '@/src/services/globalErrorHandler';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { FilterStatus } from '@/src/components/profile/orders/types';
 import { SummaryBar } from '@/src/components/profile/orders/SummaryBar';
@@ -38,10 +39,10 @@ const MyOrdersScreen = () => {
         {isLoading ? (
           <View className="flex-1 items-center justify-center gap-3">
             <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
-            <AppText className="text-sm text-mutedForeground">Loading orders\u2026</AppText>
+            <AppText className="text-sm text-mutedForeground">Loading orders…</AppText>
           </View>
         ) : error ? (
-          <ErrorState onRetry={refetch} />
+          <ErrorState onRetry={refetch} message={getApiErrorMessage(error)} />
         ) : (
           <>
             {orders.length > 0 && <SummaryBar orders={orders} />}

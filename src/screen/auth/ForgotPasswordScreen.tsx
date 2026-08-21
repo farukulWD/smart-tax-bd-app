@@ -80,7 +80,7 @@ const ForgotPasswordScreen = ({
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled">
-        <View className="flex-1 justify-center px-6">
+        <View className="flex-1 justify-start px-6">
           {/* Header */}
           <View className="items-center pb-10">
             <View className="h-24 w-24 items-center justify-center rounded-full bg-muted">
@@ -130,16 +130,15 @@ const ForgotPasswordScreen = ({
               )}
             </Button>
           </View>
-        </View>
-
-        {/* Back to Login */}
-        <View className="flex-row items-center justify-center pb-8 pt-6">
-          <Text className="text-sm text-mutedForeground">{t('auth.rememberedIt')} </Text>
-          <TouchableOpacity
-            onPress={() => setScreen(SCREEN_NAME.SIGNIN)}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Text className="text-sm font-bold text-primary">{t('auth.signInButton')}</Text>
-          </TouchableOpacity>
+          {/* Back to Login */}
+          <View className="flex-row items-center justify-center pb-8 pt-6">
+            <Text className="text-sm text-mutedForeground">{t('auth.rememberedIt')} </Text>
+            <TouchableOpacity
+              onPress={() => setScreen(SCREEN_NAME.SIGNIN)}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <Text className="text-sm font-bold text-primary">{t('auth.signInButton')}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

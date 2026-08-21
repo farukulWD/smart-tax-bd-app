@@ -86,7 +86,7 @@ const ResetPasswordScreen = ({
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled">
-        <View className="flex-1 justify-center px-6">
+        <View className="flex-1 justify-start px-6">
           {/* Header */}
           <View className="items-center pb-10">
             <View className="h-24 w-24 items-center justify-center rounded-full bg-muted">

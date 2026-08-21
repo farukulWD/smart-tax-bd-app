@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native';
 import { Mail, MapPin, PhoneCall } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,23 +10,35 @@ import { BackButton } from '@/src/components/global/BackButton';
 const contactCards = [
   {
     title: 'Phone',
-    value: '+880 1700-000000',
+    value: '+880 1723-705068',
     subtext: 'Sat-Thu, 10:00 AM - 7:00 PM',
     icon: PhoneCall,
+    action: { label: 'Call now', url: 'tel:+8801723705068' },
   },
   {
     title: 'Email',
-    value: 'support@smarttaxbd.com',
+    value: 'smarttaxbd2017@gmail.com',
     subtext: 'We usually reply within 24 hours',
     icon: Mail,
+    action: { label: 'Send email', url: 'mailto:smarttaxbd2017@gmail.com' },
   },
   {
     title: 'Office',
     value: '42/1 kha, Bakaul Mansion, Segunbagicha, Dhaka-1000',
     subtext: 'Remote and in-person consultation',
     icon: MapPin,
+    action: null,
   },
 ];
+
+const openLink = async (url: string) => {
+  try {
+    await Linking.openURL(url);
+  } catch {
+    // Emulators and some devices have no dialer/mail client registered.
+    Alert.alert('Unable to open', url);
+  }
+};
 
 const ContactUsScreen = () => {
   const { colors } = useThemeColors();
@@ -77,6 +89,18 @@ const ContactUsScreen = () => {
               <Text className="mt-2 text-sm font-medium text-foreground">{item.value}</Text>
               {/* Subtext */}
               <Text className="mt-1 text-sm text-mutedForeground">{item.subtext}</Text>
+
+              {/* Action */}
+              {item.action && (
+                <TouchableOpacity
+                  onPress={() => openLink(item.action.url)}
+                  className="mt-4 self-start rounded-full bg-primary px-5 py-2"
+                  activeOpacity={0.8}>
+                  <Text className="text-sm font-semibold text-primaryForeground">
+                    {item.action.label}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           ))}
         </View>

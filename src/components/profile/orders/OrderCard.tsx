@@ -22,7 +22,7 @@ export const OrderCard = ({ item, onPress }: { item: IOrder; onPress: () => void
               {item.personal_information?.name}
             </AppText>
             <AppText className="text-xs text-mutedForeground" numberOfLines={1}>
-              #{item._id ? shortenId(item._id) : '\u2014'} \u00B7 {item.tax_year}
+              #{item._id ? shortenId(item._id) : '\u2014'} · {item.tax_year}
             </AppText>
           </View>
 
