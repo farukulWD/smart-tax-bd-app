@@ -1,12 +1,5 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  ActivityIndicator,
-  Alert,
-  Modal,
-} from 'react-native';
+import { View, TouchableOpacity, ScrollView, ActivityIndicator, Alert, Modal } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -29,9 +22,9 @@ const formatBDT = (amount: number) =>
 
 const InfoRow = ({ label, value }: { label: string; value: string }) => (
   <View className="flex-row items-center justify-between border-b border-border py-3">
-    <Text className="text-sm text-mutedForeground">{label}</Text>
+    <AppText className="text-sm text-mutedForeground">{label}</AppText>
     <View className="rounded-lg bg-muted px-3 py-1">
-      <Text className="text-sm font-semibold text-foreground">{value}</Text>
+      <AppText className="text-sm font-semibold text-foreground">{value}</AppText>
     </View>
   </View>
 );
@@ -56,11 +49,13 @@ const OrderPaymentStatusScreen = () => {
   if (!taxId) {
     return (
       <View className="flex-1 items-center justify-center bg-background px-6">
-        <Text className="mb-4 text-sm text-mutedForeground">{t('payment.noOrderSelected')}</Text>
+        <AppText className="mb-4 text-sm text-mutedForeground">
+          {t('payment.noOrderSelected')}
+        </AppText>
         <TouchableOpacity
           onPress={() => navigation.navigate('CreateOrder')}
-          className="rounded-2xl bg-primary px-6 py-3">
-          <Text className="font-semibold text-white">{t('payment.createOrder')}</Text>
+          className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+          <AppText className="font-semibold text-white">{t('payment.createOrder')}</AppText>
         </TouchableOpacity>
       </View>
     );
@@ -82,9 +77,13 @@ const OrderPaymentStatusScreen = () => {
     return (
       <View className="flex-1 items-center justify-center gap-4 bg-background px-6">
         <AlertCircle size={40} color={colors.destructive} />
-        <Text className="text-center text-sm text-destructive">{t('payment.failedToLoad')}</Text>
-        <TouchableOpacity onPress={() => refetch()} className="rounded-2xl bg-primary px-6 py-3">
-          <Text className="font-semibold text-white">{t('payment.retry')}</Text>
+        <AppText className="text-center text-sm text-destructive">
+          {t('payment.failedToLoad')}
+        </AppText>
+        <TouchableOpacity
+          onPress={() => refetch()}
+          className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+          <AppText className="font-semibold text-white">{t('payment.retry')}</AppText>
         </TouchableOpacity>
       </View>
     );
@@ -120,20 +119,22 @@ const OrderPaymentStatusScreen = () => {
           <View className="mb-6">
             <View className="flex-row items-center gap-3">
               {route.params.canGoBack && <BackButton />}
-              <Text className="text-2xl font-bold tracking-tight text-foreground">
+              <AppText className="text-2xl font-bold tracking-tight text-foreground">
                 {t('payment.step3Title')}
-              </Text>
+              </AppText>
             </View>
-            <Text className="mt-1 text-sm text-mutedForeground">
+            <AppText className="mt-1 text-sm text-mutedForeground">
               {t('payment.step3Description')}
-            </Text>
+            </AppText>
           </View>
 
           {/* Card */}
           <View className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
             {/* Card header */}
             <View className="border-b border-border px-4 pb-3 pt-5">
-              <Text className="text-base font-bold text-foreground">{t('payment.cardTitle')}</Text>
+              <AppText className="text-base font-bold text-foreground">
+                {t('payment.cardTitle')}
+              </AppText>
             </View>
 
             <View className="px-4 pb-4 pt-2">
@@ -146,16 +147,16 @@ const OrderPaymentStatusScreen = () => {
               {isPaid ? (
                 <View className="mt-4 flex-row items-center gap-3 rounded-2xl border border-success/30 bg-success/10 px-4 py-3">
                   <CheckCircle2 size={20} color={colors.success} />
-                  <Text className="flex-1 text-sm font-semibold text-success">
+                  <AppText className="flex-1 text-sm font-semibold text-success">
                     {t('payment.paymentSuccessful')}
-                  </Text>
+                  </AppText>
                 </View>
               ) : (
                 <View className="mt-4 flex-row items-center gap-3 rounded-2xl border border-warning/30 bg-warning/10 px-4 py-3">
                   <AlertCircle size={20} color={colors.warning} />
-                  <Text className="flex-1 text-sm font-semibold text-warning">
+                  <AppText className="flex-1 text-sm font-semibold text-warning">
                     {t('payment.paymentPending')}
-                  </Text>
+                  </AppText>
                 </View>
               )}
 
@@ -167,22 +168,22 @@ const OrderPaymentStatusScreen = () => {
                     <TouchableOpacity
                       onPress={() => setShowBkashModal(true)}
                       activeOpacity={0.8}
-                      className="flex-row items-center justify-center gap-2 rounded-2xl bg-primary py-4">
+                      className="h-12 flex-row items-center justify-center gap-2 rounded-2xl bg-primary">
                       <CreditCard size={18} color="#fff" />
-                      <Text className="text-base font-bold text-white">
+                      <AppText className="text-base font-bold text-white">
                         {t('payment.startPayment')}
-                      </Text>
+                      </AppText>
                     </TouchableOpacity>
 
                     {/* Refresh Status */}
                     <TouchableOpacity
                       onPress={() => refetch()}
                       activeOpacity={0.8}
-                      className="flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-muted py-4">
+                      className="h-12 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-muted">
                       <LucideIcon name="RefreshCw" size={16} className="text-mutedForeground" />
-                      <Text className="text-sm font-semibold text-mutedForeground">
+                      <AppText className="text-sm font-semibold text-mutedForeground">
                         {t('payment.refreshStatus')}
-                      </Text>
+                      </AppText>
                     </TouchableOpacity>
                   </>
                 )}
@@ -193,9 +194,9 @@ const OrderPaymentStatusScreen = () => {
                   activeOpacity={0.7}
                   className="flex-row items-center justify-center gap-2 py-3">
                   <ArrowLeft size={15} color={colors.primary} />
-                  <Text className="text-sm font-semibold text-primary">
+                  <AppText className="text-sm font-semibold text-primary">
                     {t('payment.backToStep2')}
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
               </View>
             </View>
@@ -210,26 +211,26 @@ const OrderPaymentStatusScreen = () => {
           onRequestClose={() => setShowBkashModal(false)}>
           <View className="flex-1 items-center justify-center bg-black/50 px-6">
             <View className="w-full rounded-3xl bg-card px-6 pb-6 pt-8 shadow-lg">
-              <Text className="mb-1 text-center text-lg font-bold text-foreground">
+              <AppText className="mb-1 text-center text-lg font-bold text-foreground">
                 {t('payment.bkashModalTitle')}
-              </Text>
-              <Text className="mb-6 text-center text-sm leading-5 text-mutedForeground">
+              </AppText>
+              <AppText className="mb-6 text-center text-sm leading-5 text-mutedForeground">
                 {t('payment.bkashModalDescription')}
-              </Text>
+              </AppText>
               <View className="flex-row gap-3">
                 <TouchableOpacity
                   onPress={() => setShowBkashModal(false)}
-                  className="flex-1 items-center rounded-2xl border border-border bg-muted py-3.5">
-                  <Text className="text-sm font-semibold text-mutedForeground">
+                  className="h-12 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
+                  <AppText className="text-sm font-semibold text-mutedForeground">
                     {t('payment.cancel')}
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handlePlaceManualOrder}
                   disabled={isPlacingOrder}
-                  className="flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-primary py-3.5">
+                  className="h-12 flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-primary">
                   {isPlacingOrder ? <ActivityIndicator size="small" color="#fff" /> : null}
-                  <Text className="text-sm font-bold text-white">{t('payment.ok')}</Text>
+                  <AppText className="text-sm font-bold text-white">{t('payment.ok')}</AppText>
                 </TouchableOpacity>
               </View>
             </View>

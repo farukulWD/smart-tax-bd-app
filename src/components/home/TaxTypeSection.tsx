@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import { ActivityIndicator, FlatList, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, View } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { useTranslation } from 'react-i18next';
 import { useGetAllTaxTypesQuery } from '@/src/services/publicApi';
 import TaxCard from './TaxCard';
@@ -34,7 +35,7 @@ const TaxTypeSection = () => {
     return (
       <View className="items-center justify-center px-5 py-14">
         <ActivityIndicator size="large" color="#3ca34d" />
-        <Text className="mt-3 text-sm text-mutedForeground">{t('home.loading')}</Text>
+        <AppText className="mt-3 text-sm text-mutedForeground">{t('home.loading')}</AppText>
       </View>
     );
   }
@@ -42,7 +43,9 @@ const TaxTypeSection = () => {
   if (error) {
     return (
       <View className="px-5 py-14">
-        <Text className="text-center text-base font-semibold text-red-500">{t('home.error')}</Text>
+        <AppText className="text-center text-base font-semibold text-red-500">
+          {t('home.error')}
+        </AppText>
       </View>
     );
   }
@@ -50,7 +53,7 @@ const TaxTypeSection = () => {
   if (!types.length) {
     return (
       <View className="bg-background px-4 py-10">
-        <Text className="text-center text-sm text-mutedForeground">{t('home.notFound')}</Text>
+        <AppText className="text-center text-sm text-mutedForeground">{t('home.notFound')}</AppText>
       </View>
     );
   }
@@ -58,12 +61,16 @@ const TaxTypeSection = () => {
   return (
     <View className="bg-background px-4">
       <View className="mb-3">
-        <Text className="text-2xl font-bold text-foreground">{t('home.taxCategories')}</Text>
-        <Text className="text-sm text-mutedForeground">{t('home.taxCategoriesSubtitle')}</Text>
+        <AppText className="text-2xl font-bold text-foreground">{t('home.taxCategories')}</AppText>
+        <AppText className="text-sm text-mutedForeground">
+          {t('home.taxCategoriesSubtitle')}
+        </AppText>
       </View>
       {!types.length ? (
         <View className="py-10">
-          <Text className="text-center text-sm text-mutedForeground">{t('home.notFound')}</Text>
+          <AppText className="text-center text-sm text-mutedForeground">
+            {t('home.notFound')}
+          </AppText>
         </View>
       ) : null}
       <FlatList

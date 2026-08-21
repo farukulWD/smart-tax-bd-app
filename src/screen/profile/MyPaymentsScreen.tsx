@@ -1,12 +1,6 @@
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  ActivityIndicator,
-  RefreshControl,
-} from 'react-native';
+import { View, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { IPayment, useGetMyPaymentsQuery } from '@/src/services/paymentApi';
 import {
   CheckCircle2,
@@ -71,19 +65,21 @@ const SummaryBar = ({ payments }: { payments: IPayment[] }) => {
   return (
     <View className="mx-4 mb-4 flex-row items-center justify-between rounded-3xl border border-border bg-card p-5">
       <View>
-        <Text className="mb-1 text-xs text-mutedForeground">Total Paid</Text>
-        <Text className="text-2xl font-bold text-primary">{formatAmount(totalPaid)}</Text>
-        <Text className="mt-1 text-xs text-mutedForeground">{completed.length} transactions</Text>
+        <AppText className="mb-1 text-xs text-mutedForeground">Total Paid</AppText>
+        <AppText className="text-2xl font-bold text-primary">{formatAmount(totalPaid)}</AppText>
+        <AppText className="mt-1 text-xs text-mutedForeground">
+          {completed.length} transactions
+        </AppText>
       </View>
 
       <View className="gap-2">
         <View className="flex-row items-center gap-2 rounded-xl bg-muted px-3 py-2">
           <View className="h-2 w-2 rounded-full bg-primary" />
-          <Text className="text-xs text-mutedForeground">{completed.length} Completed</Text>
+          <AppText className="text-xs text-mutedForeground">{completed.length} Completed</AppText>
         </View>
         <View className="flex-row items-center gap-2 rounded-xl bg-muted px-3 py-2">
           <View className="h-2 w-2 rounded-full bg-warning" />
-          <Text className="text-xs text-mutedForeground">{pending.length} Pending</Text>
+          <AppText className="text-xs text-mutedForeground">{pending.length} Pending</AppText>
         </View>
       </View>
     </View>
@@ -120,22 +116,22 @@ const FilterTabs = ({
             'flex-row items-center gap-1.5 rounded-full px-3 py-2',
             isActive ? 'bg-primary' : 'bg-muted',
           ].join(' ')}>
-          <Text
+          <AppText
             className={`text-xs font-semibold ${
               isActive ? 'text-primaryForeground' : 'text-mutedForeground'
             }`}>
             {f.label}
-          </Text>
+          </AppText>
           <View
             className={`h-4 w-4 items-center justify-center rounded-full ${
               isActive ? 'bg-primaryForeground/20' : 'bg-background'
             }`}>
-            <Text
+            <AppText
               className={`text-[10px] font-bold ${
                 isActive ? 'text-primaryForeground' : 'text-mutedForeground'
               }`}>
               {counts[f.key]}
-            </Text>
+            </AppText>
           </View>
         </TouchableOpacity>
       );
@@ -154,17 +150,17 @@ const PaymentCard = ({ item }: { item: IPayment }) => {
         {/* Top row */}
         <View className="mb-3 flex-row items-start justify-between">
           <View className="mr-3 flex-1">
-            <Text className="mb-0.5 text-sm font-bold text-cardForeground">
+            <AppText className="mb-0.5 text-sm font-bold text-cardForeground">
               {formatPaymentFor(item.paymentFor)}
-            </Text>
-            <Text className="text-xs text-mutedForeground" numberOfLines={1}>
+            </AppText>
+            <AppText className="text-xs text-mutedForeground" numberOfLines={1}>
               Order {shortenId(item.orderId)}
-            </Text>
+            </AppText>
           </View>
 
-          <Text className={`text-base font-bold ${cfg.amountText}`}>
+          <AppText className={`text-base font-bold ${cfg.amountText}`}>
             {formatAmount(item.amount)}
-          </Text>
+          </AppText>
         </View>
 
         {/* Bottom row */}
@@ -172,9 +168,9 @@ const PaymentCard = ({ item }: { item: IPayment }) => {
           {/* Transaction ID */}
           <View className="mr-2 flex-1 flex-row items-center gap-1.5">
             <Receipt size={11} color="hsl(0, 0%, 60%)" />
-            <Text className="text-xs text-mutedForeground" numberOfLines={1}>
+            <AppText className="text-xs text-mutedForeground" numberOfLines={1}>
               {item.transaction_id ? shortenId(item.transaction_id) : '—'}
-            </Text>
+            </AppText>
           </View>
 
           {/* Status pill */}
@@ -182,7 +178,7 @@ const PaymentCard = ({ item }: { item: IPayment }) => {
             {item.status === 'completed' && <CheckCircle2 size={13} color="hsl(125, 70%, 33%)" />}
             {item.status === 'pending' && <Clock size={13} color="hsl(48, 96%, 53%)" />}
             {item.status === 'failed' && <XCircle size={13} color="hsl(0, 83%, 49%)" />}
-            <Text className={`text-xs font-semibold ${cfg.pillText}`}>{cfg.label}</Text>
+            <AppText className={`text-xs font-semibold ${cfg.pillText}`}>{cfg.label}</AppText>
           </View>
         </View>
       </View>
@@ -197,10 +193,10 @@ const EmptyState = ({ filter }: { filter: FilterStatus }) => (
     <View className="mb-2 h-16 w-16 items-center justify-center rounded-full bg-muted">
       <CreditCard size={28} color="hsl(0, 0%, 60%)" />
     </View>
-    <Text className="text-center text-base font-bold text-foreground">No payments found</Text>
-    <Text className="text-center text-sm text-mutedForeground">
+    <AppText className="text-center text-base font-bold text-foreground">No payments found</AppText>
+    <AppText className="text-center text-sm text-mutedForeground">
       {filter === 'all' ? "You haven't made any payments yet." : `No ${filter} payments to show.`}
-    </Text>
+    </AppText>
   </View>
 );
 
@@ -209,12 +205,16 @@ const EmptyState = ({ filter }: { filter: FilterStatus }) => (
 const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
   <View className="flex-1 items-center justify-center gap-4 px-8">
     <AlertCircle size={40} color="hsl(0, 83%, 49%)" />
-    <Text className="text-center text-base font-bold text-foreground">Failed to load payments</Text>
-    <Text className="text-center text-sm text-mutedForeground">
+    <AppText className="text-center text-base font-bold text-foreground">
+      Failed to load payments
+    </AppText>
+    <AppText className="text-center text-sm text-mutedForeground">
       Something went wrong. Please try again.
-    </Text>
-    <TouchableOpacity onPress={onRetry} className="rounded-2xl bg-primary px-6 py-3">
-      <Text className="font-semibold text-primaryForeground">Retry</Text>
+    </AppText>
+    <TouchableOpacity
+      onPress={onRetry}
+      className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+      <AppText className="font-semibold text-primaryForeground">Retry</AppText>
     </TouchableOpacity>
   </View>
 );
@@ -238,44 +238,40 @@ const MyPaymentsScreen = () => {
 
   return (
     <ProtectedScreen>
-    <View className="flex-1 bg-background">
+      <View className="flex-1 bg-background">
+        <ScreenHeader className="mb-2" title="My Payments" />
 
-      <ScreenHeader
-        className="mb-2"
-        title="My Payments"
-      />
+        {isLoading ? (
+          <View className="flex-1 items-center justify-center gap-3">
+            <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
+            <AppText className="text-sm text-mutedForeground">Loading payments…</AppText>
+          </View>
+        ) : error ? (
+          <ErrorState onRetry={refetch} />
+        ) : (
+          <>
+            {payments.length > 0 && <SummaryBar payments={payments} />}
 
-      {isLoading ? (
-        <View className="flex-1 items-center justify-center gap-3">
-          <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
-          <Text className="text-sm text-mutedForeground">Loading payments…</Text>
-        </View>
-      ) : error ? (
-        <ErrorState onRetry={refetch} />
-      ) : (
-        <>
-          {payments.length > 0 && <SummaryBar payments={payments} />}
+            <FilterTabs active={filter} onChange={setFilter} counts={counts} />
 
-          <FilterTabs active={filter} onChange={setFilter} counts={counts} />
-
-          <FlatList
-            data={filtered}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => <PaymentCard item={item} />}
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={<EmptyState filter={filter} />}
-            refreshControl={
-              <RefreshControl
-                refreshing={isFetching && !isLoading}
-                onRefresh={refetch}
-                tintColor="hsl(125, 70%, 33%)"
-              />
-            }
-          />
-        </>
-      )}
-    </View>
+            <FlatList
+              data={filtered}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => <PaymentCard item={item} />}
+              contentContainerStyle={{ flexGrow: 1 }}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={<EmptyState filter={filter} />}
+              refreshControl={
+                <RefreshControl
+                  refreshing={isFetching && !isLoading}
+                  onRefresh={refetch}
+                  tintColor="hsl(125, 70%, 33%)"
+                />
+              }
+            />
+          </>
+        )}
+      </View>
     </ProtectedScreen>
   );
 };

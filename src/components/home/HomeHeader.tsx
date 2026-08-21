@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, TouchableOpacity, Image, Text } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { BellIcon } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppNavigation } from '@/src/utils/NavigationUtils';
@@ -19,11 +20,11 @@ const HomeHeader = () => {
         <View className="flex-1 flex-row items-center gap-3">
           <Image source={Images.LOGO_SMALL} resizeMode="contain" className="h-12 w-12" />
           <View className="flex-1">
-            <Text className="text-sm font-medium text-secondary">Welcome back</Text>
+            <AppText className="text-sm font-medium text-secondary">Welcome back</AppText>
             {user?.name ? (
-              <Text className="text-2xl font-bold text-foreground" numberOfLines={1}>
+              <AppText className="text-2xl font-bold text-foreground" numberOfLines={1}>
                 {user.name}
-              </Text>
+              </AppText>
             ) : null}
           </View>
         </View>

@@ -1,4 +1,5 @@
-import { StyleSheet, View, Text, ViewStyle, TextStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle, TextStyle } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react-native';
 import Toast, { BaseToast, ErrorToast, ToastConfig } from 'react-native-toast-message';
 import type { lightColors } from '@/src/theme/colors';
@@ -15,9 +16,9 @@ interface CustomToastLayoutProps {
 const CustomToastLayout = ({ text1, icon, bgStyle, textStyle }: CustomToastLayoutProps) => (
   <View style={[styles.customBaseContainer, bgStyle]}>
     <View style={styles.iconWrapper}>{icon}</View>
-    <Text style={[styles.customTitle, textStyle]} numberOfLines={2}>
+    <AppText style={[styles.customTitle, textStyle]} numberOfLines={2}>
       {text1}
-    </Text>
+    </AppText>
   </View>
 );
 
@@ -39,7 +40,11 @@ export const createToastConfig = (colors: ThemeColors): ToastConfig => {
         {...props}
         style={[
           styles.baseContainer,
-          { borderColor: colors.border, backgroundColor: colors.card, borderLeftColor: colors.success },
+          {
+            borderColor: colors.border,
+            backgroundColor: colors.card,
+            borderLeftColor: colors.success,
+          },
         ]}
         contentContainerStyle={styles.contentContainer}
         text1Style={[styles.title, { color: colors.foreground }]}

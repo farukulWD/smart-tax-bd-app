@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { ChevronRight } from 'lucide-react-native';
 
 export type ProfileStat = { label: string; value: number; icon: React.ReactNode; accent: string };
@@ -8,8 +9,8 @@ export const StatCard = ({ stat }: { stat: ProfileStat }) => (
     <View className={`mb-1 h-9 w-9 items-center justify-center rounded-full ${stat.accent}`}>
       {stat.icon}
     </View>
-    <Text className="text-lg font-bold text-foreground">{stat.value}</Text>
-    <Text className="text-[11px] text-mutedForeground">{stat.label}</Text>
+    <AppText className="text-lg font-bold text-foreground">{stat.value}</AppText>
+    <AppText className="text-[11px] text-mutedForeground">{stat.label}</AppText>
   </View>
 );
 
@@ -37,15 +38,17 @@ export const MenuItem = ({
       {icon}
     </View>
     <View className="flex-1">
-      <Text className="text-sm font-semibold text-foreground">{label}</Text>
-      {description && <Text className="mt-0.5 text-xs text-mutedForeground">{description}</Text>}
+      <AppText className="text-sm font-semibold text-foreground">{label}</AppText>
+      {description && (
+        <AppText className="mt-0.5 text-xs text-mutedForeground">{description}</AppText>
+      )}
     </View>
     <ChevronRight size={15} color="hsl(0, 0%, 60%)" />
   </TouchableOpacity>
 );
 
 export const SectionLabel = ({ label }: { label: string }) => (
-  <Text className="mx-4 mb-2 mt-5 text-xs font-bold uppercase tracking-widest text-mutedForeground">
+  <AppText className="mx-4 mb-2 mt-5 text-xs font-bold uppercase tracking-widest text-mutedForeground">
     {label}
-  </Text>
+  </AppText>
 );

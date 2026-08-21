@@ -11,6 +11,7 @@ import {
 import { MailCheck } from 'lucide-react-native';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
+import { CONTROL_HEIGHT } from '@/src/constants/ui';
 import { SCREEN_NAME, TAuth, TVerifyPurpose } from '@/src/types/authTypes';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 import { BackButton } from '@/src/components/global/BackButton';
@@ -140,7 +141,7 @@ const VerifyOTPScreen = ({
   const renderBox = (index: number) => (
     <View
       key={index}
-      className={`h-14 flex-1 items-center justify-center rounded-xl border-2 ${
+      className={`${CONTROL_HEIGHT} flex-1 items-center justify-center rounded-xl border-2 ${
         otp[index] ? 'border-primary bg-primary/5' : 'border-border bg-card'
       }`}>
       <TextInput
@@ -218,7 +219,7 @@ const VerifyOTPScreen = ({
           <Button
             onPress={handleVerify}
             disabled={!isOtpComplete || isVerifying}
-            className={`mt-6 h-14 rounded-xl ${isOtpComplete ? 'bg-primary' : 'bg-muted'}`}>
+            className={`mt-6 ${CONTROL_HEIGHT} items-center justify-center rounded-xl ${isOtpComplete ? 'bg-primary' : 'bg-muted'}`}>
             {isVerifying ? (
               <ActivityIndicator color="#ffffff" />
             ) : (
@@ -230,33 +231,33 @@ const VerifyOTPScreen = ({
               </Text>
             )}
           </Button>
+          <View className="flex-row items-center justify-center pb-20 pt-6">
+            {timer > 0 ? (
+              <Text className="text-sm text-mutedForeground">
+                {t('auth.resendCodeIn')}{' '}
+                <Text className="font-semibold text-primary">
+                  {Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')}
+                </Text>
+              </Text>
+            ) : (
+              <>
+                <Text className="text-sm text-mutedForeground">{t('auth.didNotGetCode')} </Text>
+                <TouchableOpacity
+                  onPress={handleResend}
+                  disabled={isResending}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                  {isResending ? (
+                    <ActivityIndicator color={colors.primary} size="small" />
+                  ) : (
+                    <Text className="text-sm font-bold text-primary">{t('auth.resend')}</Text>
+                  )}
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
         </View>
 
         {/* Resend */}
-        <View className="flex-row items-center justify-center pb-20 pt-6">
-          {timer > 0 ? (
-            <Text className="text-sm text-mutedForeground">
-              {t('auth.resendCodeIn')}{' '}
-              <Text className="font-semibold text-primary">
-                {Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')}
-              </Text>
-            </Text>
-          ) : (
-            <>
-              <Text className="text-sm text-mutedForeground">{t('auth.didNotGetCode')} </Text>
-              <TouchableOpacity
-                onPress={handleResend}
-                disabled={isResending}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                {isResending ? (
-                  <ActivityIndicator color={colors.primary} size="small" />
-                ) : (
-                  <Text className="text-sm font-bold text-primary">{t('auth.resend')}</Text>
-                )}
-              </TouchableOpacity>
-            </>
-          )}
-        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );

@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { ClipboardList } from 'lucide-react-native';
 import { FilterStatus } from './types';
 
@@ -19,18 +20,18 @@ export const EmptyState = ({
     <View className="mb-2 h-16 w-16 items-center justify-center rounded-full bg-muted">
       <ClipboardList size={28} color="hsl(0, 0%, 60%)" />
     </View>
-    <Text className="text-center text-base font-bold text-foreground">No orders found</Text>
-    <Text className="text-center text-sm text-mutedForeground">
+    <AppText className="text-center text-base font-bold text-foreground">No orders found</AppText>
+    <AppText className="text-center text-sm text-mutedForeground">
       {filter === 'all'
         ? "You haven't placed any tax orders yet."
         : `No ${formatStatus(filter)} orders to show.`}
-    </Text>
+    </AppText>
     {filter === 'all' && (
       <TouchableOpacity
         onPress={onCreateOrder}
-        className="mt-2 rounded-2xl bg-primary px-6 py-3"
+        className="mt-2 h-12 items-center justify-center rounded-2xl bg-primary px-6"
         activeOpacity={0.85}>
-        <Text className="font-semibold text-primaryForeground">Create Order</Text>
+        <AppText className="font-semibold text-primaryForeground">Create Order</AppText>
       </TouchableOpacity>
     )}
   </View>

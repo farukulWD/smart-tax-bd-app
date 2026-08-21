@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity, Modal } from 'react-native';
+import { View, TouchableOpacity, Modal } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { Camera, FileUp, X } from 'lucide-react-native';
 
 type Props = {
@@ -9,31 +10,21 @@ type Props = {
   onCancel: () => void;
 };
 
-const UploadOptionModal = ({
-  visible,
-  doc,
-  onPickFromFiles,
-  onTakePhoto,
-  onCancel,
-}: Props) => (
-  <Modal
-    visible={visible}
-    transparent
-    animationType="slide"
-    onRequestClose={onCancel}>
+const UploadOptionModal = ({ visible, doc, onPickFromFiles, onTakePhoto, onCancel }: Props) => (
+  <Modal visible={visible} transparent animationType="slide" onRequestClose={onCancel}>
     <View className="flex-1 justify-end bg-black/50">
       <View className="rounded-t-3xl bg-card px-6 pb-10 pt-6 shadow-lg">
         <View className="mb-2 flex-row items-center justify-between">
-          <Text className="text-lg font-bold text-foreground" numberOfLines={1}>
+          <AppText className="text-lg font-bold text-foreground" numberOfLines={1}>
             {doc}
-          </Text>
+          </AppText>
           <TouchableOpacity onPress={onCancel} className="rounded-full bg-muted p-2">
             <X size={18} color="hsl(0, 0%, 60%)" />
           </TouchableOpacity>
         </View>
-        <Text className="mb-6 text-sm text-mutedForeground">
+        <AppText className="mb-6 text-sm text-mutedForeground">
           Choose how you want to upload this document.
-        </Text>
+        </AppText>
 
         <TouchableOpacity
           onPress={onPickFromFiles}
@@ -43,10 +34,10 @@ const UploadOptionModal = ({
             <FileUp size={22} color="hsl(125, 70%, 33%)" />
           </View>
           <View className="flex-1">
-            <Text className="text-sm font-bold text-foreground">Choose from Files</Text>
-            <Text className="mt-0.5 text-xs text-mutedForeground">
+            <AppText className="text-sm font-bold text-foreground">Choose from Files</AppText>
+            <AppText className="mt-0.5 text-xs text-mutedForeground">
               Select an image or PDF from your device
-            </Text>
+            </AppText>
           </View>
         </TouchableOpacity>
 
@@ -58,10 +49,10 @@ const UploadOptionModal = ({
             <Camera size={22} color="hsl(0, 83%, 49%)" />
           </View>
           <View className="flex-1">
-            <Text className="text-sm font-bold text-foreground">Take Photo</Text>
-            <Text className="mt-0.5 text-xs text-mutedForeground">
+            <AppText className="text-sm font-bold text-foreground">Take Photo</AppText>
+            <AppText className="mt-0.5 text-xs text-mutedForeground">
               Capture a photo using your camera
-            </Text>
+            </AppText>
           </View>
         </TouchableOpacity>
       </View>

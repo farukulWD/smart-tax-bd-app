@@ -1,6 +1,7 @@
 import { isImageUrl, isPdfUrl } from '@/src/utils/commonFunction';
 import { AlertCircle, Eye, FileText, X } from 'lucide-react-native';
-import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, TouchableOpacity, View } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { useTranslation } from 'react-i18next';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 
@@ -41,7 +42,7 @@ const DocumentCard = ({
       ].join(' ')}
       style={{ flex: 1, margin: 6, minWidth: 140, maxWidth: '48%' }}>
       {/* Thumbnail area */}
-      <View className="bg-muted/50 roundcard mb-2 flex-1 items-center justify-center overflow-hidden">
+      <View className="roundcard mb-2 flex-1 items-center justify-center overflow-hidden bg-muted/50">
         {pending ? (
           <View className="h-full w-full items-center justify-center">
             {localPreview.isImage ? (
@@ -53,9 +54,9 @@ const DocumentCard = ({
             ) : (
               <View className="items-center gap-1">
                 <FileText size={32} color={colors.mutedForeground} />
-                <Text className="text-center text-xs text-foreground" numberOfLines={2}>
+                <AppText className="text-center text-xs text-foreground" numberOfLines={2}>
                   {localPreview.name}
-                </Text>
+                </AppText>
               </View>
             )}
             {isUploading && isActive && (
@@ -72,37 +73,37 @@ const DocumentCard = ({
           ) : isPdf ? (
             <View className="items-center gap-1">
               <FileText size={32} color={colors.destructive} />
-              <Text className="text-center text-xs text-foreground" numberOfLines={2}>
+              <AppText className="text-center text-xs text-foreground" numberOfLines={2}>
                 {file?.name || t('common.docDefault')}
-              </Text>
+              </AppText>
             </View>
           ) : (
             <View className="items-center gap-1">
               <FileText size={28} color={colors.mutedForeground} />
-              <Text className="text-xs text-mutedForeground">{t('common.fileUploaded')}</Text>
+              <AppText className="text-xs text-mutedForeground">{t('common.fileUploaded')}</AppText>
             </View>
           )
         ) : (
           <View className="items-center gap-1">
             <AlertCircle size={28} color={colors.warning} />
-            <Text className="text-xs text-warning">{t('common.noFileYet')}</Text>
+            <AppText className="text-xs text-warning">{t('common.noFileYet')}</AppText>
           </View>
         )}
       </View>
 
       {/* Label */}
-      <Text className="mb-0.5 text-sm font-semibold text-foreground" numberOfLines={1}>
+      <AppText className="mb-0.5 text-sm font-semibold text-foreground" numberOfLines={1}>
         {doc}
-      </Text>
-      <Text className="mb-2 text-xs text-mutedForeground">
+      </AppText>
+      <AppText className="mb-2 text-xs text-mutedForeground">
         {uploaded ? t('common.tapToReplace') : t('common.tapToUpload')}
-      </Text>
+      </AppText>
 
       {/* Status / View button */}
       {pending ? (
         <View className="flex-row items-center justify-center gap-1 rounded-lg bg-primary/10 py-1.5">
           <ActivityIndicator size="small" color={colors.primary} />
-          <Text className="text-xs font-semibold text-primary">{t('common.uploading')}</Text>
+          <AppText className="text-xs font-semibold text-primary">{t('common.uploading')}</AppText>
         </View>
       ) : file ? (
         <TouchableOpacity
@@ -112,11 +113,11 @@ const DocumentCard = ({
           }}
           className="flex-row items-center justify-center gap-1 rounded-lg bg-success/10 py-1.5">
           <Eye size={14} color={colors.success} />
-          <Text className="text-xs font-semibold text-success">{t('common.view')}</Text>
+          <AppText className="text-xs font-semibold text-success">{t('common.view')}</AppText>
         </TouchableOpacity>
       ) : (
         <View className="items-center rounded-full bg-warning/20 py-1.5">
-          <Text className="text-xs font-semibold text-warning">{t('common.missing')}</Text>
+          <AppText className="text-xs font-semibold text-warning">{t('common.missing')}</AppText>
         </View>
       )}
 

@@ -1,12 +1,6 @@
 import { useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  Modal,
-  Pressable,
-} from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator, Modal, Pressable } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { AlertTriangle, Trash2 } from 'lucide-react-native';
 
 export interface ConfirmModalProps {
@@ -47,15 +41,9 @@ const ConfirmModal = ({
   };
 
   return (
-    <Modal
-      visible={visible}
-      animationType="fade"
-      transparent
-      onRequestClose={onCancel}>
+    <Modal visible={visible} animationType="fade" transparent onRequestClose={onCancel}>
       <Pressable className="flex-1 justify-center bg-black/50 px-6" onPress={onCancel}>
-        <Pressable
-          className="rounded-3xl border border-border bg-card p-6"
-          onPress={() => {}}>
+        <Pressable className="rounded-3xl border border-border bg-card p-6" onPress={() => {}}>
           {icon ?? (
             <View
               className={`mb-4 h-12 w-12 items-center justify-center rounded-full ${
@@ -69,23 +57,23 @@ const ConfirmModal = ({
             </View>
           )}
 
-          <Text className="mb-2 text-lg font-bold text-foreground">{title}</Text>
+          <AppText className="mb-2 text-lg font-bold text-foreground">{title}</AppText>
 
           {message && (
-            <Text className="mb-6 text-sm leading-5 text-mutedForeground">{message}</Text>
+            <AppText className="mb-6 text-sm leading-5 text-mutedForeground">{message}</AppText>
           )}
 
           <View className="flex-row gap-3">
             <TouchableOpacity
               onPress={onCancel}
               disabled={isLoading}
-              className="flex-1 items-center rounded-2xl border border-border bg-muted py-3.5">
-              <Text className="text-sm font-semibold text-foreground">{cancelLabel}</Text>
+              className="h-12 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
+              <AppText className="text-sm font-semibold text-foreground">{cancelLabel}</AppText>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleConfirm}
               disabled={isLoading}
-              className={`flex-1 flex-row items-center justify-center gap-2 rounded-2xl py-3.5 ${
+              className={`h-12 flex-1 flex-row items-center justify-center gap-2 rounded-2xl ${
                 destructive
                   ? isLoading
                     ? 'bg-destructive/50'
@@ -97,7 +85,9 @@ const ConfirmModal = ({
               {isLoading ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
-                <Text className="text-sm font-bold text-primaryForeground">{confirmLabel}</Text>
+                <AppText className="text-sm font-bold text-primaryForeground">
+                  {confirmLabel}
+                </AppText>
               )}
             </TouchableOpacity>
           </View>

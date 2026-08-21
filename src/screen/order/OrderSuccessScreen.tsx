@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { CheckCircle2, Home } from 'lucide-react-native';
@@ -17,26 +18,26 @@ const OrderSuccessScreen = () => {
         <View className="mb-6 h-24 w-24 items-center justify-center rounded-full bg-success/10">
           <CheckCircle2 size={56} color={colors.success} />
         </View>
-        <Text className="mb-2 text-center text-2xl font-bold text-foreground">
+        <AppText className="mb-2 text-center text-2xl font-bold text-foreground">
           {t('order.successTitle')}
-        </Text>
-        <Text className="mb-10 text-center text-sm leading-5 text-mutedForeground">
+        </AppText>
+        <AppText className="mb-10 text-center text-sm leading-5 text-mutedForeground">
           {t('order.successDescription')}
-        </Text>
+        </AppText>
         <View className="w-full gap-3">
           <TouchableOpacity
             onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Home' })}
             activeOpacity={0.8}
-            className="flex-row items-center justify-center gap-2 rounded-2xl bg-primary py-4">
+            className="h-12 flex-row items-center justify-center gap-2 rounded-2xl bg-primary">
             <Home size={18} color="#fff" />
-            <Text className="text-base font-bold text-white">{t('order.goHome')}</Text>
+            <AppText className="text-base font-bold text-white">{t('order.goHome')}</AppText>
           </TouchableOpacity>
           {/* <TouchableOpacity
             onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Profile' })}
             activeOpacity={0.8}
-            className="flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-muted py-4">
+ className="h-12 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-muted">
             <ClipboardList size={18} color="hsl(0, 0%, 60%)" />
-            <Text className="text-sm font-semibold text-mutedForeground">{t('order.goOrders')}</Text>
+            <AppText className="text-sm font-semibold text-mutedForeground">{t('order.goOrders')}</AppText>
           </TouchableOpacity> */}
         </View>
       </View>

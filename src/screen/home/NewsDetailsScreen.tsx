@@ -1,4 +1,5 @@
-import { ActivityIndicator, ScrollView, Text, View, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, ScrollView, View, TouchableOpacity } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { AppStackParamList } from '@/src/navigation/AppStack';
 import { useGetSingleNewsQuery } from '@/src/services/publicApi';
 import { RouteProp, useRoute } from '@react-navigation/native';
@@ -34,17 +35,17 @@ const MetaRow = ({
   <View className="flex-row items-start justify-between border-b border-border py-3.5 last:border-b-0">
     <View className="flex-row items-center gap-2">
       {icon}
-      <Text className="text-xs font-semibold uppercase tracking-wider text-mutedForeground">
+      <AppText className="text-xs font-semibold uppercase tracking-wider text-mutedForeground">
         {label}
-      </Text>
+      </AppText>
     </View>
-    <Text
+    <AppText
       className={`ml-6 flex-shrink text-right text-xs font-semibold ${
         valueClassName ?? 'text-foreground'
       }`}
       numberOfLines={2}>
       {value}
-    </Text>
+    </AppText>
   </View>
 );
 
@@ -66,7 +67,7 @@ const NewsDetailsScreen = () => {
         className="flex-1 items-center justify-center gap-3 bg-background"
         style={{ paddingTop: top }}>
         <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
-        <Text className="text-sm text-mutedForeground">Loading article…</Text>
+        <AppText className="text-sm text-mutedForeground">Loading article…</AppText>
       </View>
     );
   }
@@ -78,24 +79,26 @@ const NewsDetailsScreen = () => {
       <View
         className="flex-1 items-center justify-center gap-4 bg-background px-8"
         style={{ paddingTop: top }}>
-        <View className="bg-destructive/15 mb-2 h-16 w-16 items-center justify-center rounded-full">
+        <View className="mb-2 h-16 w-16 items-center justify-center rounded-full bg-destructive/15">
           <XCircle size={32} color="hsl(0, 83%, 49%)" />
         </View>
-        <Text className="text-center text-lg font-bold text-foreground">Something went wrong</Text>
-        <Text className="text-center text-sm leading-5 text-mutedForeground">
+        <AppText className="text-center text-lg font-bold text-foreground">
+          Something went wrong
+        </AppText>
+        <AppText className="text-center text-sm leading-5 text-mutedForeground">
           Failed to load the news details. Please try again.
-        </Text>
+        </AppText>
         <View className="mt-2 flex-row gap-3">
           <TouchableOpacity
             onPress={() => goBack()}
-            className="rounded-2xl border border-border px-5 py-3">
-            <Text className="text-sm font-semibold text-foreground">Go Back</Text>
+            className="h-12 items-center justify-center rounded-2xl border border-border px-5">
+            <AppText className="text-sm font-semibold text-foreground">Go Back</AppText>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => refetch()}
-            className="flex-row items-center gap-2 rounded-2xl bg-primary px-5 py-3">
+            className="h-12 flex-row items-center justify-center gap-2 rounded-2xl bg-primary px-5">
             <RefreshCw size={14} color="#fff" />
-            <Text className="text-sm font-semibold text-primaryForeground">Retry</Text>
+            <AppText className="text-sm font-semibold text-primaryForeground">Retry</AppText>
           </TouchableOpacity>
         </View>
       </View>
@@ -112,14 +115,16 @@ const NewsDetailsScreen = () => {
         <View className="mb-2 h-16 w-16 items-center justify-center rounded-full bg-muted">
           <Newspaper size={28} color="hsl(0, 0%, 60%)" />
         </View>
-        <Text className="text-center text-lg font-bold text-foreground">No article found</Text>
-        <Text className="text-center text-sm text-mutedForeground">
+        <AppText className="text-center text-lg font-bold text-foreground">
+          No article found
+        </AppText>
+        <AppText className="text-center text-sm text-mutedForeground">
           The requested news article is not available.
-        </Text>
+        </AppText>
         <TouchableOpacity
           onPress={() => goBack()}
-          className="mt-2 rounded-2xl bg-primary px-6 py-3">
-          <Text className="font-semibold text-primaryForeground">Go Back</Text>
+          className="mt-2 h-12 items-center justify-center rounded-2xl bg-primary px-6">
+          <AppText className="font-semibold text-primaryForeground">Go Back</AppText>
         </TouchableOpacity>
       </View>
     );
@@ -145,21 +150,23 @@ const NewsDetailsScreen = () => {
             ) : (
               <XCircle size={13} color="white" />
             )}
-            <Text className="text-xs font-bold text-white">
+            <AppText className="text-xs font-bold text-white">
               {news.isActive ? 'Active' : 'Inactive'}
-            </Text>
+            </AppText>
           </View>
         </View>
 
         {/* Title */}
-        <Text className="mb-5 text-2xl font-bold leading-8 text-foreground">{news.title}</Text>
+        <AppText className="mb-5 text-2xl font-bold leading-8 text-foreground">
+          {news.title}
+        </AppText>
 
         {/* Description card */}
         <View className="mb-4 rounded-2xl border border-border bg-card p-4">
-          <Text className="mb-3 text-xs font-bold uppercase tracking-wider text-mutedForeground">
+          <AppText className="mb-3 text-xs font-bold uppercase tracking-wider text-mutedForeground">
             Description
-          </Text>
-          <Text className="text-sm leading-7 text-foreground">{news.description}</Text>
+          </AppText>
+          <AppText className="text-sm leading-7 text-foreground">{news.description}</AppText>
         </View>
 
         {/* Meta card */}
@@ -197,8 +204,8 @@ const NewsDetailsScreen = () => {
         <TouchableOpacity
           onPress={() => goBack()}
           activeOpacity={0.85}
-          className="mt-2 items-center rounded-2xl bg-primary py-4">
-          <Text className="text-base font-bold text-primaryForeground">Go Back</Text>
+          className="mt-2 h-12 items-center justify-center rounded-2xl bg-primary">
+          <AppText className="text-base font-bold text-primaryForeground">Go Back</AppText>
         </TouchableOpacity>
       </ScrollView>
     </View>

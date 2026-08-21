@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { CalendarDays, Banknote, ChevronRight } from 'lucide-react-native';
 import { IOrder } from '@/src/services/orderApi';
 import { useThemeColors } from '@/src/theme/useThemeColors';
@@ -17,28 +18,30 @@ export const OrderCard = ({ item, onPress }: { item: IOrder; onPress: () => void
       <View className="px-4 py-4">
         <View className="mb-3 flex-row items-start justify-between">
           <View className="mr-3 flex-1">
-            <Text className="mb-0.5 text-sm font-bold text-cardForeground" numberOfLines={1}>
+            <AppText className="mb-0.5 text-sm font-bold text-cardForeground" numberOfLines={1}>
               {item.personal_information?.name}
-            </Text>
-            <Text className="text-xs text-mutedForeground" numberOfLines={1}>
+            </AppText>
+            <AppText className="text-xs text-mutedForeground" numberOfLines={1}>
               #{item._id ? shortenId(item._id) : '\u2014'} \u00B7 {item.tax_year}
-            </Text>
+            </AppText>
           </View>
 
           <View className={`flex-row items-center gap-1 rounded-full px-2.5 py-1 ${cfg.pillBg}`}>
             {cfg.icon}
-            <Text className={`text-xs font-semibold ${cfg.pillText}`}>{cfg.label}</Text>
+            <AppText className={`text-xs font-semibold ${cfg.pillText}`}>{cfg.label}</AppText>
           </View>
         </View>
 
         <View className="mb-3 flex-row items-center gap-4">
           <View className="flex-row items-center gap-1">
             <CalendarDays size={12} color="hsl(0, 0%, 60%)" />
-            <Text className="text-xs text-mutedForeground">{formatDate(item.createdAt)}</Text>
+            <AppText className="text-xs text-mutedForeground">{formatDate(item.createdAt)}</AppText>
           </View>
           <View className="flex-row items-center gap-1">
             <Banknote size={12} color="hsl(0, 0%, 60%)" />
-            <Text className="text-xs text-mutedForeground">{formatAmount(item.fee_amount)}</Text>
+            <AppText className="text-xs text-mutedForeground">
+              {formatAmount(item.fee_amount)}
+            </AppText>
           </View>
         </View>
 
@@ -46,16 +49,16 @@ export const OrderCard = ({ item, onPress }: { item: IOrder; onPress: () => void
           <View className="mb-3 flex-row flex-wrap gap-1.5">
             {item.source_of_income.slice(0, 2).map((src) => (
               <View key={src} className="rounded-lg bg-muted px-2 py-0.5">
-                <Text className="text-xs text-mutedForeground" numberOfLines={1}>
+                <AppText className="text-xs text-mutedForeground" numberOfLines={1}>
                   {src}
-                </Text>
+                </AppText>
               </View>
             ))}
             {item.source_of_income.length > 2 && (
               <View className="rounded-lg bg-muted px-2 py-0.5">
-                <Text className="text-xs text-mutedForeground">
+                <AppText className="text-xs text-mutedForeground">
                   +{item.source_of_income.length - 2}
-                </Text>
+                </AppText>
               </View>
             )}
           </View>

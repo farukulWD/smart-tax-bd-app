@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { useNavigation } from '@react-navigation/native';
 import { IOrder, useGetMyOrdersQuery } from '@/src/services/orderApi';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
@@ -37,7 +38,7 @@ const MyOrdersScreen = () => {
         {isLoading ? (
           <View className="flex-1 items-center justify-center gap-3">
             <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
-            <Text className="text-sm text-mutedForeground">Loading orders\u2026</Text>
+            <AppText className="text-sm text-mutedForeground">Loading orders\u2026</AppText>
           </View>
         ) : error ? (
           <ErrorState onRetry={refetch} />

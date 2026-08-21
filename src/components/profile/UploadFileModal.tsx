@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
   ActivityIndicator,
   Modal,
@@ -9,6 +8,7 @@ import {
   Pressable,
   ScrollView,
 } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import * as DocumentPicker from 'expo-document-picker';
 import { Upload, FileText } from 'lucide-react-native';
 
@@ -32,16 +32,12 @@ interface UploadFileModalProps {
   }) => Promise<void>;
 }
 
-const UploadFileModal = ({
-  visible,
-  isUploading,
-  onClose,
-  onUpload,
-}: UploadFileModalProps) => {
+const UploadFileModal = ({ visible, isUploading, onClose, onUpload }: UploadFileModalProps) => {
   const [name, setName] = useState('');
   const [selectedType, setSelectedType] = useState('');
-  const [selectedAsset, setSelectedAsset] =
-    useState<DocumentPicker.DocumentPickerAsset | null>(null);
+  const [selectedAsset, setSelectedAsset] = useState<DocumentPicker.DocumentPickerAsset | null>(
+    null
+  );
   const [typeOpen, setTypeOpen] = useState(false);
 
   useEffect(() => {
@@ -91,34 +87,32 @@ const UploadFileModal = ({
         <Pressable
           className="rounded-3xl border border-border bg-card p-6"
           onPress={() => setTypeOpen(false)}>
-          <Text className="mb-1 text-lg font-bold text-foreground">Upload File</Text>
-          <Text className="mb-4 text-sm text-mutedForeground">
+          <AppText className="mb-1 text-lg font-bold text-foreground">Upload File</AppText>
+          <AppText className="mb-4 text-sm text-mutedForeground">
             Upload your documents here. Click save when you're done.
-          </Text>
+          </AppText>
 
-          <Text className="mb-1.5 text-sm font-semibold text-foreground">Name</Text>
+          <AppText className="mb-1.5 text-sm font-semibold text-foreground">Name</AppText>
           <TextInput
             value={name}
             onChangeText={setName}
             placeholder="e.g. TIN Certificate"
             placeholderTextColor="hsl(0, 0%, 60%)"
-            className="mb-4 rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground"
+            className="mb-4 h-12 rounded-xl border border-border bg-background px-4 text-sm text-foreground"
           />
 
-          <Text className="mb-1.5 text-sm font-semibold text-foreground">Type</Text>
+          <AppText className="mb-1.5 text-sm font-semibold text-foreground">Type</AppText>
           <View className="relative mb-4">
             <Pressable
-              className="flex-row items-center justify-between rounded-xl border border-border bg-muted px-4 py-3"
+              className="h-12 flex-row items-center justify-between rounded-xl border border-border bg-muted px-4"
               onPress={() => setTypeOpen((p) => !p)}>
-              <Text
-                className={`text-sm ${
-                  selectedType ? 'text-foreground' : 'text-mutedForeground'
-                }`}>
+              <AppText
+                className={`text-sm ${selectedType ? 'text-foreground' : 'text-mutedForeground'}`}>
                 {selectedType
                   ? DOCUMENT_TYPES.find((t) => t.value === selectedType)?.label
                   : 'Select type'}
-              </Text>
-              <Text className="text-[11px] text-foreground">{typeOpen ? '▲' : '▼'}</Text>
+              </AppText>
+              <AppText className="text-[11px] text-foreground">{typeOpen ? '▲' : '▼'}</AppText>
             </Pressable>
             {typeOpen && (
               <View className="z-50 mt-1 overflow-hidden rounded-xl border border-border bg-muted shadow-md">
@@ -133,14 +127,14 @@ const UploadFileModal = ({
                         setSelectedType(type.value);
                         setTypeOpen(false);
                       }}>
-                      <Text
+                      <AppText
                         className={`text-sm ${
                           type.value === selectedType
                             ? 'font-semibold text-success'
                             : 'text-mutedForeground'
                         }`}>
                         {type.label}
-                      </Text>
+                      </AppText>
                     </Pressable>
                   ))}
                 </ScrollView>
@@ -148,17 +142,17 @@ const UploadFileModal = ({
             )}
           </View>
 
-          <Text className="mb-1.5 text-sm font-semibold text-foreground">File</Text>
+          <AppText className="mb-1.5 text-sm font-semibold text-foreground">File</AppText>
           <TouchableOpacity
             onPress={handlePickFile}
-            className="mb-5 flex-row items-center gap-3 rounded-xl border border-border bg-background px-4 py-3.5">
+            className="mb-5 h-12 flex-row items-center gap-3 rounded-xl border border-border bg-background px-4">
             <FileText size={18} color="hsl(0, 0%, 60%)" />
-            <Text
+            <AppText
               className={`flex-1 text-sm ${
                 selectedAsset ? 'text-foreground' : 'text-mutedForeground'
               }`}>
               {selectedAsset ? selectedAsset.name : 'No file chosen'}
-            </Text>
+            </AppText>
             <Upload size={16} color="hsl(125, 70%, 33%)" />
           </TouchableOpacity>
 
@@ -166,13 +160,13 @@ const UploadFileModal = ({
             <TouchableOpacity
               onPress={handleClose}
               disabled={isUploading}
-              className="flex-1 items-center rounded-2xl border border-border bg-muted py-3.5">
-              <Text className="text-sm font-semibold text-foreground">Cancel</Text>
+              className="h-12 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
+              <AppText className="text-sm font-semibold text-foreground">Cancel</AppText>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSubmit}
               disabled={isUploading || !name.trim() || !selectedType || !selectedAsset}
-              className={`flex-1 items-center rounded-2xl py-3.5 ${
+              className={`h-12 flex-1 items-center justify-center rounded-2xl ${
                 isUploading || !name.trim() || !selectedType || !selectedAsset
                   ? 'bg-primary/50'
                   : 'bg-primary'
@@ -180,7 +174,7 @@ const UploadFileModal = ({
               {isUploading ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
-                <Text className="text-sm font-bold text-primaryForeground">Upload</Text>
+                <AppText className="text-sm font-bold text-primaryForeground">Upload</AppText>
               )}
             </TouchableOpacity>
           </View>

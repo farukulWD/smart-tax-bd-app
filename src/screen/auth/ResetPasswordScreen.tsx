@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
+import { CONTROL_HEIGHT, INPUT_CLASS } from '@/src/constants/ui';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
 import { useThemeColors } from '@/src/theme/useThemeColors';
@@ -71,8 +72,7 @@ const ResetPasswordScreen = ({
     }
   };
 
-  const inputClass =
-    'h-14 w-full rounded-xl border border-border bg-card px-4 text-base text-foreground';
+  const inputClass = INPUT_CLASS;
 
   return (
     <KeyboardAvoidingView
@@ -175,7 +175,7 @@ const ResetPasswordScreen = ({
             <Button
               onPress={form.handleSubmit(onSubmit)}
               disabled={isLoading}
-              className="mt-2 h-14 rounded-xl bg-primary">
+              className={`mt-2 ${CONTROL_HEIGHT} items-center justify-center rounded-xl bg-primary`}>
               {isLoading ? (
                 <ActivityIndicator color="#ffffff" />
               ) : (

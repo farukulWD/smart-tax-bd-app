@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
 import ConfirmModal from '@/src/components/global/ConfirmModal';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
@@ -84,18 +85,20 @@ const ProfileScreen = () => {
               <View className="flex-row items-center">
                 {/* Avatar */}
                 <View className="h-14 w-14 items-center justify-center rounded-full border-2 border-primary bg-primary/20">
-                  <Text className="text-lg font-bold text-primary">{initials}</Text>
+                  <AppText className="text-lg font-bold text-primary">{initials}</AppText>
                 </View>
 
                 <View className="ml-3 flex-1">
-                  <Text className="text-base font-bold text-foreground">{user?.name}</Text>
-                  <Text className="mt-0.5 text-xs text-mutedForeground">{user?.email}</Text>
-                  <Text className="text-xs text-mutedForeground">{user?.mobile}</Text>
+                  <AppText className="text-base font-bold text-foreground">{user?.name}</AppText>
+                  <AppText className="mt-0.5 text-xs text-mutedForeground">{user?.email}</AppText>
+                  <AppText className="text-xs text-mutedForeground">{user?.mobile}</AppText>
                 </View>
 
                 {/* Status badge */}
                 <View className="rounded-full border border-primary/50 bg-primary/10 px-3 py-1">
-                  <Text className="text-xs font-bold capitalize text-primary">{user?.status}</Text>
+                  <AppText className="text-xs font-bold capitalize text-primary">
+                    {user?.status}
+                  </AppText>
                 </View>
               </View>
             </View>
@@ -106,27 +109,29 @@ const ProfileScreen = () => {
             <View className="mb-3 h-14 w-14 items-center justify-center rounded-full border border-border bg-muted">
               <LucideIcon name="User" className="text-mutedForeground" size={24} />
             </View>
-            <Text className="text-base font-bold text-foreground">{t('profile.notSignedIn')}</Text>
-            <Text className="mt-1 text-xs leading-5 text-mutedForeground">
+            <AppText className="text-base font-bold text-foreground">
+              {t('profile.notSignedIn')}
+            </AppText>
+            <AppText className="mt-1 text-xs leading-5 text-mutedForeground">
               {t('profile.notSignedInDesc')}
-            </Text>
+            </AppText>
 
             <TouchableOpacity
-              className="mt-4 items-center rounded-2xl bg-primary py-3.5"
+              className="mt-4 h-12 items-center justify-center rounded-2xl bg-primary"
               activeOpacity={0.85}
               onPress={() => navigate('Auth', { screen: 'SignIn', shouldGoBack: true })}>
-              <Text className="text-sm font-bold text-primaryForeground">
+              <AppText className="text-sm font-bold text-primaryForeground">
                 {t('profile.signIn')}
-              </Text>
+              </AppText>
             </TouchableOpacity>
 
             <TouchableOpacity
-              className="mt-2.5 items-center rounded-2xl border border-border bg-muted py-3.5"
+              className="mt-2.5 h-12 items-center justify-center rounded-2xl border border-border bg-muted"
               activeOpacity={0.8}
               onPress={() => navigate('Auth', { screen: 'SignUp' })}>
-              <Text className="text-sm font-semibold text-foreground">
+              <AppText className="text-sm font-semibold text-foreground">
                 {t('profile.createAccount')}
-              </Text>
+              </AppText>
             </TouchableOpacity>
           </View>
         )}
@@ -221,9 +226,9 @@ const ProfileScreen = () => {
               <View className="h-9 w-9 items-center justify-center rounded-xl bg-muted">
                 <LucideIcon name="LogOut" className="text-mutedForeground" size={16} />
               </View>
-              <Text className="flex-1 text-sm font-semibold text-foreground">
+              <AppText className="flex-1 text-sm font-semibold text-foreground">
                 {t('profile.signOut')}
-              </Text>
+              </AppText>
               <LucideIcon name="ChevronRight" className="text-mutedForeground" size={15} />
             </TouchableOpacity>
           ) : (
@@ -234,9 +239,9 @@ const ProfileScreen = () => {
               <View className="h-9 w-9 items-center justify-center rounded-xl bg-primary/15">
                 <LucideIcon name="User" className="text-primary" size={16} />
               </View>
-              <Text className="flex-1 text-sm font-semibold text-foreground">
+              <AppText className="flex-1 text-sm font-semibold text-foreground">
                 {t('profile.signIn')}
-              </Text>
+              </AppText>
               <LucideIcon name="ChevronRight" className="text-mutedForeground" size={15} />
             </TouchableOpacity>
           )}

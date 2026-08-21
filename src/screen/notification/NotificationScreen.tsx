@@ -1,12 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import {
-  FlatList,
-  Text,
-  View,
-  TouchableOpacity,
-  ActivityIndicator,
-  RefreshControl,
-} from 'react-native';
+import { FlatList, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import {
   Bell,
   AlertCircle,
@@ -154,21 +148,21 @@ const NotificationCard = React.memo(
 
         <View className="flex-1 gap-1">
           <View className="flex-row items-start justify-between">
-            <Text
+            <AppText
               className={`flex-1 text-sm font-semibold ${
                 item.isRead ? 'text-foreground' : 'text-foreground'
               }`}>
               {item.title}
-            </Text>
+            </AppText>
             {!item.isRead && <View className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" />}
           </View>
-          <Text className="text-[13px] leading-5 text-mutedForeground" numberOfLines={3}>
+          <AppText className="text-[13px] leading-5 text-mutedForeground" numberOfLines={3}>
             {item.message}
-          </Text>
+          </AppText>
           <View className="flex-row items-center justify-between">
-            <Text className="text-mutedForeground/70 text-[11px] font-medium">
+            <AppText className="text-[11px] font-medium text-mutedForeground/70">
               {formatRelativeTime(item.createdAt)}
-            </Text>
+            </AppText>
             <TouchableOpacity onPress={onDelete} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <Trash2 size={14} color="hsl(0, 0%, 60%)" />
             </TouchableOpacity>
@@ -247,12 +241,9 @@ const NotificationScreen = () => {
     setShowMarkAllModal(false);
   }, [markAllAsRead]);
 
-  const handleDelete = useCallback(
-    (id: string) => {
-      setDeleteTarget(id);
-    },
-    [],
-  );
+  const handleDelete = useCallback((id: string) => {
+    setDeleteTarget(id);
+  }, []);
 
   const handleConfirmDelete = useCallback(async () => {
     if (!deleteTarget) return;
@@ -301,24 +292,26 @@ const NotificationScreen = () => {
           <ScreenHeader title="Notification" />
           <View className="flex-1 items-center justify-center gap-3">
             <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
-            <Text className="text-sm text-mutedForeground">Loading notifications…</Text>
+            <AppText className="text-sm text-mutedForeground">Loading notifications…</AppText>
           </View>
         </View>
       ) : error ? (
         <View className="flex-1 bg-background">
           <ScreenHeader title="Notification" />
           <View className="flex-1 items-center justify-center gap-4 px-8">
-            <View className="bg-destructive/15 h-16 w-16 items-center justify-center rounded-full">
+            <View className="h-16 w-16 items-center justify-center rounded-full bg-destructive/15">
               <Bell size={28} color="hsl(0, 83%, 49%)" />
             </View>
-            <Text className="text-center text-lg font-bold text-foreground">
+            <AppText className="text-center text-lg font-bold text-foreground">
               Failed to load notifications
-            </Text>
-            <Text className="text-center text-sm text-mutedForeground">
+            </AppText>
+            <AppText className="text-center text-sm text-mutedForeground">
               Something went wrong. Pull down to try again.
-            </Text>
-            <TouchableOpacity onPress={() => refetch()} className="rounded-2xl bg-primary px-6 py-3">
-              <Text className="font-semibold text-primaryForeground">Retry</Text>
+            </AppText>
+            <TouchableOpacity
+              onPress={() => refetch()}
+              className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+              <AppText className="font-semibold text-primaryForeground">Retry</AppText>
             </TouchableOpacity>
           </View>
         </View>
@@ -355,9 +348,9 @@ const NotificationScreen = () => {
               unreadCount > 0 ? (
                 <View className="mb-4 mt-4 flex-row items-center gap-3 rounded-2xl bg-muted px-4 py-3">
                   <Bell size={18} color="hsl(0, 0%, 60%)" />
-                  <Text className="flex-1 text-[13px] text-mutedForeground">
+                  <AppText className="flex-1 text-[13px] text-mutedForeground">
                     You have {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
-                  </Text>
+                  </AppText>
                 </View>
               ) : null
             }
@@ -373,10 +366,10 @@ const NotificationScreen = () => {
                 <View className="h-16 w-16 items-center justify-center rounded-full bg-muted">
                   <Bell size={28} color="hsl(0, 0%, 60%)" />
                 </View>
-                <Text className="text-lg font-bold text-foreground">All caught up!</Text>
-                <Text className="text-center text-sm text-mutedForeground">
+                <AppText className="text-lg font-bold text-foreground">All caught up!</AppText>
+                <AppText className="text-center text-sm text-mutedForeground">
                   You have no notifications at this time.
-                </Text>
+                </AppText>
               </View>
             )}
           />

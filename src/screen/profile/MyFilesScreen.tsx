@@ -1,19 +1,16 @@
 import { useState, useCallback } from 'react';
 import {
   View,
-  Text,
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
   Alert,
 } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { File, Directory, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import {
-  FolderOpen,
-  AlertCircle,
-} from 'lucide-react-native';
+import { FolderOpen, AlertCircle } from 'lucide-react-native';
 import PreviewModal from '@/src/components/order/PreviewModal';
 import ConfirmModal from '@/src/components/global/ConfirmModal';
 import FileCard from '@/src/components/profile/FileCard';
@@ -36,10 +33,10 @@ const EmptyState = () => (
     <View className="mb-2 h-16 w-16 items-center justify-center rounded-full bg-muted">
       <FolderOpen size={28} color="hsl(0, 0%, 60%)" />
     </View>
-    <Text className="text-center text-base font-bold text-foreground">No files yet</Text>
-    <Text className="text-center text-sm text-mutedForeground">
+    <AppText className="text-center text-base font-bold text-foreground">No files yet</AppText>
+    <AppText className="text-center text-sm text-mutedForeground">
       Upload your first file to get started.
-    </Text>
+    </AppText>
   </View>
 );
 
@@ -138,59 +135,61 @@ const MyFilesScreen = () => {
 
   return (
     <ProtectedScreen>
-    <View className="flex-1 bg-background">
-      <ScreenHeader title="My Files" />
+      <View className="flex-1 bg-background">
+        <ScreenHeader title="My Files" />
 
-      {isLoading ? (
-        <View className="flex-1 items-center justify-center gap-3">
-          <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
-          <Text className="text-sm text-mutedForeground">Loading files\u2026</Text>
-        </View>
-      ) : error ? (
-        <View className="flex-1 items-center justify-center gap-4 px-8">
-          <AlertCircle size={40} color="hsl(0, 83%, 49%)" />
-          <Text className="text-center text-base font-bold text-foreground">
-            Failed to load files
-          </Text>
-          <TouchableOpacity onPress={refetch} className="rounded-2xl bg-primary px-6 py-3">
-            <Text className="font-semibold text-primaryForeground">Retry</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <FlatList
-          data={files}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <FileCard
-              item={item}
-              onPreview={() => openPreview(item)}
-              onDelete={() => setDeleteTarget(item)}
-              onRename={() => {}} // commented out
-              isDeleting={deleteTarget?._id === item._id}
-            />
-          )}
-          contentContainerStyle={{ paddingTop: 8, paddingBottom: 100, flexGrow: 1 }}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={<EmptyState />}
-          refreshControl={
-            <RefreshControl
-              refreshing={isFetching && !isLoading}
-              onRefresh={refetch}
-              tintColor="hsl(125, 70%, 33%)"
-            />
-          }
+        {isLoading ? (
+          <View className="flex-1 items-center justify-center gap-3">
+            <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
+            <AppText className="text-sm text-mutedForeground">Loading files\u2026</AppText>
+          </View>
+        ) : error ? (
+          <View className="flex-1 items-center justify-center gap-4 px-8">
+            <AlertCircle size={40} color="hsl(0, 83%, 49%)" />
+            <AppText className="text-center text-base font-bold text-foreground">
+              Failed to load files
+            </AppText>
+            <TouchableOpacity
+              onPress={refetch}
+              className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+              <AppText className="font-semibold text-primaryForeground">Retry</AppText>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <FlatList
+            data={files}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+              <FileCard
+                item={item}
+                onPreview={() => openPreview(item)}
+                onDelete={() => setDeleteTarget(item)}
+                onRename={() => {}} // commented out
+                isDeleting={deleteTarget?._id === item._id}
+              />
+            )}
+            contentContainerStyle={{ paddingTop: 8, paddingBottom: 100, flexGrow: 1 }}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={<EmptyState />}
+            refreshControl={
+              <RefreshControl
+                refreshing={isFetching && !isLoading}
+                onRefresh={refetch}
+                tintColor="hsl(125, 70%, 33%)"
+              />
+            }
+          />
+        )}
+
+        <PreviewModal
+          visible={previewVisible}
+          file={selectedFile ? toPreviewFile(selectedFile) : null}
+          onClose={() => setPreviewVisible(false)}
+          onDownload={() => downloadFile(selectedFile!.file, selectedFile!.name)}
+          isDownloading={isDownloading}
         />
-      )}
 
-      <PreviewModal
-        visible={previewVisible}
-        file={selectedFile ? toPreviewFile(selectedFile) : null}
-        onClose={() => setPreviewVisible(false)}
-        onDownload={() => downloadFile(selectedFile!.file, selectedFile!.name)}
-        isDownloading={isDownloading}
-      />
-
-      {/*
+        {/*
       <RenameModal
         visible={!!renameFile}
         currentName={renameFile?.name ?? ''}
@@ -200,18 +199,18 @@ const MyFilesScreen = () => {
       />
       */}
 
-      <ConfirmModal
-        visible={!!deleteTarget}
-        title="Delete File"
-        message={`Are you sure you want to delete "${deleteTarget?.name}"? This action cannot be undone.`}
-        confirmLabel="Delete"
-        cancelLabel="Cancel"
-        destructive
-        isLoading={isDeleting}
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
-      />
-    </View>
+        <ConfirmModal
+          visible={!!deleteTarget}
+          title="Delete File"
+          message={`Are you sure you want to delete "${deleteTarget?.name}"? This action cannot be undone.`}
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
+          destructive
+          isLoading={isDeleting}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      </View>
     </ProtectedScreen>
   );
 };

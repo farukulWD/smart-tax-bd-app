@@ -1,4 +1,5 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { FilePlus2, ClipboardList } from 'lucide-react-native';
 import { navigate, navigateToStack } from '@/src/utils/NavigationUtils';
 
@@ -11,8 +12,8 @@ const HomeQuickActions = () => (
       <View className="mb-6 h-11 w-11 items-center justify-center rounded-xl bg-white/20">
         <FilePlus2 color="#ffffff" size={22} />
       </View>
-      <Text className="text-lg font-bold text-white">Start Filing</Text>
-      <Text className="text-sm text-white/80">New tax return</Text>
+      <AppText className="text-lg font-bold text-white">Start Filing</AppText>
+      <AppText className="text-sm text-white/80">New tax return</AppText>
     </Pressable>
 
     {/* Track Status — white card */}
@@ -22,8 +23,8 @@ const HomeQuickActions = () => (
       <View className="mb-6 h-11 w-11 items-center justify-center rounded-xl bg-muted">
         <ClipboardList color="#258336" size={22} />
       </View>
-      <Text className="text-lg font-bold text-foreground">Track Status</Text>
-      <Text className="text-sm text-mutedForeground">View your filings</Text>
+      <AppText className="text-lg font-bold text-foreground">Track Status</AppText>
+      <AppText className="text-sm text-mutedForeground">View your filings</AppText>
     </Pressable>
   </View>
 );

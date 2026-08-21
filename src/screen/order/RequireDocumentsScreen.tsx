@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { View, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useGetMyFilesQuery, useUploadFileMutation } from '@/src/services/fileApi';
@@ -289,18 +290,18 @@ const RequireDocumentsScreen = () => {
     <ProtectedScreen>
       <View style={{ paddingTop: top, paddingBottom: bottom }} className="flex-1 bg-background">
         <View className="m-4 mt-0">
-          <Text className="text-2xl font-bold tracking-tight text-foreground">
+          <AppText className="text-2xl font-bold tracking-tight text-foreground">
             Step 2: Documents
-          </Text>
-          <Text className="text-sm text-mutedForeground">
+          </AppText>
+          <AppText className="text-sm text-mutedForeground">
             Upload and submit the required tax documents.
-          </Text>
+          </AppText>
         </View>
         <View className="flex-1 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
           {/* Card */}
           {/* Card header */}
           <View className="border-b border-border px-5 pb-3 pt-5">
-            <Text className="text-base font-bold text-foreground">Required Documents</Text>
+            <AppText className="text-base font-bold text-foreground">Required Documents</AppText>
           </View>
           <ScrollView
             contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
@@ -312,7 +313,9 @@ const RequireDocumentsScreen = () => {
               {requiredDocuments.length === 0 ? (
                 <View className="items-center gap-2 py-10">
                   <ActivityIndicator color={colors.primary} />
-                  <Text className="text-sm text-mutedForeground">Loading required documents…</Text>
+                  <AppText className="text-sm text-mutedForeground">
+                    Loading required documents…
+                  </AppText>
                 </View>
               ) : (
                 <View className="flex-1 flex-row flex-wrap" style={{ margin: -6 }}>
@@ -349,18 +352,19 @@ const RequireDocumentsScreen = () => {
               {!stepTwoReady && missingDocuments.length > 0 && (
                 <View className="mt-4 flex-row items-center gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3">
                   <AlertCircle size={15} color={colors.warning} />
-                  <Text className="flex-1 text-xs text-warning">
-                    Missing: <Text className="font-semibold">{missingDocuments.join(', ')}</Text>
-                  </Text>
+                  <AppText className="flex-1 text-xs text-warning">
+                    Missing:{' '}
+                    <AppText className="font-semibold">{missingDocuments.join(', ')}</AppText>
+                  </AppText>
                 </View>
               )}
 
               {stepTwoReady && (
                 <View className="mt-4 flex-row items-center gap-2 rounded-xl border border-success/30 bg-success/10 px-4 py-3">
                   <CheckCircle2 size={15} color={colors.success} />
-                  <Text className="text-xs font-medium text-success">
+                  <AppText className="text-xs font-medium text-success">
                     All documents uploaded — ready to proceed!
-                  </Text>
+                  </AppText>
                 </View>
               )}
             </View>
@@ -371,35 +375,33 @@ const RequireDocumentsScreen = () => {
           onPress={handleSubmitStepTwo}
           disabled={isSubmittingStepTwo || isFilesLoading || !stepTwoReady}
           className={[
-            'mx-4 mt-3 flex-row items-center justify-center gap-2 rounded-2xl py-3',
-            isSubmittingStepTwo || isFilesLoading || !stepTwoReady
-              ? 'bg-primary/50'
-              : 'bg-primary',
+            'mx-4 mt-3 h-12 flex-row items-center justify-center gap-2 rounded-2xl',
+            isSubmittingStepTwo || isFilesLoading || !stepTwoReady ? 'bg-primary/50' : 'bg-primary',
           ].join(' ')}
           activeOpacity={0.8}>
           {(isSubmittingStepTwo || isFilesLoading) && (
             <ActivityIndicator size="small" color="#fff" />
           )}
-          <Text className="text-base font-bold text-white">
+          <AppText className="text-base font-bold text-white">
             {isSubmittingStepTwo ? 'Submitting…' : 'Go To Payment'}
-          </Text>
+          </AppText>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleSkipUpload}
           disabled={isSkipping}
-          className="mx-4 mt-2 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3"
+          className="mx-4 mt-2 h-12 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card"
           activeOpacity={0.7}>
           {isSkipping ? <ActivityIndicator size="small" color={colors.mutedForeground} /> : null}
-          <Text className="text-sm font-semibold text-mutedForeground">
+          <AppText className="text-sm font-semibold text-mutedForeground">
             {isSkipping ? 'Skipping…' : 'Upload File Later'}
-          </Text>
+          </AppText>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           activeOpacity={0.7}
           className="mx-4 flex-row items-center justify-center gap-2 py-3">
           <ArrowLeft size={15} color={colors.primary} />
-          <Text className="font-semibold text-primary">Back to Create Tax Order</Text>
+          <AppText className="font-semibold text-primary">Back to Create Tax Order</AppText>
         </TouchableOpacity>
 
         {/* Upload option modal */}

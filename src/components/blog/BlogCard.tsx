@@ -1,4 +1,5 @@
-import { View, Text, Image, Pressable } from 'react-native';
+import { View, Image, Pressable } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import dayjs from 'dayjs';
 import { Eye } from 'lucide-react-native';
 import { BlogListItem } from '@/src/types/blogTypes';
@@ -26,30 +27,32 @@ const BlogCard = ({ item, onPress, compact = false }: BlogCardProps) => (
 
     <View className="px-3 py-3">
       <View className="flex-row">
-        <View className="bg-primary/15 rounded-full px-2.5 py-1">
-          <Text className="text-[11px] font-bold capitalize text-primary">{item.category}</Text>
+        <View className="rounded-full bg-primary/15 px-2.5 py-1">
+          <AppText className="text-[11px] font-bold capitalize text-primary">
+            {item.category}
+          </AppText>
         </View>
       </View>
 
-      <Text
-        className="mt-2 font-bold leading-5 text-foreground"
-        numberOfLines={2}>
+      <AppText className="mt-2 font-bold leading-5 text-foreground" numberOfLines={2}>
         {item.title}
-      </Text>
+      </AppText>
 
       {!!item.excerpt && (
-        <Text className="mt-1 text-xs leading-5 text-mutedForeground" numberOfLines={compact ? 2 : 3}>
+        <AppText
+          className="mt-1 text-xs leading-5 text-mutedForeground"
+          numberOfLines={compact ? 2 : 3}>
           {item.excerpt}
-        </Text>
+        </AppText>
       )}
 
       <View className="mt-3 flex-row items-center justify-between">
-        <Text className="text-[11px] text-mutedForeground">
+        <AppText className="text-[11px] text-mutedForeground">
           {item.authorName} · {dayjs(item.publishedAt ?? item.createdAt).format('MMM DD, YYYY')}
-        </Text>
+        </AppText>
         <View className="flex-row items-center gap-1">
           <Eye size={12} color="hsl(0, 0%, 60%)" />
-          <Text className="text-[11px] text-mutedForeground">{item.views}</Text>
+          <AppText className="text-[11px] text-mutedForeground">{item.views}</AppText>
         </View>
       </View>
     </View>

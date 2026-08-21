@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { useLocale } from '@/src/localization/useLocale';
 import { cn } from '@/src/utils/cn';
 
@@ -13,21 +14,21 @@ const LanguageToggle = () => {
     <TouchableOpacity
       onPress={toggleLanguage}
       className="flex-row items-center rounded-full border border-border bg-secondary px-3 py-1">
-      <Text
+      <AppText
         className={cn(
           'text-xs font-medium',
-          isEnglish ? 'text-primaryForeground rounded-full bg-primary px-1' : 'text-foreground'
+          isEnglish ? 'rounded-full bg-primary px-1 text-primaryForeground' : 'text-foreground'
         )}>
         EN
-      </Text>
+      </AppText>
       <View className="mx-2 h-3 w-[1px] bg-border" />
-      <Text
+      <AppText
         className={cn(
           'text-xs font-medium',
-          isBangla ? 'text-primaryForeground rounded-full bg-primary px-1' : 'text-foreground'
+          isBangla ? 'rounded-full bg-primary px-1 text-primaryForeground' : 'text-foreground'
         )}>
         BN
-      </Text>
+      </AppText>
     </TouchableOpacity>
   );
 };

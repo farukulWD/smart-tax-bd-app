@@ -1,6 +1,7 @@
 // src/components/CustomTabBar.tsx
 import React from 'react';
-import { View, TouchableOpacity, Text, Platform, Dimensions, Vibration } from 'react-native';
+import { View, TouchableOpacity, Platform, Dimensions, Vibration } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { CircleQuestionMark, FileText, Home, Newspaper, User } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -67,7 +68,7 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
         }}>
         {getIconContent()}
       </View>
-      <Text
+      <AppText
         className={cn('font-okra font-semibold')}
         style={{
           fontSize: 10,
@@ -75,7 +76,7 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
           color: labelColor,
         }}>
         {getTabLabel()}
-      </Text>
+      </AppText>
     </View>
   );
 };

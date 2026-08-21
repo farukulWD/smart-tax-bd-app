@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
+import { View, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { FileText, Trash2, Calendar, Hash, Eye } from 'lucide-react-native';
 // import { Pencil } from 'lucide-react-native';
 import { IFile } from '@/src/types/filesTypes';
@@ -57,36 +58,44 @@ const FileCard = ({
         <View className="flex-row items-center gap-3 p-4 pb-3">
           <View className={`h-14 w-14 items-center justify-center rounded-xl ${fg.iconBg}`}>
             {fileType === 'image' ? (
-              <Image source={{ uri: item.file }} className="h-full w-full rounded-xl" resizeMode="cover" />
+              <Image
+                source={{ uri: item.file }}
+                className="h-full w-full rounded-xl"
+                resizeMode="cover"
+              />
             ) : (
               <FileText size={24} color={fg.iconColor} />
             )}
           </View>
 
           <View className="flex-1 gap-1">
-            <Text className="text-[15px] font-bold text-cardForeground" numberOfLines={1}>
+            <AppText className="text-[15px] font-bold text-cardForeground" numberOfLines={1}>
               {item.name}
-            </Text>
+            </AppText>
 
             <View className="flex-row items-center gap-2">
               <View className={`rounded-full px-2 py-px ${fg.badgeBg}`}>
-                <Text className={`text-[10px] font-bold ${fg.badgeText}`}>
+                <AppText className={`text-[10px] font-bold ${fg.badgeText}`}>
                   {fileType === 'image' ? 'IMG' : fileType === 'pdf' ? 'PDF' : ext}
-                </Text>
+                </AppText>
               </View>
-              <Text className="text-xs capitalize text-mutedForeground" numberOfLines={1}>
+              <AppText className="text-xs capitalize text-mutedForeground" numberOfLines={1}>
                 {item.type.replace(/_/g, ' ')}
-              </Text>
+              </AppText>
             </View>
 
             <View className="flex-row items-center gap-3">
               <View className="flex-row items-center gap-1">
                 <Calendar size={11} color="hsl(0, 0%, 60%)" />
-                <Text className="text-xs text-mutedForeground">{formatDate(item.createdAt)}</Text>
+                <AppText className="text-xs text-mutedForeground">
+                  {formatDate(item.createdAt)}
+                </AppText>
               </View>
               <View className="flex-row items-center gap-1">
                 <Hash size={11} color="hsl(0, 0%, 60%)" />
-                <Text className="text-xs text-mutedForeground">{shortenId(item.orderId)}</Text>
+                <AppText className="text-xs text-mutedForeground">
+                  {shortenId(item.orderId)}
+                </AppText>
               </View>
             </View>
           </View>
@@ -113,9 +122,9 @@ const FileCard = ({
               ) : (
                 <action.icon size={15} color={action.color} />
               )}
-              <Text className={`text-xs font-semibold ${action.textClass}`}>
+              <AppText className={`text-xs font-semibold ${action.textClass}`}>
                 {isLast && isDeleting ? 'Deleting\u2026' : action.label}
-              </Text>
+              </AppText>
             </TouchableOpacity>
           );
         })}

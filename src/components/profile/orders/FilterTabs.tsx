@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { FilterStatus } from './types';
 
 const FILTERS: { key: FilterStatus; label: string }[] = [
@@ -29,22 +30,22 @@ export const FilterTabs = ({
             'flex-row items-center gap-1.5 rounded-full px-3 py-2',
             isActive ? 'bg-primary' : 'bg-muted',
           ].join(' ')}>
-          <Text
+          <AppText
             className={`text-xs font-semibold ${
               isActive ? 'text-primaryForeground' : 'text-mutedForeground'
             }`}>
             {f.label}
-          </Text>
+          </AppText>
           <View
             className={`h-4 w-4 items-center justify-center rounded-full ${
               isActive ? 'bg-primaryForeground/20' : 'bg-background'
             }`}>
-            <Text
+            <AppText
               className={`text-[10px] font-bold ${
                 isActive ? 'text-primaryForeground' : 'text-mutedForeground'
               }`}>
               {counts[f.key]}
-            </Text>
+            </AppText>
           </View>
         </TouchableOpacity>
       );

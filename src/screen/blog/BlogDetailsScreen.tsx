@@ -1,4 +1,5 @@
-import { ActivityIndicator, FlatList, Image, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, ScrollView, View } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import dayjs from 'dayjs';
 import { Eye } from 'lucide-react-native';
@@ -59,21 +60,24 @@ const BlogDetailsScreen = () => {
 
         <View className="px-4 pt-4">
           <View className="flex-row">
-            <View className="bg-primary/15 rounded-full px-2.5 py-1">
-              <Text className="text-[11px] font-bold capitalize text-primary">{blog.category}</Text>
+            <View className="rounded-full bg-primary/15 px-2.5 py-1">
+              <AppText className="text-[11px] font-bold capitalize text-primary">
+                {blog.category}
+              </AppText>
             </View>
           </View>
 
-          <Text className="mt-3 text-2xl font-bold leading-8 text-foreground">{blog.title}</Text>
+          <AppText className="mt-3 text-2xl font-bold leading-8 text-foreground">
+            {blog.title}
+          </AppText>
 
           <View className="mt-2 flex-row items-center justify-between border-b border-border pb-3">
-            <Text className="text-xs text-mutedForeground">
-              {blog.authorName} ·{' '}
-              {dayjs(blog.publishedAt ?? blog.createdAt).format('MMM DD, YYYY')}
-            </Text>
+            <AppText className="text-xs text-mutedForeground">
+              {blog.authorName} · {dayjs(blog.publishedAt ?? blog.createdAt).format('MMM DD, YYYY')}
+            </AppText>
             <View className="flex-row items-center gap-1">
               <Eye size={12} color="hsl(0, 0%, 60%)" />
-              <Text className="text-[11px] text-mutedForeground">{blog.views}</Text>
+              <AppText className="text-[11px] text-mutedForeground">{blog.views}</AppText>
             </View>
           </View>
 
@@ -85,7 +89,7 @@ const BlogDetailsScreen = () => {
             <View className="mt-4 flex-row flex-wrap gap-2">
               {blog.tags.map((tag) => (
                 <View key={tag} className="rounded-full bg-muted px-2.5 py-1">
-                  <Text className="text-[11px] text-mutedForeground">#{tag}</Text>
+                  <AppText className="text-[11px] text-mutedForeground">#{tag}</AppText>
                 </View>
               ))}
             </View>
@@ -94,7 +98,9 @@ const BlogDetailsScreen = () => {
 
         {related.length > 0 && (
           <View className="mt-6">
-            <Text className="mb-3 px-4 text-base font-bold text-foreground">Related posts</Text>
+            <AppText className="mb-3 px-4 text-base font-bold text-foreground">
+              Related posts
+            </AppText>
             <FlatList
               data={related}
               keyExtractor={(item) => item._id}

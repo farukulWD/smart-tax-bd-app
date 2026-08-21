@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { Newspaper } from 'lucide-react-native';
 import Animated, {
   useSharedValue,
@@ -42,7 +43,7 @@ const HomeNewsSection = () => {
     <View className="mt-3 flex-row items-stretch overflow-hidden border border-border bg-card">
       <View className="flex-row items-center gap-1.5 bg-secondary px-3">
         <Newspaper color="#ffffff" size={14} />
-        <Text className="text-xs font-semibold text-white">{t('home.news')}</Text>
+        <AppText className="text-xs font-semibold text-white">{t('home.news')}</AppText>
         <PulseDot />
       </View>
 
@@ -55,11 +56,11 @@ const HomeNewsSection = () => {
                   onPress={() => {
                     item?._id && handleNavigateToNewDetails(item._id);
                   }}>
-                  <Text className="font-medium capitalize text-foreground">{item.title}</Text>
+                  <AppText className="font-medium capitalize text-foreground">{item.title}</AppText>
                 </Pressable>
-                <Text className="text-secondary">
+                <AppText className="text-secondary">
                   {index < data.data.length - 1 ? '          ◆          ' : '          '}
-                </Text>
+                </AppText>
               </View>
             ))}
           </View>

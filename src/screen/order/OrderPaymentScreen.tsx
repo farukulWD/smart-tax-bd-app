@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import { View, Text, ActivityIndicator, TouchableOpacity, Modal } from 'react-native';
+import { View, ActivityIndicator, TouchableOpacity, Modal } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { AppStackParamList } from '@/src/navigation/AppStack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -85,20 +86,22 @@ const ResultModal = ({
           </View>
 
           {/* Title */}
-          <Text className="mb-3 text-center text-xl font-bold text-foreground">{config.title}</Text>
+          <AppText className="mb-3 text-center text-xl font-bold text-foreground">
+            {config.title}
+          </AppText>
 
           {/* Message */}
-          <Text className="mb-5 text-center text-sm leading-5 text-mutedForeground">
+          <AppText className="mb-5 text-center text-sm leading-5 text-mutedForeground">
             {config.message}
-          </Text>
+          </AppText>
 
           {/* Transaction ID */}
           {transactionId && (
             <View className="mb-6 w-full rounded-xl border border-border bg-muted px-4 py-2.5">
-              <Text className="text-center text-xs text-foreground">
+              <AppText className="text-center text-xs text-foreground">
                 Transaction ID:{' '}
-                <Text className="font-semibold text-primary">{transactionId}</Text>
-              </Text>
+                <AppText className="font-semibold text-primary">{transactionId}</AppText>
+              </AppText>
             </View>
           )}
 
@@ -106,16 +109,16 @@ const ResultModal = ({
           <TouchableOpacity
             onPress={onGoToOrders}
             activeOpacity={0.85}
-            className={`w-full ${config.primaryBg} mb-3 items-center rounded-2xl py-4`}>
-            <Text className="text-base font-bold text-white">Go To Orders</Text>
+            className={`h-12 w-full justify-center ${config.primaryBg} mb-3 items-center rounded-2xl`}>
+            <AppText className="text-base font-bold text-white">Go To Orders</AppText>
           </TouchableOpacity>
 
           {/* View Payments */}
           <TouchableOpacity
             onPress={onViewPayments}
             activeOpacity={0.75}
-            className="w-full items-center rounded-2xl border border-border bg-muted py-4">
-            <Text className="text-base font-semibold text-foreground">View Payments</Text>
+            className="h-12 w-full items-center justify-center rounded-2xl border border-border bg-muted">
+            <AppText className="text-base font-semibold text-foreground">View Payments</AppText>
           </TouchableOpacity>
         </View>
       </View>
@@ -162,9 +165,11 @@ const OrderPaymentScreen = () => {
         <View
           style={{ paddingTop: top }}
           className="flex-1 items-center justify-center gap-4 bg-background px-6">
-          <Text className="text-center text-sm text-destructive">No payment URL found.</Text>
-          <TouchableOpacity onPress={goHome} className="rounded-2xl bg-primary px-6 py-3">
-            <Text className="font-semibold text-white">Go to Home</Text>
+          <AppText className="text-center text-sm text-destructive">No payment URL found.</AppText>
+          <TouchableOpacity
+            onPress={goHome}
+            className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+            <AppText className="font-semibold text-white">Go to Home</AppText>
           </TouchableOpacity>
         </View>
       </ProtectedScreen>
@@ -195,7 +200,7 @@ const OrderPaymentScreen = () => {
           {isLoading && (
             <View className="absolute inset-0 items-center justify-center gap-3 bg-background">
               <ActivityIndicator size="large" color={colors.primary} />
-              <Text className="text-sm text-foreground">Loading payment gateway…</Text>
+              <AppText className="text-sm text-foreground">Loading payment gateway…</AppText>
             </View>
           )}
 
@@ -203,12 +208,14 @@ const OrderPaymentScreen = () => {
           {hasError && (
             <View className="absolute inset-0 items-center justify-center gap-4 bg-background px-6">
               <XCircle size={40} color={colors.destructive} />
-              <Text className="text-base font-bold text-foreground">Failed to load</Text>
-              <Text className="text-center text-sm text-mutedForeground">
+              <AppText className="text-base font-bold text-foreground">Failed to load</AppText>
+              <AppText className="text-center text-sm text-mutedForeground">
                 Could not load the payment gateway. Please check your connection.
-              </Text>
-              <TouchableOpacity onPress={goHome} className="rounded-2xl bg-primary px-6 py-3">
-                <Text className="font-semibold text-white">Go to Home</Text>
+              </AppText>
+              <TouchableOpacity
+                onPress={goHome}
+                className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+                <AppText className="font-semibold text-white">Go to Home</AppText>
               </TouchableOpacity>
             </View>
           )}

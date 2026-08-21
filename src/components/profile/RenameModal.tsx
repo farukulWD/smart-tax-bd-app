@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
   ActivityIndicator,
   Modal,
   TextInput,
   Pressable,
 } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 
 const RenameModal = ({
   visible,
@@ -29,19 +29,13 @@ const RenameModal = ({
   }, [visible, currentName]);
 
   return (
-    <Modal
-      visible={visible}
-      animationType="fade"
-      transparent
-      onRequestClose={onClose}>
+    <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
       <Pressable className="flex-1 justify-center bg-black/50 px-6" onPress={onClose}>
-        <Pressable
-          className="rounded-3xl border border-border bg-card p-6"
-          onPress={() => {}}>
-          <Text className="mb-1 text-lg font-bold text-foreground">Rename File</Text>
-          <Text className="mb-4 text-sm text-mutedForeground">
+        <Pressable className="rounded-3xl border border-border bg-card p-6" onPress={() => {}}>
+          <AppText className="mb-1 text-lg font-bold text-foreground">Rename File</AppText>
+          <AppText className="mb-4 text-sm text-mutedForeground">
             Enter a new name for this file.
-          </Text>
+          </AppText>
 
           <TextInput
             value={value}
@@ -49,20 +43,20 @@ const RenameModal = ({
             placeholder="File name"
             placeholderTextColor="hsl(0, 0%, 60%)"
             autoFocus
-            className="mb-5 rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground"
+            className="mb-5 h-12 rounded-xl border border-border bg-background px-4 text-sm text-foreground"
           />
 
           <View className="flex-row gap-3">
             <TouchableOpacity
               onPress={onClose}
               disabled={isUpdating}
-              className="flex-1 items-center rounded-2xl border border-border bg-muted py-3.5">
-              <Text className="text-sm font-semibold text-foreground">Cancel</Text>
+              className="h-12 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
+              <AppText className="text-sm font-semibold text-foreground">Cancel</AppText>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => onSave(value.trim())}
               disabled={isUpdating || !value.trim() || value.trim() === currentName}
-              className={`flex-1 items-center rounded-2xl py-3.5 ${
+              className={`h-12 flex-1 items-center justify-center rounded-2xl ${
                 isUpdating || !value.trim() || value.trim() === currentName
                   ? 'bg-primary/50'
                   : 'bg-primary'
@@ -70,7 +64,7 @@ const RenameModal = ({
               {isUpdating ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
-                <Text className="text-sm font-bold text-primaryForeground">Save</Text>
+                <AppText className="text-sm font-bold text-primaryForeground">Save</AppText>
               )}
             </TouchableOpacity>
           </View>

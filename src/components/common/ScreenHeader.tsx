@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeftIcon } from 'lucide-react-native';
 import { cn } from '@/lib/utils';
@@ -16,7 +17,13 @@ interface ScreenHeaderProps {
   };
 }
 
-const ScreenHeader = ({ title, onPress, showBack = true, className, rightButton }: ScreenHeaderProps) => {
+const ScreenHeader = ({
+  title,
+  onPress,
+  showBack = true,
+  className,
+  rightButton,
+}: ScreenHeaderProps) => {
   const navigation = useNavigation();
   const { top } = useSafeAreaInsets();
   const { colors } = useThemeColors();
@@ -46,7 +53,7 @@ const ScreenHeader = ({ title, onPress, showBack = true, className, rightButton 
       ) : (
         <View className="h-12 w-12" />
       )}
-      <Text className="text-2xl font-bold tracking-tight text-foreground">{title}</Text>
+      <AppText className="text-2xl font-bold tracking-tight text-foreground">{title}</AppText>
       {rightButton ? (
         <TouchableOpacity
           onPress={rightButton.onPress}

@@ -2,8 +2,6 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import env from '../../env';
 import { axiosBaseQuery } from './axios/axiosBaseQuery';
 
-console.log('env.BASE_URL', env.BASE_URL);
-
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: axiosBaseQuery({ baseUrl: env.BASE_URL }),

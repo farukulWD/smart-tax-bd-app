@@ -1,4 +1,5 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { useState } from 'react';
 import { FaqItemType } from '@/src/types/publicTypes';
 
@@ -10,13 +11,13 @@ const FaqItem = ({ item }: { item: FaqItemType }) => {
         onPress={() => setOpenIndex(!openIndex)}
         className="flex-row items-start justify-between"
         hitSlop={6}>
-        <Text className="flex-1 pr-3 font-semibold text-foreground">{item.question}</Text>
-        <Text className="font-semibold text-mutedForeground">{openIndex ? '−' : '+'}</Text>
+        <AppText className="flex-1 pr-3 font-semibold text-foreground">{item.question}</AppText>
+        <AppText className="font-semibold text-mutedForeground">{openIndex ? '−' : '+'}</AppText>
       </Pressable>
 
       {openIndex ? (
         <View className="mt-2">
-          <Text className="leading-5 text-mutedForeground">{item.answer}</Text>
+          <AppText className="leading-5 text-mutedForeground">{item.answer}</AppText>
         </View>
       ) : null}
     </View>

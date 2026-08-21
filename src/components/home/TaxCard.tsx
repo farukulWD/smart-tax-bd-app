@@ -1,5 +1,6 @@
 import { TaxTypeItem } from '@/src/types/publicTypes';
-import { Image, Pressable, Text, View } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { navigate } from '@/src/utils/NavigationUtils';
 import { useLocale } from '@/src/localization/useLocale';
 
@@ -48,15 +49,15 @@ const TaxCard = ({ item }: { item: TaxTypeItem }) => {
               accessibilityIgnoresInvertColors
             />
           ) : (
-            <Text className="text-xs font-bold text-secondary">{initials}</Text>
+            <AppText className="text-xs font-bold text-secondary">{initials}</AppText>
           )}
         </View>
-        <Text
+        <AppText
           className="text-center text-xs font-semibold text-foreground"
           numberOfLines={3}
           ellipsizeMode="tail">
           {title}
-        </Text>
+        </AppText>
       </View>
     </Pressable>
   );

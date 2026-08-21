@@ -1,5 +1,6 @@
 // screens/PackagesScreen.tsx
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { PackageCard } from '../../components/package/PackageCard';
 import TitleHeader from '@/src/components/global/TitleHeader';
 
@@ -65,7 +66,7 @@ export default function PackagesScreen() {
     <View className="flex-1 bg-background">
       <TitleHeader title="Packages" />
       <ScrollView className="flex-1 px-4">
-        <Text className="my-2 text-3xl font-bold text-foreground">Choose Your Package</Text>
+        <AppText className="my-2 text-3xl font-bold text-foreground">Choose Your Package</AppText>
         <View className="gap-3 pb-6">
           {packages.map((pkg, index) => (
             <PackageCard

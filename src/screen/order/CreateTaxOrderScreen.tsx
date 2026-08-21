@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import {
   View,
-  Text,
   TextInput,
   ScrollView,
   TouchableOpacity,
   Pressable,
   ActivityIndicator,
 } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
@@ -24,6 +24,8 @@ import { BackButton } from '@/src/components/global/BackButton';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 import { cn } from '@/lib/utils';
+import { useAppDispatch, useAppSelector } from '@/src/redux/hooks';
+import { setUser } from '@/src/redux/slices/authSlice';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
@@ -82,17 +84,17 @@ const QUERY_TAX_TYPE_TO_INCOME_SOURCE: Record<string, IncomeSource> = {
 
 const SectionCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <View className="gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
-    <Text className="text-[17px] font-bold text-foreground">{title}</Text>
+    <AppText className="text-[17px] font-bold text-foreground">{title}</AppText>
     {children}
   </View>
 );
 
 const FieldLabel = ({ label }: { label: string }) => (
-  <Text className="mb-1 font-semibold text-foreground">{label}</Text>
+  <AppText className="mb-1 font-semibold text-foreground">{label}</AppText>
 );
 
 const ErrorText = ({ message }: { message?: string }) =>
-  message ? <Text className="mt-1 text-xs text-destructive">{message}</Text> : null;
+  message ? <AppText className="mt-1 text-xs text-destructive">{message}</AppText> : null;
 
 const CheckboxItem = ({
   label,
@@ -106,23 +108,23 @@ const CheckboxItem = ({
   const { colors } = useThemeColors();
 
   return (
-  <Pressable
-    onPress={onPress}
-    className={`flex-row items-center gap-3 rounded-xl border px-4 py-3 ${
-      checked ? 'border-success bg-success/10' : 'border-border bg-muted'
-    }`}
-    android_ripple={{ color: colors.muted }}>
-    <View
-      className={`h-5 w-5 items-center justify-center rounded-[5px] border-2 ${
-        checked ? 'border-success bg-success' : 'border-mutedForeground bg-card'
-      }`}>
-      {checked && <Text className="text-xs font-bold text-white">✓</Text>}
-    </View>
-    <Text
-      className={cn('flex-1 text-[13.5px]', checked ? 'text-success' : 'text-mutedForeground')}>
-      {label}
-    </Text>
-  </Pressable>
+    <Pressable
+      onPress={onPress}
+      className={`h-12 flex-row items-center gap-3 rounded-xl border px-4 ${
+        checked ? 'border-success bg-success/10' : 'border-border bg-muted'
+      }`}
+      android_ripple={{ color: colors.muted }}>
+      <View
+        className={`h-5 w-5 items-center justify-center rounded-[5px] border-2 ${
+          checked ? 'border-success bg-success' : 'border-mutedForeground bg-card'
+        }`}>
+        {checked && <AppText className="text-xs font-bold text-white">✓</AppText>}
+      </View>
+      <AppText
+        className={cn('flex-1 text-[13.5px]', checked ? 'text-success' : 'text-mutedForeground')}>
+        {label}
+      </AppText>
+    </Pressable>
   );
 };
 
@@ -134,6 +136,11 @@ const CreateTaxOrderScreen = () => {
   const route = useRoute<any>();
   const taxType: string = route.params?.taxType ?? '';
 
+  const dispatch = useAppDispatch();
+  // The persisted profile is already in the store on mount, so the form renders
+  // filled instead of flashing empty fields while /users/get-me is in flight.
+  const cachedUser = useAppSelector((state) => state.auth.user);
+
   const { data } = useGetUserInfoQuery();
   const profileData = data?.data;
   const [createTaxStepOne, { isLoading: isCreatingOrder }] = useCreateTaxStepOneMutation();
@@ -143,13 +150,13 @@ const CreateTaxOrderScreen = () => {
     handleSubmit,
     setValue,
     getValues,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      mobile: '',
+      name: cachedUser?.name ?? '',
+      email: cachedUser?.email ?? '',
+      mobile: cachedUser?.mobile ?? '',
       source_of_income: [],
       tax_year: `${CURRENT_YEAR}-${CURRENT_YEAR + 1}`,
     },
@@ -157,10 +164,11 @@ const CreateTaxOrderScreen = () => {
 
   useEffect(() => {
     if (!profileData) return;
-    const p = profileData;
-    if (p?.name && !getValues('name')) setValue('name', p.name);
-    if (p?.email && !getValues('email')) setValue('email', p.email);
-    if (p?.mobile && !getValues('mobile')) setValue('mobile', p.mobile);
+    // Fresh server copy wins, except over fields the user already edited.
+    if (profileData.name) setValue('name', profileData.name);
+    if (profileData.email) setValue('email', profileData.email);
+    if (profileData.mobile && !dirtyFields.mobile) setValue('mobile', profileData.mobile);
+    dispatch(setUser(profileData));
   }, [profileData]);
 
   useEffect(() => {
@@ -209,14 +217,14 @@ const CreateTaxOrderScreen = () => {
 
           <View className="flex-1">
             <View className="mb-1.5 self-start rounded-full border border-success/30 bg-success/10 px-3 py-0.5">
-              <Text className="text-[11px] font-bold text-success">TAX STEP 1</Text>
+              <AppText className="text-[11px] font-bold text-success">TAX STEP 1</AppText>
             </View>
-            <Text className="text-2xl font-extrabold tracking-tight text-foreground">
+            <AppText className="text-2xl font-extrabold tracking-tight text-foreground">
               Create Tax Order
-            </Text>
-            <Text className="mt-0.5 text-[13px] text-mutedForeground">
+            </AppText>
+            <AppText className="mt-0.5 text-[13px] text-mutedForeground">
               Submit step-1 details to create your tax order draft.
-            </Text>
+            </AppText>
           </View>
         </View>
 
@@ -236,7 +244,7 @@ const CreateTaxOrderScreen = () => {
                   name="name"
                   render={({ field: { value, onChange } }) => (
                     <TextInput
-                      className="rounded-xl border border-border bg-muted px-4 py-3 text-sm text-mutedForeground"
+                      className="h-12 rounded-xl border border-border bg-muted px-4 text-sm text-mutedForeground"
                       value={value}
                       onChangeText={onChange}
                       editable={false}
@@ -256,7 +264,7 @@ const CreateTaxOrderScreen = () => {
                   name="email"
                   render={({ field: { value, onChange } }) => (
                     <TextInput
-                      className="rounded-xl border border-border bg-muted px-4 py-3 text-sm text-mutedForeground"
+                      className="h-12 rounded-xl border border-border bg-muted px-4 text-sm text-mutedForeground"
                       value={value}
                       onChangeText={onChange}
                       editable={false}
@@ -278,7 +286,7 @@ const CreateTaxOrderScreen = () => {
                   name="mobile"
                   render={({ field: { value, onChange } }) => (
                     <TextInput
-                      className="rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground"
+                      className="h-12 rounded-xl border border-border bg-muted px-4 text-sm text-foreground"
                       value={value}
                       onChangeText={onChange}
                       placeholder="e.g. 01712345678"
@@ -337,25 +345,25 @@ const CreateTaxOrderScreen = () => {
 
           {/* Order Summary */}
           <View className="gap-3 rounded-3xl border border-border bg-card p-6">
-            <Text className="text-[18px] font-bold text-foreground">Order Summary</Text>
-            <Text className="-mt-1 text-[13px] text-mutedForeground">
+            <AppText className="text-[18px] font-bold text-foreground">Order Summary</AppText>
+            <AppText className="-mt-1 text-[13px] text-mutedForeground">
               Step 1 will create a draft order.
-            </Text>
+            </AppText>
 
             <View className="flex-row justify-between">
-              <Text className="text-[13px] text-mutedForeground">Income sources</Text>
-              <Text className="text-[13px] font-bold text-foreground">
+              <AppText className="text-[13px] text-mutedForeground">Income sources</AppText>
+              <AppText className="text-[13px] font-bold text-foreground">
                 {selectedIncomeSources.length} selected
-              </Text>
+              </AppText>
             </View>
 
             <View className="flex-row justify-between">
-              <Text className="text-[13px] text-mutedForeground">Tax year</Text>
-              <Text className="text-[13px] font-bold text-foreground">{selectedTaxYear}</Text>
+              <AppText className="text-[13px] text-mutedForeground">Tax year</AppText>
+              <AppText className="text-[13px] font-bold text-foreground">{selectedTaxYear}</AppText>
             </View>
 
             <TouchableOpacity
-              className={`mt-1 items-center rounded-2xl bg-primary py-4 ${
+              className={`mt-1 h-12 items-center justify-center rounded-2xl bg-primary ${
                 isCreatingOrder ? 'opacity-70' : ''
               }`}
               onPress={handleSubmit(onSubmit)}
@@ -364,7 +372,7 @@ const CreateTaxOrderScreen = () => {
               {isCreatingOrder ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text className="text-base font-bold text-primaryForeground">Next ✓</Text>
+                <AppText className="text-base font-bold text-primaryForeground">Next ✓</AppText>
               )}
             </TouchableOpacity>
           </View>

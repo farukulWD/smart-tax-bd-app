@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { EyeOff, Eye } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';
+import { CONTROL_HEIGHT, INPUT_CLASS } from '@/src/constants/ui';
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 import { z } from 'zod';
@@ -120,8 +121,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
     }
   };
 
-  const inputClass =
-    'h-14 w-full rounded-xl border border-border bg-card px-4 text-base text-foreground';
+  const inputClass = INPUT_CLASS;
 
   return (
     <KeyboardAvoidingView
@@ -225,7 +225,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             <Button
               onPress={form.handleSubmit(onSubmit)}
               disabled={isLoading || isFetchingUser}
-              className="mt-2 h-14 rounded-xl bg-primary">
+              className={`mt-2 ${CONTROL_HEIGHT} items-center justify-center rounded-xl bg-primary`}>
               {isLoading || isFetchingUser ? (
                 <ActivityIndicator color="#ffffff" />
               ) : (
@@ -233,17 +233,17 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               )}
             </Button>
           </View>
+          <View className="flex-row items-center justify-center pb-20 pt-6">
+            <Text className="text-sm text-mutedForeground">{t('auth.signUpLink')} </Text>
+            <TouchableOpacity
+              onPress={() => setScreen(SCREEN_NAME.SIGNUP)}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <Text className="text-sm font-bold text-primary">{t('auth.signUpLinkAction')}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Create Account */}
-        <View className="flex-row items-center justify-center pb-20 pt-6">
-          <Text className="text-sm text-mutedForeground">{t('auth.signUpLink')} </Text>
-          <TouchableOpacity
-            onPress={() => setScreen(SCREEN_NAME.SIGNUP)}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Text className="text-sm font-bold text-primary">{t('auth.signUpLinkAction')}</Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );

@@ -1,4 +1,5 @@
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { useTranslation } from 'react-i18next';
 
 type NoDataProps = {
@@ -18,16 +19,16 @@ const NoData: React.FC<NoDataProps> = ({ title, message, compact = false }) => {
       ].join(' ')}>
       {/* Icon */}
       <View className="h-10 w-10 items-center justify-center rounded-full bg-muted">
-        <Text className="text-[18px]">📭</Text>
+        <AppText className="text-[18px]">📭</AppText>
       </View>
 
       {/* Text */}
-      <Text className="mt-2 text-2xl font-semibold text-foreground">
+      <AppText className="mt-2 text-2xl font-semibold text-foreground">
         {title || t('common.noDataTitle')}
-      </Text>
-      <Text className="mt-1 text-center text-[12px] leading-4 text-mutedForeground">
+      </AppText>
+      <AppText className="mt-1 text-center text-[12px] leading-4 text-mutedForeground">
         {message || t('common.noDataMessage')}
-      </Text>
+      </AppText>
     </View>
   );
 };

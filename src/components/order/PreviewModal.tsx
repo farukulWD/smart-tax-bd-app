@@ -2,15 +2,8 @@
 
 import { PreviewFile } from '@/src/types/commonTypes';
 import { Download, FileText, X } from 'lucide-react-native';
-import {
-  ActivityIndicator,
-  Image,
-  Linking,
-  Modal,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Image, Linking, Modal, TouchableOpacity, View } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { useTranslation } from 'react-i18next';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -40,14 +33,14 @@ const PreviewModal = ({
         {/* Header */}
         <View className="flex-row items-center justify-between border-b border-border px-4 pb-3 pt-5">
           <View className="mr-3 flex-1">
-            <Text className="text-base font-bold text-foreground" numberOfLines={1}>
+            <AppText className="text-base font-bold text-foreground" numberOfLines={1}>
               {file.name || t('common.preview')}
-            </Text>
-            <Text className="mt-0.5 text-xs text-mutedForeground">
+            </AppText>
+            <AppText className="mt-0.5 text-xs text-mutedForeground">
               {file.type === 'image' && t('common.previewImage')}
               {file.type === 'pdf' && t('common.previewPdf')}
               {file.type === 'other' && t('common.previewOther')}
-            </Text>
+            </AppText>
           </View>
           <TouchableOpacity
             onPress={onClose}
@@ -63,23 +56,23 @@ const PreviewModal = ({
           ) : file.type === 'pdf' ? (
             <View className="items-center gap-4 p-6">
               <FileText size={56} color={colors.destructive} />
-              <Text className="text-center text-sm text-mutedForeground">
+              <AppText className="text-center text-sm text-mutedForeground">
                 {t('common.pdfNotSupported')}
-              </Text>
+              </AppText>
               <TouchableOpacity
                 onPress={() => Linking.openURL(file.url)}
-                className="rounded-xl bg-primary px-5 py-3">
-                <Text className="text-sm font-semibold text-white">
+                className="h-12 items-center justify-center rounded-xl bg-primary px-5">
+                <AppText className="text-sm font-semibold text-white">
                   {t('common.openPdfBrowser')}
-                </Text>
+                </AppText>
               </TouchableOpacity>
             </View>
           ) : (
             <View className="items-center gap-3 p-6">
               <FileText size={48} color={colors.mutedForeground} />
-              <Text className="text-center text-sm text-mutedForeground">
+              <AppText className="text-center text-sm text-mutedForeground">
                 {t('common.previewNotAvailable')}
-              </Text>
+              </AppText>
             </View>
           )}
         </View>
@@ -88,14 +81,16 @@ const PreviewModal = ({
         <View className="flex-row gap-3 px-4 pb-8 pt-2">
           <TouchableOpacity
             onPress={onClose}
-            className="flex-1 items-center rounded-xl border border-border py-3">
-            <Text className="text-sm font-semibold text-mutedForeground">{t('common.close')}</Text>
+            className="h-12 flex-1 items-center justify-center rounded-xl border border-border">
+            <AppText className="text-sm font-semibold text-mutedForeground">
+              {t('common.close')}
+            </AppText>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={onDownload}
             disabled={isDownloading}
             className={[
-              'flex-1 flex-row items-center justify-center gap-2 rounded-xl py-3',
+              'h-12 flex-1 flex-row items-center justify-center gap-2 rounded-xl',
               isDownloading ? 'bg-primary/50' : 'bg-primary',
             ].join(' ')}>
             {isDownloading ? (
@@ -103,9 +98,9 @@ const PreviewModal = ({
             ) : (
               <Download size={16} color="#fff" />
             )}
-            <Text className="text-sm font-semibold text-white">
+            <AppText className="text-sm font-semibold text-white">
               {isDownloading ? t('common.downloading') : t('common.download')}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

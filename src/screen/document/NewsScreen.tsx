@@ -1,11 +1,5 @@
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  ActivityIndicator,
-  RefreshControl,
-} from 'react-native';
+import { View, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import AppText from '@/src/components/common/AppText';
 import { useGetAllNewsQuery } from '@/src/services/publicApi';
 import { Newspaper, Calendar, AlertCircle, ChevronRight } from 'lucide-react-native';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
@@ -57,26 +51,32 @@ const NewsCard = ({
       <View className="flex-row items-stretch">
         {/* Left avatar */}
         <View className={`w-14 items-center justify-center ${accent.bg} flex-shrink-0`}>
-          <Text className={`text-base font-bold ${accent.text}`}>{getInitials(item.title)}</Text>
+          <AppText className={`text-base font-bold ${accent.text}`}>
+            {getInitials(item.title)}
+          </AppText>
         </View>
 
         {/* Content */}
         <View className="flex-1 px-3 py-3.5">
-          <Text className="mb-1 text-sm font-bold leading-5 text-cardForeground" numberOfLines={2}>
+          <AppText
+            className="mb-1 text-sm font-bold leading-5 text-cardForeground"
+            numberOfLines={2}>
             {item.title}
-          </Text>
-          <Text className="mb-2 text-xs leading-4 text-mutedForeground" numberOfLines={2}>
+          </AppText>
+          <AppText className="mb-2 text-xs leading-4 text-mutedForeground" numberOfLines={2}>
             {item.description}
-          </Text>
+          </AppText>
 
           {/* Footer meta */}
           <View className="flex-row items-center justify-between">
             <View className="flex-row items-center gap-1">
               <Calendar size={11} color="hsl(0, 0%, 60%)" />
-              <Text className="text-[11px] text-mutedForeground">{formatDate(item.createdAt)}</Text>
+              <AppText className="text-[11px] text-mutedForeground">
+                {formatDate(item.createdAt)}
+              </AppText>
             </View>
             <View className="flex-row items-center gap-0.5">
-              <Text className="text-[11px] font-semibold text-primary">Read more</Text>
+              <AppText className="text-[11px] font-semibold text-primary">Read more</AppText>
               <ChevronRight size={12} color="hsl(125, 70%, 33%)" />
             </View>
           </View>
@@ -93,10 +93,10 @@ const EmptyState = () => (
     <View className="mb-2 h-16 w-16 items-center justify-center rounded-full bg-muted">
       <Newspaper size={28} color="hsl(0, 0%, 60%)" />
     </View>
-    <Text className="text-center text-base font-bold text-foreground">No news yet</Text>
-    <Text className="text-center text-sm text-mutedForeground">
+    <AppText className="text-center text-base font-bold text-foreground">No news yet</AppText>
+    <AppText className="text-center text-sm text-mutedForeground">
       Check back later for updates and announcements.
-    </Text>
+    </AppText>
   </View>
 );
 
@@ -106,7 +106,7 @@ const NewsScreen = () => {
   const { data, isLoading, error, refetch, isFetching } = useGetAllNewsQuery();
   const news = (data?.data ?? []).filter((n) => n.isActive);
 
-  const openDetail = (item: typeof news[number]) => {
+  const openDetail = (item: (typeof news)[number]) => {
     navigate('NewsDetails', { newsId: item._id });
   };
 
@@ -116,19 +116,21 @@ const NewsScreen = () => {
       {isLoading ? (
         <View className="flex-1 items-center justify-center gap-3">
           <ActivityIndicator size="large" color="hsl(125, 70%, 33%)" />
-          <Text className="text-sm text-mutedForeground">Loading news…</Text>
+          <AppText className="text-sm text-mutedForeground">Loading news…</AppText>
         </View>
       ) : error ? (
         <View className="flex-1 items-center justify-center gap-4 px-8">
           <AlertCircle size={40} color="hsl(0, 83%, 49%)" />
-          <Text className="text-center text-base font-bold text-foreground">
+          <AppText className="text-center text-base font-bold text-foreground">
             Failed to load news
-          </Text>
-          <Text className="text-center text-sm text-mutedForeground">
+          </AppText>
+          <AppText className="text-center text-sm text-mutedForeground">
             Something went wrong. Please try again.
-          </Text>
-          <TouchableOpacity onPress={refetch} className="rounded-2xl bg-primary px-6 py-3">
-            <Text className="font-semibold text-primaryForeground">Retry</Text>
+          </AppText>
+          <TouchableOpacity
+            onPress={refetch}
+            className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+            <AppText className="font-semibold text-primaryForeground">Retry</AppText>
           </TouchableOpacity>
         </View>
       ) : (
