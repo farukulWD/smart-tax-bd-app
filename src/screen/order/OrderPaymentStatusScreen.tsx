@@ -54,7 +54,7 @@ const OrderPaymentStatusScreen = () => {
         </AppText>
         <TouchableOpacity
           onPress={() => navigation.navigate('CreateOrder')}
-          className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+          className="h-10 items-center justify-center rounded-2xl bg-primary px-6">
           <AppText className="font-semibold text-white">{t('payment.createOrder')}</AppText>
         </TouchableOpacity>
       </View>
@@ -82,7 +82,7 @@ const OrderPaymentStatusScreen = () => {
         </AppText>
         <TouchableOpacity
           onPress={() => refetch()}
-          className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+          className="h-10 items-center justify-center rounded-2xl bg-primary px-6">
           <AppText className="font-semibold text-white">{t('payment.retry')}</AppText>
         </TouchableOpacity>
       </View>
@@ -168,7 +168,7 @@ const OrderPaymentStatusScreen = () => {
                     <TouchableOpacity
                       onPress={() => setShowBkashModal(true)}
                       activeOpacity={0.8}
-                      className="h-12 flex-row items-center justify-center gap-2 rounded-2xl bg-primary">
+                      className="h-10 flex-row items-center justify-center gap-2 rounded-2xl bg-primary">
                       <CreditCard size={18} color="#fff" />
                       <AppText className="text-base font-bold text-white">
                         {t('payment.startPayment')}
@@ -179,7 +179,7 @@ const OrderPaymentStatusScreen = () => {
                     <TouchableOpacity
                       onPress={() => refetch()}
                       activeOpacity={0.8}
-                      className="h-12 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-muted">
+                      className="h-10 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-muted">
                       <LucideIcon name="RefreshCw" size={16} className="text-mutedForeground" />
                       <AppText className="text-sm font-semibold text-mutedForeground">
                         {t('payment.refreshStatus')}
@@ -220,7 +220,7 @@ const OrderPaymentStatusScreen = () => {
               <View className="flex-row gap-3">
                 <TouchableOpacity
                   onPress={() => setShowBkashModal(false)}
-                  className="h-12 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
+                  className="h-10 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
                   <AppText className="text-sm font-semibold text-mutedForeground">
                     {t('payment.cancel')}
                   </AppText>
@@ -228,7 +228,7 @@ const OrderPaymentStatusScreen = () => {
                 <TouchableOpacity
                   onPress={handlePlaceManualOrder}
                   disabled={isPlacingOrder}
-                  className="h-12 flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-primary">
+                  className="h-10 flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-primary">
                   {isPlacingOrder ? <ActivityIndicator size="small" color="#fff" /> : null}
                   <AppText className="text-sm font-bold text-white">{t('payment.ok')}</AppText>
                 </TouchableOpacity>

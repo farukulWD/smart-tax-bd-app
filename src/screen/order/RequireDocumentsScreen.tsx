@@ -375,7 +375,7 @@ const RequireDocumentsScreen = () => {
           onPress={handleSubmitStepTwo}
           disabled={isSubmittingStepTwo || isFilesLoading || !stepTwoReady}
           className={[
-            'mx-4 mt-3 h-12 flex-row items-center justify-center gap-2 rounded-2xl',
+            'mx-4 mt-3 h-10 flex-row items-center justify-center gap-2 rounded-2xl',
             isSubmittingStepTwo || isFilesLoading || !stepTwoReady ? 'bg-primary/50' : 'bg-primary',
           ].join(' ')}
           activeOpacity={0.8}>
@@ -389,7 +389,7 @@ const RequireDocumentsScreen = () => {
         <TouchableOpacity
           onPress={handleSkipUpload}
           disabled={isSkipping}
-          className="mx-4 mt-2 h-12 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card"
+          className="mx-4 mt-2 h-10 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-card"
           activeOpacity={0.7}>
           {isSkipping ? <ActivityIndicator size="small" color={colors.mutedForeground} /> : null}
           <AppText className="text-sm font-semibold text-mutedForeground">

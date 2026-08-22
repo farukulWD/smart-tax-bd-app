@@ -98,13 +98,13 @@ const UploadFileModal = ({ visible, isUploading, onClose, onUpload }: UploadFile
             onChangeText={setName}
             placeholder="e.g. TIN Certificate"
             placeholderTextColor="hsl(0, 0%, 60%)"
-            className="mb-4 h-12 rounded-xl border border-border bg-background px-4 text-sm text-foreground"
+            className="mb-4 h-10 rounded-xl border border-border bg-background px-4 text-sm text-foreground"
           />
 
           <AppText className="mb-1.5 text-sm font-semibold text-foreground">Type</AppText>
           <View className="relative mb-4">
             <Pressable
-              className="h-12 flex-row items-center justify-between rounded-xl border border-border bg-muted px-4"
+              className="h-10 flex-row items-center justify-between rounded-xl border border-border bg-muted px-4"
               onPress={() => setTypeOpen((p) => !p)}>
               <AppText
                 className={`text-sm ${selectedType ? 'text-foreground' : 'text-mutedForeground'}`}>
@@ -145,7 +145,7 @@ const UploadFileModal = ({ visible, isUploading, onClose, onUpload }: UploadFile
           <AppText className="mb-1.5 text-sm font-semibold text-foreground">File</AppText>
           <TouchableOpacity
             onPress={handlePickFile}
-            className="mb-5 h-12 flex-row items-center gap-3 rounded-xl border border-border bg-background px-4">
+            className="mb-5 h-10 flex-row items-center gap-3 rounded-xl border border-border bg-background px-4">
             <FileText size={18} color="hsl(0, 0%, 60%)" />
             <AppText
               className={`flex-1 text-sm ${
@@ -160,13 +160,13 @@ const UploadFileModal = ({ visible, isUploading, onClose, onUpload }: UploadFile
             <TouchableOpacity
               onPress={handleClose}
               disabled={isUploading}
-              className="h-12 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
+              className="h-10 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
               <AppText className="text-sm font-semibold text-foreground">Cancel</AppText>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSubmit}
               disabled={isUploading || !name.trim() || !selectedType || !selectedAsset}
-              className={`h-12 flex-1 items-center justify-center rounded-2xl ${
+              className={`h-10 flex-1 items-center justify-center rounded-2xl ${
                 isUploading || !name.trim() || !selectedType || !selectedAsset
                   ? 'bg-primary/50'
                   : 'bg-primary'

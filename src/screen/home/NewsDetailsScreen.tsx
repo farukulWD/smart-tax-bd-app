@@ -91,12 +91,12 @@ const NewsDetailsScreen = () => {
         <View className="mt-2 flex-row gap-3">
           <TouchableOpacity
             onPress={() => goBack()}
-            className="h-12 items-center justify-center rounded-2xl border border-border px-5">
+            className="h-10 items-center justify-center rounded-2xl border border-border px-5">
             <AppText className="text-sm font-semibold text-foreground">Go Back</AppText>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => refetch()}
-            className="h-12 flex-row items-center justify-center gap-2 rounded-2xl bg-primary px-5">
+            className="h-10 flex-row items-center justify-center gap-2 rounded-2xl bg-primary px-5">
             <RefreshCw size={14} color="#fff" />
             <AppText className="text-sm font-semibold text-primaryForeground">Retry</AppText>
           </TouchableOpacity>
@@ -123,7 +123,7 @@ const NewsDetailsScreen = () => {
         </AppText>
         <TouchableOpacity
           onPress={() => goBack()}
-          className="mt-2 h-12 items-center justify-center rounded-2xl bg-primary px-6">
+          className="mt-2 h-10 items-center justify-center rounded-2xl bg-primary px-6">
           <AppText className="font-semibold text-primaryForeground">Go Back</AppText>
         </TouchableOpacity>
       </View>
@@ -204,7 +204,7 @@ const NewsDetailsScreen = () => {
         <TouchableOpacity
           onPress={() => goBack()}
           activeOpacity={0.85}
-          className="mt-2 h-12 items-center justify-center rounded-2xl bg-primary">
+          className="mt-2 h-10 items-center justify-center rounded-2xl bg-primary">
           <AppText className="text-base font-bold text-primaryForeground">Go Back</AppText>
         </TouchableOpacity>
       </ScrollView>

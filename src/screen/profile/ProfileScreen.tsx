@@ -118,7 +118,7 @@ const ProfileScreen = () => {
             </AppText>
 
             <TouchableOpacity
-              className="mt-4 h-12 items-center justify-center rounded-2xl bg-primary"
+              className="mt-4 h-10 items-center justify-center rounded-2xl bg-primary"
               activeOpacity={0.85}
               onPress={() => navigate('Auth', { screen: 'SignIn', shouldGoBack: true })}>
               <AppText className="text-sm font-bold text-primaryForeground">
@@ -127,7 +127,7 @@ const ProfileScreen = () => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              className="mt-2.5 h-12 items-center justify-center rounded-2xl border border-border bg-muted"
+              className="mt-2.5 h-10 items-center justify-center rounded-2xl border border-border bg-muted"
               activeOpacity={0.8}
               onPress={() => navigate('Auth', { screen: 'SignUp' })}>
               <AppText className="text-sm font-semibold text-foreground">

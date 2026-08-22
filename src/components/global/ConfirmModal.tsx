@@ -67,13 +67,13 @@ const ConfirmModal = ({
             <TouchableOpacity
               onPress={onCancel}
               disabled={isLoading}
-              className="h-12 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
+              className="h-10 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
               <AppText className="text-sm font-semibold text-foreground">{cancelLabel}</AppText>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleConfirm}
               disabled={isLoading}
-              className={`h-12 flex-1 flex-row items-center justify-center gap-2 rounded-2xl ${
+              className={`h-10 flex-1 flex-row items-center justify-center gap-2 rounded-2xl ${
                 destructive
                   ? isLoading
                     ? 'bg-destructive/50'

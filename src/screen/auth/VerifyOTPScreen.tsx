@@ -153,7 +153,7 @@ const VerifyOTPScreen = ({
   const renderBox = (index: number) => (
     <View
       key={index}
-      className={`h-14 flex-1 items-center justify-center rounded-xl border-2 ${
+      className={`h-10 flex-1 items-center justify-center rounded-xl border-2 ${
         otp[index] ? 'border-primary bg-primary/5' : 'border-border bg-card'
       }`}>
       <TextInput

@@ -120,7 +120,7 @@ export const OrderDetailModal = ({
               if (id) onStartPayment(id);
             }}
             activeOpacity={0.8}
-            className="h-12 flex-row items-center justify-center gap-2 rounded-2xl bg-primary">
+            className="h-10 flex-row items-center justify-center gap-2 rounded-2xl bg-primary">
             <AppText className="text-base font-bold text-white">Start Payment</AppText>
           </TouchableOpacity>
         </View>

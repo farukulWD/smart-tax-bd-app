@@ -94,7 +94,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
         <TouchableOpacity
           onPress={onSelect}
           activeOpacity={0.8}
-          className={`m-4 h-12 items-center justify-center rounded-xl ${ctaBg}`}>
+          className={`m-4 h-10 items-center justify-center rounded-xl ${ctaBg}`}>
           <Text className={`text-base font-semibold ${ctaText}`}>{buttonText}</Text>
         </TouchableOpacity>
       </View>

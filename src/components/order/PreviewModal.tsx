@@ -61,7 +61,7 @@ const PreviewModal = ({
               </AppText>
               <TouchableOpacity
                 onPress={() => Linking.openURL(file.url)}
-                className="h-12 items-center justify-center rounded-xl bg-primary px-5">
+                className="h-10 items-center justify-center rounded-xl bg-primary px-5">
                 <AppText className="text-sm font-semibold text-white">
                   {t('common.openPdfBrowser')}
                 </AppText>
@@ -81,7 +81,7 @@ const PreviewModal = ({
         <View className="flex-row gap-3 px-4 pb-8 pt-2">
           <TouchableOpacity
             onPress={onClose}
-            className="h-12 flex-1 items-center justify-center rounded-xl border border-border">
+            className="h-10 flex-1 items-center justify-center rounded-xl border border-border">
             <AppText className="text-sm font-semibold text-mutedForeground">
               {t('common.close')}
             </AppText>
@@ -90,7 +90,7 @@ const PreviewModal = ({
             onPress={onDownload}
             disabled={isDownloading}
             className={[
-              'h-12 flex-1 flex-row items-center justify-center gap-2 rounded-xl',
+              'h-10 flex-1 flex-row items-center justify-center gap-2 rounded-xl',
               isDownloading ? 'bg-primary/50' : 'bg-primary',
             ].join(' ')}>
             {isDownloading ? (

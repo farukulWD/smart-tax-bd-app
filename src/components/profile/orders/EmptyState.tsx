@@ -29,7 +29,7 @@ export const EmptyState = ({
     {filter === 'all' && (
       <TouchableOpacity
         onPress={onCreateOrder}
-        className="mt-2 h-12 items-center justify-center rounded-2xl bg-primary px-6"
+        className="mt-2 h-10 items-center justify-center rounded-2xl bg-primary px-6"
         activeOpacity={0.85}>
         <AppText className="font-semibold text-primaryForeground">Create Order</AppText>
       </TouchableOpacity>

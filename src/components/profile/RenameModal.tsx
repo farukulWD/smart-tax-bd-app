@@ -43,20 +43,20 @@ const RenameModal = ({
             placeholder="File name"
             placeholderTextColor="hsl(0, 0%, 60%)"
             autoFocus
-            className="mb-5 h-12 rounded-xl border border-border bg-background px-4 text-sm text-foreground"
+            className="mb-5 h-10 rounded-xl border border-border bg-background px-4 text-sm text-foreground"
           />
 
           <View className="flex-row gap-3">
             <TouchableOpacity
               onPress={onClose}
               disabled={isUpdating}
-              className="h-12 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
+              className="h-10 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
               <AppText className="text-sm font-semibold text-foreground">Cancel</AppText>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => onSave(value.trim())}
               disabled={isUpdating || !value.trim() || value.trim() === currentName}
-              className={`h-12 flex-1 items-center justify-center rounded-2xl ${
+              className={`h-10 flex-1 items-center justify-center rounded-2xl ${
                 isUpdating || !value.trim() || value.trim() === currentName
                   ? 'bg-primary/50'
                   : 'bg-primary'

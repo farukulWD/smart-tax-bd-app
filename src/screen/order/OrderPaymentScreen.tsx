@@ -109,7 +109,7 @@ const ResultModal = ({
           <TouchableOpacity
             onPress={onGoToOrders}
             activeOpacity={0.85}
-            className={`h-12 w-full justify-center ${config.primaryBg} mb-3 items-center rounded-2xl`}>
+            className={`h-10 w-full justify-center ${config.primaryBg} mb-3 items-center rounded-2xl`}>
             <AppText className="text-base font-bold text-white">Go To Orders</AppText>
           </TouchableOpacity>
 
@@ -117,7 +117,7 @@ const ResultModal = ({
           <TouchableOpacity
             onPress={onViewPayments}
             activeOpacity={0.75}
-            className="h-12 w-full items-center justify-center rounded-2xl border border-border bg-muted">
+            className="h-10 w-full items-center justify-center rounded-2xl border border-border bg-muted">
             <AppText className="text-base font-semibold text-foreground">View Payments</AppText>
           </TouchableOpacity>
         </View>
@@ -168,7 +168,7 @@ const OrderPaymentScreen = () => {
           <AppText className="text-center text-sm text-destructive">No payment URL found.</AppText>
           <TouchableOpacity
             onPress={goHome}
-            className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+            className="h-10 items-center justify-center rounded-2xl bg-primary px-6">
             <AppText className="font-semibold text-white">Go to Home</AppText>
           </TouchableOpacity>
         </View>
@@ -214,7 +214,7 @@ const OrderPaymentScreen = () => {
               </AppText>
               <TouchableOpacity
                 onPress={goHome}
-                className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+                className="h-10 items-center justify-center rounded-2xl bg-primary px-6">
                 <AppText className="font-semibold text-white">Go to Home</AppText>
               </TouchableOpacity>
             </View>

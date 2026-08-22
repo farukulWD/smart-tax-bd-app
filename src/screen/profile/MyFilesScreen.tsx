@@ -157,7 +157,7 @@ const MyFilesScreen = () => {
             )}
             <TouchableOpacity
               onPress={() => refetch()}
-              className="h-12 items-center justify-center rounded-2xl bg-primary px-6">
+              className="h-10 items-center justify-center rounded-2xl bg-primary px-6">
               <AppText className="font-semibold text-primaryForeground">Retry</AppText>
             </TouchableOpacity>
           </View>
