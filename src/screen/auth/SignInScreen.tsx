@@ -29,6 +29,7 @@ import { navigateToStack, replace } from '@/src/utils/NavigationUtils';
 import { useTranslation } from 'react-i18next';
 import { BackButton } from '@/src/components/global/BackButton';
 import { normalizeMobile } from '@/src/utils/commonFunction';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
@@ -51,6 +52,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
   const route = useRoute<RouteProp<AppStackParamList, 'Auth'>>();
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
+  const { bottom, top } = useSafeAreaInsets();
 
   const [showPassword, setShowPassword] = useState(false);
   const [login, { isLoading }] = useLoginMutation();
@@ -127,15 +129,15 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className="flex-1 bg-background">
-      <View className="mx-4 mt-14">
+      <View className="absolute z-10 mx-4 mt-14">
         <BackButton onPress={() => navigation.goBack()} />
       </View>
 
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingTop: top + 50 }}
         keyboardShouldPersistTaps="handled">
-        <View className="flex-1 justify-start px-6">
+        <View style={{ marginBottom: bottom }} className="flex-1 justify-start px-6">
           {/* Logo + Heading */}
           <View className="items-center pb-10">
             <Image

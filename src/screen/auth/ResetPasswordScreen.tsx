@@ -23,6 +23,7 @@ import { useResetPasswordMutation } from '@/src/services/auth';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { toast } from '@/src/utils/ToastConfig';
 import { BackButton } from '@/src/components/global/BackButton';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const createResetPasswordSchema = (t: (key: string) => string) =>
   z
@@ -73,26 +74,26 @@ const ResetPasswordScreen = ({
   };
 
   const inputClass = INPUT_CLASS;
-
+  const { bottom, top } = useSafeAreaInsets();
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className="flex-1 bg-background">
-      <View className="mx-4 mt-14">
+      <View className="absolute z-10 mx-4 mt-14">
         <BackButton onPress={() => setScreen(SCREEN_NAME.SIGNIN)} />
       </View>
 
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingTop: top + 50 }}
         keyboardShouldPersistTaps="handled">
-        <View className="flex-1 justify-start px-6">
+        <View style={{ marginBottom: bottom + 100 }} className="flex-1 justify-start px-6">
           {/* Header */}
           <View className="items-center pb-10">
             <View className="h-24 w-24 items-center justify-center rounded-full bg-muted">
               <Lock size={32} color={colors.mutedForeground} />
             </View>
-            <Text className="mt-5 text-3xl font-bold text-foreground">
+            <Text className="mt-5 text-center text-3xl font-bold text-foreground">
               {t('auth.resetPasswordTitle')}
             </Text>
             <Text className="mt-2 text-center text-base text-mutedForeground">

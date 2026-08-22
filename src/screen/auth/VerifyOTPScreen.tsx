@@ -24,6 +24,7 @@ import {
   useForgotPasswordMutation,
 } from '@/src/services/auth';
 import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const RESEND_COOLDOWN = 240; // 4 minutes
 const OTP_LENGTH = 6;
@@ -181,6 +182,8 @@ const VerifyOTPScreen = ({
     </View>
   );
 
+  const { bottom } = useSafeAreaInsets();
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -199,7 +202,7 @@ const VerifyOTPScreen = ({
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled">
-        <View className="flex-1 justify-start px-6">
+        <View style={{ marginBottom: bottom }} className="flex-1 justify-start px-6">
           {/* Header */}
           <View className="items-center pb-10">
             <View className="h-24 w-24 items-center justify-center rounded-full bg-muted">

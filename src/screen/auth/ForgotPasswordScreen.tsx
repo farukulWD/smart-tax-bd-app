@@ -24,6 +24,7 @@ import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { toast } from '@/src/utils/ToastConfig';
 import { BackButton } from '@/src/components/global/BackButton';
 import { normalizeMobile } from '@/src/utils/commonFunction';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const createForgotPasswordSchema = (t: (key: string) => string) =>
   z.object({
@@ -67,7 +68,7 @@ const ForgotPasswordScreen = ({
       globalErrorHandler(error);
     }
   };
-
+  const { bottom } = useSafeAreaInsets();
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -80,7 +81,7 @@ const ForgotPasswordScreen = ({
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled">
-        <View className="flex-1 justify-start px-6">
+        <View style={{ marginBottom: bottom }} className="flex-1 justify-start px-6">
           {/* Header */}
           <View className="items-center pb-10">
             <View className="h-24 w-24 items-center justify-center rounded-full bg-muted">

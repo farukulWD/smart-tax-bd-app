@@ -15,13 +15,27 @@ type Args = {
 // password on the login screen would look like an expired session.
 const isAuthEndpoint = (url: string) => url.startsWith('/auth/') || url.startsWith('/users/verify');
 
-const refreshAccessToken = async (): Promise<string | null> => {
-  try {
-    const response = await refreshInstance.post('/auth/refresh-token');
-    return response?.data?.data?.accessToken ?? null;
-  } catch {
-    return null;
-  }
+// Queries run in parallel, so several of them can discover the same expired
+// token at once. Without this single-flight guard each one posts its own
+// refresh, and every response but the last is a wasted round trip whose token
+// is immediately overwritten.
+let inFlightRefresh: Promise<string | null> | null = null;
+
+const refreshAccessToken = (): Promise<string | null> => {
+  if (inFlightRefresh) return inFlightRefresh;
+
+  inFlightRefresh = (async () => {
+    try {
+      const response = await refreshInstance.post('/auth/refresh-token');
+      return response?.data?.data?.accessToken ?? null;
+    } catch {
+      return null;
+    } finally {
+      inFlightRefresh = null;
+    }
+  })();
+
+  return inFlightRefresh;
 };
 
 export const axiosBaseQuery =
@@ -47,6 +61,12 @@ export const axiosBaseQuery =
     const endSession = () => {
       // Clears token AND isLoggedIn so ProtectedScreen sends the user to sign-in
       // instead of leaving every screen stuck on a generic failure state.
+      //
+      // Dispatching it again once the session is already gone would reset the
+      // API cache a second time and make every still-mounted query refetch, so
+      // a stale 401 that lands late cannot restart the refresh/retry cycle.
+      const current = api.getState() as any;
+      if (!current?.auth?.isLoggedIn) return;
       api.dispatch(logout());
     };
 
