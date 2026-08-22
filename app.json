@@ -2,7 +2,7 @@
   "expo": {
     "name": "Smart Tax BD",
     "slug": "smart-tax-bd",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/app_logo.png",
     "scheme": "smart-tax-bd",

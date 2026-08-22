@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import AppText from '@/src/components/common/AppText';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -50,6 +51,7 @@ const RequireDocumentsScreen = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'RequireDocuments'>>();
   const navigation = useNavigation<any>();
   const { colors } = useThemeColors();
+  const { t } = useTranslation();
   const taxId = route.params?.taxId;
   const { top, bottom } = useSafeAreaInsets();
 
@@ -115,11 +117,11 @@ const RequireDocumentsScreen = () => {
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri, { dialogTitle: name || uniqueName });
       } else {
-        toast.success('Download complete');
+        toast.success(t('documents.downloadComplete'));
       }
     } catch (err: any) {
       console.log('err', JSON.stringify(err, null, 2));
-      toast.error(err?.message || 'Download failed');
+      toast.error(err?.message || t('documents.downloadFailed'));
     } finally {
       setIsDownloading(false);
     }
@@ -138,7 +140,7 @@ const RequireDocumentsScreen = () => {
       } as any);
 
       await uploadFile(formData).unwrap();
-      toast.success(`${doc} uploaded`);
+      toast.success(t('documents.uploaded', { doc }));
       try {
         await refetchMyFiles();
       } catch (_) {}
@@ -147,7 +149,7 @@ const RequireDocumentsScreen = () => {
       } catch (_) {}
     } catch (error: any) {
       console.log('upload error', JSON.stringify(error, null, 2));
-      toast.error(errorMessage(error, 'Upload failed'));
+      toast.error(errorMessage(error, t('documents.uploadFailed')));
     } finally {
       setIsLocalUploading(false);
       setActiveDoc('');
@@ -186,7 +188,7 @@ const RequireDocumentsScreen = () => {
 
       await uploadAsset(doc, asset.uri, asset.name, mimeType);
     } catch (error: any) {
-      toast.error(errorMessage(error, 'Document upload failed'));
+      toast.error(errorMessage(error, t('documents.documentUploadFailed')));
       resetUploadState();
     }
   };
@@ -195,7 +197,7 @@ const RequireDocumentsScreen = () => {
     try {
       const permission = await ImagePicker.requestCameraPermissionsAsync();
       if (!permission.granted) {
-        Alert.alert('Permission required', 'Camera access is needed to take a photo.');
+        Alert.alert(t('documents.permissionRequired'), t('documents.cameraPermissionMessage'));
         resetUploadState();
         return;
       }
@@ -221,7 +223,7 @@ const RequireDocumentsScreen = () => {
 
       await uploadAsset(doc, asset.uri, fileName, asset.mimeType || 'image/jpeg');
     } catch (error: any) {
-      toast.error(errorMessage(error, 'Camera upload failed'));
+      toast.error(errorMessage(error, t('documents.cameraUploadFailed')));
       resetUploadState();
     }
   };
@@ -243,13 +245,25 @@ const RequireDocumentsScreen = () => {
     setShowUploadOptions(true);
   };
 
+  // navigate() pushes a new screen in React Navigation 7, so a stale
+  // CreateTaxOrder entry lower in the stack has to be popped to explicitly —
+  // goBack() alone can land on whatever screen pushed this one.
+  const handleBackToCreateOrder = () => {
+    const hasCreateOrderScreen = navigation
+      .getState()
+      ?.routes?.some((r: { name: string }) => r.name === 'CreateTaxOrder');
+
+    if (hasCreateOrderScreen) navigation.popTo('CreateTaxOrder');
+    else navigation.goBack();
+  };
+
   const handleSkipUpload = async () => {
     if (!taxId) return;
     try {
       await skipUpload(taxId).unwrap();
       navigation.navigate('OrderPaymentStatus', { taxId });
     } catch (error: any) {
-      toast.error(errorMessage(error, 'Failed to skip upload'));
+      toast.error(errorMessage(error, t('documents.skipFailed')));
     }
   };
 
@@ -259,9 +273,7 @@ const RequireDocumentsScreen = () => {
     if (!stepTwoReady) {
       const missing = missingDocuments.join(', ');
       toast.error(
-        missing
-          ? `Upload required documents first: ${missing}`
-          : 'Upload all required documents first'
+        missing ? t('documents.uploadMissingFirst', { missing }) : t('documents.uploadAllFirst')
       );
       return;
     }
@@ -269,7 +281,7 @@ const RequireDocumentsScreen = () => {
     const documentIds = requiredDocuments.map((doc) => latestFileByType[doc]?._id).filter(Boolean);
 
     if (!documentIds.length) {
-      toast.error('No uploaded document IDs found');
+      toast.error(t('documents.noDocumentIds'));
       return;
     }
 
@@ -280,7 +292,7 @@ const RequireDocumentsScreen = () => {
         await refetchOrder();
       } catch (_) {}
     } catch (error: any) {
-      toast.error(errorMessage(error, 'Step 2 submission failed'));
+      toast.error(errorMessage(error, t('documents.submitFailed')));
     }
   };
 
@@ -291,30 +303,34 @@ const RequireDocumentsScreen = () => {
       <View style={{ paddingTop: top, paddingBottom: bottom }} className="flex-1 bg-background">
         <View className="m-4 mt-0">
           <AppText className="text-2xl font-bold tracking-tight text-foreground">
-            Step 2: Documents
+            {t('documents.stepTitle')}
           </AppText>
           <AppText className="text-sm text-mutedForeground">
-            Upload and submit the required tax documents.
+            {t('documents.stepDescription')}
           </AppText>
         </View>
-        <View className="flex-1 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+        <View className="mx-4 flex-1 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
           {/* Card */}
           {/* Card header */}
-          <View className="border-b border-border px-5 pb-3 pt-5">
-            <AppText className="text-base font-bold text-foreground">Required Documents</AppText>
+          <View className="border-b border-border p-4 pb-3">
+            <AppText className="text-base font-bold text-foreground">
+              {t('documents.cardTitle')}
+            </AppText>
           </View>
           <ScrollView
-            contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
+            contentContainerStyle={{
+              paddingVertical: 16,
+            }}
             showsVerticalScrollIndicator={false}>
             {/* Header */}
 
             {/* Document grid */}
-            <View className="flex-1 p-4">
+            <View className="mx-4 flex-1">
               {requiredDocuments.length === 0 ? (
                 <View className="items-center gap-2 py-10">
                   <ActivityIndicator color={colors.primary} />
                   <AppText className="text-sm text-mutedForeground">
-                    Loading required documents…
+                    {t('documents.loading')}
                   </AppText>
                 </View>
               ) : (
@@ -353,7 +369,7 @@ const RequireDocumentsScreen = () => {
                 <View className="mt-4 flex-row items-center gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3">
                   <AlertCircle size={15} color={colors.warning} />
                   <AppText className="flex-1 text-xs text-warning">
-                    Missing:{' '}
+                    {t('documents.missing')}
                     <AppText className="font-semibold">{missingDocuments.join(', ')}</AppText>
                   </AppText>
                 </View>
@@ -363,7 +379,7 @@ const RequireDocumentsScreen = () => {
                 <View className="mt-4 flex-row items-center gap-2 rounded-xl border border-success/30 bg-success/10 px-4 py-3">
                   <CheckCircle2 size={15} color={colors.success} />
                   <AppText className="text-xs font-medium text-success">
-                    All documents uploaded — ready to proceed!
+                    {t('documents.allUploaded')}
                   </AppText>
                 </View>
               )}
@@ -383,7 +399,7 @@ const RequireDocumentsScreen = () => {
             <ActivityIndicator size="small" color="#fff" />
           )}
           <AppText className="text-base font-bold text-white">
-            {isSubmittingStepTwo ? 'Submitting…' : 'Go To Payment'}
+            {isSubmittingStepTwo ? t('documents.submitting') : t('documents.goToPayment')}
           </AppText>
         </TouchableOpacity>
         <TouchableOpacity
@@ -393,15 +409,17 @@ const RequireDocumentsScreen = () => {
           activeOpacity={0.7}>
           {isSkipping ? <ActivityIndicator size="small" color={colors.mutedForeground} /> : null}
           <AppText className="text-sm font-semibold text-mutedForeground">
-            {isSkipping ? 'Skipping…' : 'Upload File Later'}
+            {isSkipping ? t('documents.skipping') : t('documents.uploadLater')}
           </AppText>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={handleBackToCreateOrder}
           activeOpacity={0.7}
           className="mx-4 flex-row items-center justify-center gap-2 py-3">
           <ArrowLeft size={15} color={colors.primary} />
-          <AppText className="font-semibold text-primary">Back to Create Tax Order</AppText>
+          <AppText className="font-semibold text-primary">
+            {t('documents.backToCreateOrder')}
+          </AppText>
         </TouchableOpacity>
 
         {/* Upload option modal */}

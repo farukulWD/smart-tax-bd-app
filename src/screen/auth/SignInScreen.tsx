@@ -139,7 +139,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
         keyboardShouldPersistTaps="handled">
         <View style={{ marginBottom: bottom }} className="flex-1 justify-start px-6">
           {/* Logo + Heading */}
-          <View className="items-center pb-10">
+          <View className="items-center pb-4">
             <Image
               resizeMode="contain"
               className="h-24 w-24"
@@ -213,15 +213,15 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               )}
             />
 
-            {/* Forgot Password */}
-            <TouchableOpacity
-              onPress={() => setScreen(SCREEN_NAME.FORGOT_PASSWORD)}
-              className="self-end"
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <Text className="text-sm font-semibold text-primary">
-                {t('auth.forgotPasswordLink')}
-              </Text>
-            </TouchableOpacity>
+            {/* Create Account */}
+            <View className="flex-row items-center justify-center">
+              <Text className="text-sm text-mutedForeground">{t('auth.signUpLink')} </Text>
+              <TouchableOpacity
+                onPress={() => setScreen(SCREEN_NAME.SIGNUP)}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                <Text className="text-sm font-bold text-primary">{t('auth.signUpLinkAction')}</Text>
+              </TouchableOpacity>
+            </View>
 
             {/* Login Button */}
             <Button
@@ -236,11 +236,12 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             </Button>
           </View>
           <View className="flex-row items-center justify-center pb-20 pt-6">
-            <Text className="text-sm text-mutedForeground">{t('auth.signUpLink')} </Text>
             <TouchableOpacity
-              onPress={() => setScreen(SCREEN_NAME.SIGNUP)}
+              onPress={() => setScreen(SCREEN_NAME.FORGOT_PASSWORD)}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <Text className="text-sm font-bold text-primary">{t('auth.signUpLinkAction')}</Text>
+              <Text className="text-sm font-semibold text-primary">
+                {t('auth.forgotPasswordLink')}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LucideIcon from '@/src/components/common/LucideIcon';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 import { BackButton } from '@/src/components/global/BackButton';
+import { getStatusConfig } from '@/src/components/profile/orders/statusConfig';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -20,11 +21,24 @@ const formatBDT = (amount: number) =>
 
 // ─── sub-components ──────────────────────────────────────────────────────────
 
-const InfoRow = ({ label, value }: { label: string; value: string }) => (
+const InfoRow = ({
+  label,
+  value,
+  pillBg = 'bg-muted',
+  pillText = 'text-foreground',
+  icon,
+}: {
+  label: string;
+  value: string;
+  pillBg?: string;
+  pillText?: string;
+  icon?: React.ReactNode;
+}) => (
   <View className="flex-row items-center justify-between border-b border-border py-3">
     <AppText className="text-sm text-mutedForeground">{label}</AppText>
-    <View className="rounded-lg bg-muted px-3 py-1">
-      <AppText className="text-sm font-semibold text-foreground">{value}</AppText>
+    <View className={`flex-row items-center gap-1.5 rounded-lg px-3 py-1 ${pillBg}`}>
+      {icon}
+      <AppText className={`text-sm font-semibold ${pillText}`}>{value}</AppText>
     </View>
   </View>
 );
@@ -93,6 +107,7 @@ const OrderPaymentStatusScreen = () => {
 
   const order = data.data.tax_order;
   const isPaid = Number(order.fee_amount || 0) <= 0 || order.status === 'order_placed';
+  const statusConfig = getStatusConfig(order.status, colors, t);
 
   const handlePlaceManualOrder = async () => {
     try {
@@ -139,7 +154,13 @@ const OrderPaymentStatusScreen = () => {
 
             <View className="px-4 pb-4 pt-2">
               {/* Info rows */}
-              <InfoRow label={t('payment.orderStatus')} value={order.status} />
+              <InfoRow
+                label={t('payment.orderStatus')}
+                value={statusConfig.label}
+                pillBg={statusConfig.pillBg}
+                pillText={statusConfig.pillText}
+                icon={statusConfig.icon}
+              />
               <InfoRow label={t('payment.currentStep')} value={String(order.current_step)} />
               <InfoRow label={t('payment.fee')} value={formatBDT(Number(order.fee_amount || 0))} />
 
@@ -190,7 +211,7 @@ const OrderPaymentStatusScreen = () => {
 
                 {/* Back to Step 2 */}
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('RequireDocuments', { taxId })}
+                  onPress={() => navigation.popTo('RequireDocuments', { taxId })}
                   activeOpacity={0.7}
                   className="flex-row items-center justify-center gap-2 py-3">
                   <ArrowLeft size={15} color={colors.primary} />

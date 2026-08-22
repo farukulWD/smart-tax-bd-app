@@ -6,10 +6,12 @@ import { useThemeColors } from '@/src/theme/useThemeColors';
 import { getStatusConfig } from './statusConfig';
 import { formatDate, formatAmount, shortenId } from './utils';
 import { StepDots } from './StepDots';
+import { useTranslation } from 'react-i18next';
 
 export const OrderCard = ({ item, onPress }: { item: IOrder; onPress: () => void }) => {
   const { colors } = useThemeColors();
-  const cfg = getStatusConfig(item.status, colors);
+  const { t } = useTranslation();
+  const cfg = getStatusConfig(item.status, colors, t);
   return (
     <TouchableOpacity
       onPress={onPress}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { FileText, Clock, CheckCircle2, CircleDot } from 'lucide-react-native';
+import type { TFunction } from 'i18next';
 import type { lightColors } from '@/src/theme/colors';
 
 type ThemeColors = typeof lightColors;
@@ -13,10 +14,13 @@ export type StatusConfig = {
   icon: React.ReactNode;
 };
 
-export const getStatusConfig = (status: string, colors: ThemeColors): StatusConfig => {
-  const map: Record<string, StatusConfig> = {
+type StatusStyle = Omit<StatusConfig, 'label'>;
+
+// Statuses only carry colours and icons here; the visible text comes from the
+// `orderStatuses` translation block so both languages stay in sync.
+const getStatusStyle = (status: string, colors: ThemeColors): StatusStyle => {
+  const map: Record<string, StatusStyle> = {
     draft: {
-      label: 'Draft',
       pillBg: 'bg-muted',
       pillText: 'text-mutedForeground',
       borderAccent: 'border-l-border',
@@ -24,7 +28,6 @@ export const getStatusConfig = (status: string, colors: ThemeColors): StatusConf
       icon: <FileText size={14} color={colors.mutedForeground} />,
     },
     documents_uploaded: {
-      label: 'Docs Uploaded',
       pillBg: 'bg-success/15',
       pillText: 'text-success',
       borderAccent: 'border-l-success',
@@ -32,7 +35,6 @@ export const getStatusConfig = (status: string, colors: ThemeColors): StatusConf
       icon: <CheckCircle2 size={14} color={colors.success} />,
     },
     order_placed: {
-      label: 'Order Placed',
       pillBg: 'bg-success/15',
       pillText: 'text-success',
       borderAccent: 'border-l-success',
@@ -40,7 +42,6 @@ export const getStatusConfig = (status: string, colors: ThemeColors): StatusConf
       icon: <CheckCircle2 size={14} color={colors.success} />,
     },
     payment_pending: {
-      label: 'Pending Payment',
       pillBg: 'bg-warning/15',
       pillText: 'text-warning',
       borderAccent: 'border-l-warning',
@@ -51,10 +52,6 @@ export const getStatusConfig = (status: string, colors: ThemeColors): StatusConf
 
   return (
     map[status] ?? {
-      label: status
-        .split('_')
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(' '),
       pillBg: 'bg-muted',
       pillText: 'text-mutedForeground',
       borderAccent: 'border-l-border',
@@ -63,3 +60,25 @@ export const getStatusConfig = (status: string, colors: ThemeColors): StatusConf
     }
   );
 };
+
+// Unknown statuses from the API fall back to a readable "Snake Case" label.
+const humanize = (status: string) =>
+  status
+    .split('_')
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+
+export const getStatusLabel = (status: string | undefined | null, t: TFunction): string => {
+  if (!status) return t('orderStatuses.unknown');
+  return t(`orderStatuses.${status}`, { defaultValue: humanize(status) });
+};
+
+export const getStatusConfig = (
+  status: string,
+  colors: ThemeColors,
+  t: TFunction
+): StatusConfig => ({
+  label: getStatusLabel(status, t),
+  ...getStatusStyle(status, colors),
+});
