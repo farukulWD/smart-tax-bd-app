@@ -232,6 +232,9 @@ const SignUpScreen = ({
                         onBlur={field.onBlur}
                         secureTextEntry={!showPassword}
                         autoCapitalize="none"
+                        autoComplete="off"
+                        textContentType="none"
+                        importantForAutofill="no"
                         returnKeyType="next"
                         submitBehavior="submit"
                         onSubmitEditing={() => confirmPasswordRef.current?.focus()}
@@ -272,6 +275,9 @@ const SignUpScreen = ({
                         onBlur={field.onBlur}
                         secureTextEntry={!showConfirmPassword}
                         autoCapitalize="none"
+                        autoComplete="off"
+                        textContentType="none"
+                        importantForAutofill="no"
                         returnKeyType="done"
                         onSubmitEditing={form.handleSubmit(onSubmit)}
                       />

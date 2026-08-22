@@ -227,7 +227,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             <Button
               onPress={form.handleSubmit(onSubmit)}
               disabled={isLoading || isFetchingUser}
-              className={`mt-2 ${CONTROL_HEIGHT} items-center justify-center rounded-xl bg-primary`}>
+              className={` ${CONTROL_HEIGHT} items-center justify-center rounded-xl bg-primary`}>
               {isLoading || isFetchingUser ? (
                 <ActivityIndicator color="#ffffff" />
               ) : (

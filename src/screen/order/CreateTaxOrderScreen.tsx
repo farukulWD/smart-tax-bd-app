@@ -110,7 +110,7 @@ const CheckboxItem = ({
   return (
     <Pressable
       onPress={onPress}
-      className={`h-12 flex-row items-center gap-3 rounded-xl border px-4 ${
+      className={`h-10 flex-row items-center gap-3 rounded-xl border px-4 ${
         checked ? 'border-success bg-success/10' : 'border-border bg-muted'
       }`}
       android_ripple={{ color: colors.muted }}>
@@ -244,7 +244,7 @@ const CreateTaxOrderScreen = () => {
                   name="name"
                   render={({ field: { value, onChange } }) => (
                     <TextInput
-                      className="h-12 rounded-xl border border-border bg-muted px-4 text-sm text-mutedForeground"
+                      className="h-10 rounded-xl border border-border bg-muted px-4 text-sm text-mutedForeground"
                       value={value}
                       onChangeText={onChange}
                       editable={false}
@@ -264,7 +264,7 @@ const CreateTaxOrderScreen = () => {
                   name="email"
                   render={({ field: { value, onChange } }) => (
                     <TextInput
-                      className="h-12 rounded-xl border border-border bg-muted px-4 text-sm text-mutedForeground"
+                      className="h-10 rounded-xl border border-border bg-muted px-4 text-sm text-mutedForeground"
                       value={value}
                       onChangeText={onChange}
                       editable={false}
@@ -286,7 +286,7 @@ const CreateTaxOrderScreen = () => {
                   name="mobile"
                   render={({ field: { value, onChange } }) => (
                     <TextInput
-                      className="h-12 rounded-xl border border-border bg-muted px-4 text-sm text-foreground"
+                      className="h-10 rounded-xl border border-border bg-muted px-4 text-sm text-foreground"
                       value={value}
                       onChangeText={onChange}
                       placeholder="e.g. 01712345678"
@@ -363,7 +363,7 @@ const CreateTaxOrderScreen = () => {
             </View>
 
             <TouchableOpacity
-              className={`mt-1 h-12 items-center justify-center rounded-2xl bg-primary ${
+              className={`mt-1 h-10 items-center justify-center rounded-2xl bg-primary ${
                 isCreatingOrder ? 'opacity-70' : ''
               }`}
               onPress={handleSubmit(onSubmit)}

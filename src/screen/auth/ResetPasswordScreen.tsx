@@ -120,6 +120,9 @@ const ResetPasswordScreen = ({
                         onBlur={field.onBlur}
                         secureTextEntry={!showPassword}
                         autoCapitalize="none"
+                        autoComplete="off"
+                        textContentType="none"
+                        importantForAutofill="no"
                       />
                       <TouchableOpacity
                         onPress={() => setShowPassword((p) => !p)}
@@ -155,6 +158,9 @@ const ResetPasswordScreen = ({
                         onBlur={field.onBlur}
                         secureTextEntry={!showConfirmPassword}
                         autoCapitalize="none"
+                        autoComplete="off"
+                        textContentType="none"
+                        importantForAutofill="no"
                       />
                       <TouchableOpacity
                         onPress={() => setShowConfirmPassword((p) => !p)}
