@@ -16,6 +16,7 @@ import {
 import { rootReducer } from './rootReducer';
 import { baseApi } from '../services/baseApi';
 import { logout } from './slices/authSlice';
+import { cancelInFlightRefresh } from '../services/axios/axiosBaseQuery';
 
 const persistConfig = {
   key: 'root',
@@ -33,6 +34,11 @@ const resetApiOnLogout: Middleware = (storeAPI) => (next) => (action) => {
   const result = next(action);
   if ((action as { type: string }).type === logout.type) {
     storeAPI.dispatch(baseApi.util.resetApiState());
+    cancelInFlightRefresh();
+    // redux-persist only writes on its own throttle, so the previous user's
+    // token and profile can still be sitting in AsyncStorage if the app is
+    // killed right after signing out. flush() writes the cleared state now.
+    persistor?.flush();
   }
   return result;
 };

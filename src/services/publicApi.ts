@@ -4,7 +4,7 @@ import {
   GetAllTaxTypesResponse,
   GetSingleNewsResponse,
 } from '../types/publicTypes';
-import { baseApi } from './baseApi';
+import { baseApi, LONG_CACHE_SECONDS } from './baseApi';
 
 const publicApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -16,9 +16,11 @@ const publicApi = baseApi.injectEndpoints({
     }),
     getAllTaxTypes: build.query<GetAllTaxTypesResponse, void>({
       query: () => ({ url: '/tax-types/get-all-tax-types' }),
+      keepUnusedDataFor: LONG_CACHE_SECONDS,
     }),
     getAllFaqs: build.query<GetAllFaqsResponse, void>({
       query: () => ({ url: '/faqs' }),
+      keepUnusedDataFor: LONG_CACHE_SECONDS,
     }),
   }),
   overrideExisting: true,

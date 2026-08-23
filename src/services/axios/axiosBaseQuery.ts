@@ -21,6 +21,12 @@ const isAuthEndpoint = (url: string) => url.startsWith('/auth/') || url.startsWi
 // is immediately overwritten.
 let inFlightRefresh: Promise<string | null> | null = null;
 
+// A refresh started just before logout would otherwise resolve afterwards and
+// hand a fresh token to the next request, so the guard is dropped on logout.
+export const cancelInFlightRefresh = () => {
+  inFlightRefresh = null;
+};
+
 const refreshAccessToken = (): Promise<string | null> => {
   if (inFlightRefresh) return inFlightRefresh;
 

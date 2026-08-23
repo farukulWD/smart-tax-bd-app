@@ -7,6 +7,7 @@ import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { useAppSelector } from '@/src/redux/hooks';
 import { logout } from '@/src/redux/slices/authSlice';
 import { store } from '@/src/redux/store';
+import { useLogoutMutation } from '@/src/services/auth';
 import { useGetMyOrdersQuery } from '@/src/services/orderApi';
 import { useGetMyPaymentsQuery } from '@/src/services/paymentApi';
 import { navigate } from '@/src/utils/NavigationUtils';
@@ -32,6 +33,7 @@ const ProfileScreen = () => {
   const { colorScheme, toggleColorScheme } = useThemeColors();
   const { isLoggedIn, user } = useAppSelector((state) => state.auth);
   const [activeConfirm, setActiveConfirm] = useState<'logout' | null>(null);
+  const [logoutRequest, { isLoading: isLoggingOut }] = useLogoutMutation();
 
   const { data: filesResponse } = useGetMyFilesQuery(undefined);
   const { data: orderResponse } = useGetMyOrdersQuery(undefined);
@@ -261,7 +263,18 @@ const ProfileScreen = () => {
         confirmLabel={t('profile.signOut')}
         cancelLabel={t('common.cancel')}
         destructive
-        onConfirm={() => {
+        isLoading={isLoggingOut}
+        onConfirm={async () => {
+          // Clears the httpOnly refresh-token cookie server side. Without it the
+          // device keeps a valid session that /auth/refresh-token would happily
+          // trade for a new access token after the local state was wiped.
+          // A failure here must not strand the user in a signed-in shell, so the
+          // local logout runs either way.
+          try {
+            await logoutRequest(undefined).unwrap();
+          } catch {
+            // ignore — offline or already-expired session
+          }
           store.dispatch(logout());
           setActiveConfirm(null);
         }}

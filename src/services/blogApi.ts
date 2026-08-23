@@ -1,5 +1,5 @@
 import { GetAllBlogsArgs, GetAllBlogsResponse, GetSingleBlogResponse } from '../types/blogTypes';
-import { baseApi } from './baseApi';
+import { baseApi, LONG_CACHE_SECONDS } from './baseApi';
 
 export const BLOG_PAGE_SIZE = 10;
 
@@ -21,10 +21,12 @@ const blogApi = baseApi.injectEndpoints({
       },
       forceRefetch: ({ currentArg, previousArg }) => currentArg?.page !== previousArg?.page,
       providesTags: ['blogs'],
+      keepUnusedDataFor: LONG_CACHE_SECONDS,
     }),
     getSingleBlog: build.query<GetSingleBlogResponse, string>({
       query: (slug) => ({ url: `/blogs/${slug}` }),
       providesTags: ['blogs'],
+      keepUnusedDataFor: LONG_CACHE_SECONDS,
     }),
   }),
   overrideExisting: true,

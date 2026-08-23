@@ -1,5 +1,4 @@
 import { TResponse } from '../types/commonTypes';
-import { TaxType } from '../types/publicTypes';
 import { baseApi } from './baseApi';
 
 export enum IncomeSource {
@@ -82,12 +81,6 @@ const orderApi = baseApi.injectEndpoints({
       }),
       providesTags: ['orders'],
     }),
-    getTaxTypes: builder.query<TResponse<TaxType[]>, undefined>({
-      query: () => ({
-        url: '/tax-types/get-all-tax-types',
-        method: 'GET',
-      }),
-    }),
     createTaxStepOne: builder.mutation<TResponse<ITaxStepOneResponse>, ICreateTaxStepOnePayload>({
       query: (data) => ({
         url: '/tax-orders/step-1',
@@ -152,7 +145,6 @@ const orderApi = baseApi.injectEndpoints({
 
 export const {
   useGetTaxOrderByIdQuery,
-  useGetTaxTypesQuery,
   useCreateTaxStepOneMutation,
   useUpdateTaxStepOneMutation,
   useUploadTaxStepTwoDocumentsMutation,
