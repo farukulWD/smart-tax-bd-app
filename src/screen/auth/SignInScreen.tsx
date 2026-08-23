@@ -39,7 +39,10 @@ const createSignInSchema = (t: (key: string) => string) =>
       .string()
       .trim()
       .regex(/^01[3-9]\d{8}$/, { message: t('auth.mobileInvalid') }),
-    password: z.string().min(6, { message: t('auth.passwordMin') }),
+    password: z
+      .string()
+      .trim()
+      .min(6, { message: t('auth.passwordMin') }),
   });
 
 export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>;
@@ -170,6 +173,9 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                       onBlur={field.onBlur}
                       keyboardType="number-pad"
                       autoCapitalize="none"
+                      autoComplete="tel"
+                      textContentType="telephoneNumber"
+                      importantForAutofill="yes"
                     />
                   </FormControl>
                   <FormMessage message={form.formState.errors.mobile?.message} />
@@ -195,6 +201,9 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
                         onBlur={field.onBlur}
                         secureTextEntry={!showPassword}
                         autoCapitalize="none"
+                        autoComplete="password"
+                        textContentType="password"
+                        importantForAutofill="yes"
                       />
                       <TouchableOpacity
                         onPress={() => setShowPassword((p) => !p)}

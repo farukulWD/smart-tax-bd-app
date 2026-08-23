@@ -44,6 +44,11 @@ const RenameModal = ({
             placeholderTextColor="hsl(0, 0%, 60%)"
             autoFocus
             className="mb-5 h-10 rounded-xl border border-border bg-background px-4 text-sm text-foreground"
+            autoComplete="off"
+            autoCorrect={false}
+            spellCheck={false}
+            textContentType="none"
+            importantForAutofill="no"
           />
 
           <View className="flex-row gap-3">

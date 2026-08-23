@@ -39,8 +39,11 @@ const createRegisterSchema = (t: (key: string) => string) =>
         .string()
         .trim()
         .regex(/^01[3-9]\d{8}$/, { message: t('auth.mobileInvalid') }),
-      password: z.string().min(6, { message: t('auth.passwordMin') }),
-      confirmPassword: z.string(),
+      password: z
+        .string()
+        .trim()
+        .min(6, { message: t('auth.passwordMin') }),
+      confirmPassword: z.string().trim(),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: t('auth.passwordsMismatch'),
@@ -84,17 +87,41 @@ const SignUpScreen = ({
     },
   });
 
+  // Whatever the fields hold, the request carries normalized values: names
+  // collapse their inner whitespace, mobile/email go through the same helpers
+  // the inputs use, and the password loses stray edge spaces (SignIn and
+  // ResetPassword trim too, so the three stay in sync).
+  const buildRegisterPayload = (data: RegisterFormValues) => {
+    const name = data.name.trim().replace(/\s+/g, ' ');
+    const mobile = normalizeMobile(data.mobile);
+    const email = normalizeEmail(data.email ?? '');
+    const password = data.password.trim();
+
+    // Send email only when filled — an empty string collides on the backend's
+    // unique email index once a second user registers without one.
+    return email ? { name, mobile, password, email } : { name, mobile, password };
+  };
+
   const onSubmit = async (data: RegisterFormValues) => {
+    const payload = buildRegisterPayload(data);
+
+    // Normalizing can change what the user typed, so the payload gets checked
+    // again before it leaves — a field that fell out of spec never reaches the API.
+    const check = registerSchema.safeParse({
+      ...payload,
+      email: payload.email ?? '',
+      confirmPassword: payload.password,
+    });
+    if (!check.success) {
+      toast.error(check.error.issues[0].message);
+      return;
+    }
+
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { confirmPassword, email, ...rest } = data;
-      // Send email only when filled — an empty string collides on the backend's
-      // unique email index once a second user registers without one.
-      const payload = email ? { ...rest, email } : rest;
       const res = await register(payload).unwrap();
       if (res) {
         toast.success(t('auth.otpSent'));
-        setAuthMobile(data.mobile || res?.data?.mobile || '');
+        setAuthMobile(payload.mobile || res?.data?.mobile || '');
         form.reset();
         setScreen(SCREEN_NAME.VERIFY_USER);
       }
@@ -201,8 +228,6 @@ const SignUpScreen = ({
                       onBlur={field.onBlur}
                       keyboardType="email-address"
                       autoCapitalize="none"
-                      autoCorrect={false}
-                      textContentType="emailAddress"
                       returnKeyType="next"
                       submitBehavior="submit"
                       onSubmitEditing={() => passwordRef.current?.focus()}
@@ -232,9 +257,6 @@ const SignUpScreen = ({
                         onBlur={field.onBlur}
                         secureTextEntry={!showPassword}
                         autoCapitalize="none"
-                        autoComplete="off"
-                        textContentType="none"
-                        importantForAutofill="no"
                         returnKeyType="next"
                         submitBehavior="submit"
                         onSubmitEditing={() => confirmPasswordRef.current?.focus()}
@@ -275,9 +297,6 @@ const SignUpScreen = ({
                         onBlur={field.onBlur}
                         secureTextEntry={!showConfirmPassword}
                         autoCapitalize="none"
-                        autoComplete="off"
-                        textContentType="none"
-                        importantForAutofill="no"
                         returnKeyType="done"
                         onSubmitEditing={form.handleSubmit(onSubmit)}
                       />

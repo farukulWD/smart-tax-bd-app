@@ -28,8 +28,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const createResetPasswordSchema = (t: (key: string) => string) =>
   z
     .object({
-      newPassword: z.string().min(6, { message: t('auth.passwordMin') }),
-      confirmPassword: z.string(),
+      newPassword: z
+        .string()
+        .trim()
+        .min(6, { message: t('auth.passwordMin') }),
+      confirmPassword: z.string().trim(),
     })
     .refine((data) => data.newPassword === data.confirmPassword, {
       message: t('auth.passwordsMismatch'),
@@ -120,9 +123,6 @@ const ResetPasswordScreen = ({
                         onBlur={field.onBlur}
                         secureTextEntry={!showPassword}
                         autoCapitalize="none"
-                        autoComplete="off"
-                        textContentType="none"
-                        importantForAutofill="no"
                       />
                       <TouchableOpacity
                         onPress={() => setShowPassword((p) => !p)}
@@ -158,9 +158,6 @@ const ResetPasswordScreen = ({
                         onBlur={field.onBlur}
                         secureTextEntry={!showConfirmPassword}
                         autoCapitalize="none"
-                        autoComplete="off"
-                        textContentType="none"
-                        importantForAutofill="no"
                       />
                       <TouchableOpacity
                         onPress={() => setShowConfirmPassword((p) => !p)}

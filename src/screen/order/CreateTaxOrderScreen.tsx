@@ -250,6 +250,11 @@ const CreateTaxOrderScreen = () => {
                       editable={false}
                       placeholder="Your full name"
                       placeholderClassName="text-mutedForeground"
+                      autoComplete="off"
+                      autoCorrect={false}
+                      spellCheck={false}
+                      textContentType="none"
+                      importantForAutofill="no"
                     />
                   )}
                 />
@@ -272,6 +277,11 @@ const CreateTaxOrderScreen = () => {
                       placeholderClassName="text-mutedForeground"
                       keyboardType="email-address"
                       autoCapitalize="none"
+                      autoComplete="off"
+                      autoCorrect={false}
+                      spellCheck={false}
+                      textContentType="none"
+                      importantForAutofill="no"
                     />
                   )}
                 />
@@ -292,6 +302,11 @@ const CreateTaxOrderScreen = () => {
                       placeholder="e.g. 01712345678"
                       placeholderClassName="text-mutedForeground"
                       keyboardType="phone-pad"
+                      autoComplete="off"
+                      autoCorrect={false}
+                      spellCheck={false}
+                      textContentType="none"
+                      importantForAutofill="no"
                     />
                   )}
                 />

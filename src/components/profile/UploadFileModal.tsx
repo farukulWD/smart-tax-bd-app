@@ -99,6 +99,11 @@ const UploadFileModal = ({ visible, isUploading, onClose, onUpload }: UploadFile
             placeholder="e.g. TIN Certificate"
             placeholderTextColor="hsl(0, 0%, 60%)"
             className="mb-4 h-10 rounded-xl border border-border bg-background px-4 text-sm text-foreground"
+            autoComplete="off"
+            autoCorrect={false}
+            spellCheck={false}
+            textContentType="none"
+            importantForAutofill="no"
           />
 
           <AppText className="mb-1.5 text-sm font-semibold text-foreground">Type</AppText>
