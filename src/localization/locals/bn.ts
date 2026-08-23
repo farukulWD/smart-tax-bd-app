@@ -79,6 +79,7 @@ export default {
     tapToUpload: 'আপলোড করতে ট্যাপ করুন',
     view: 'দেখুন',
     missing: 'মিসিং',
+    upload: 'আপলোড',
     preview: 'প্রিভিউ',
     previewImage: 'নিচে ছবির প্রিভিউ দেখুন',
     previewPdf: 'পিডিএফ ডকুমেন্ট',

@@ -77,6 +77,7 @@ export default {
     tapToUpload: 'Tap to upload',
     view: 'View',
     missing: 'Missing',
+    upload: 'Upload',
     preview: 'Preview',
     previewImage: 'Preview the image below',
     previewPdf: 'PDF document',

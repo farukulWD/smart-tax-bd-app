@@ -1,5 +1,5 @@
 import { isImageUrl, isPdfUrl } from '@/src/utils/commonFunction';
-import { AlertCircle, Eye, FileText, X } from 'lucide-react-native';
+import { AlertCircle, Eye, FileText, Upload, X } from 'lucide-react-native';
 import { ActivityIndicator, Image, TouchableOpacity, View } from 'react-native';
 import AppText from '@/src/components/common/AppText';
 import { useTranslation } from 'react-i18next';
@@ -92,10 +92,12 @@ const DocumentCard = ({
       </View>
 
       {/* Label */}
-      <AppText className="mb-0.5 text-sm font-semibold text-foreground" numberOfLines={1}>
+      <AppText
+        className="mb-0.5 text-center text-sm font-semibold text-foreground"
+        numberOfLines={1}>
         {doc}
       </AppText>
-      <AppText className="mb-2 text-xs text-mutedForeground">
+      <AppText className="mb-2 text-center text-xs text-mutedForeground">
         {uploaded ? t('common.tapToReplace') : t('common.tapToUpload')}
       </AppText>
 
@@ -116,9 +118,15 @@ const DocumentCard = ({
           <AppText className="text-xs font-semibold text-success">{t('common.view')}</AppText>
         </TouchableOpacity>
       ) : (
-        <View className="items-center rounded-full bg-warning/20 py-1.5">
-          <AppText className="text-xs font-semibold text-warning">{t('common.missing')}</AppText>
-        </View>
+        <TouchableOpacity
+          onPress={(e) => {
+            e.stopPropagation?.();
+            onPress();
+          }}
+          className="flex-row items-center justify-center gap-1 rounded-lg bg-warning/20 py-1.5">
+          <Upload size={14} color={colors.warning} />
+          <AppText className="text-xs font-semibold text-warning">{t('common.upload')}</AppText>
+        </TouchableOpacity>
       )}
 
       {/* Replace badge — hints the card can be tapped to swap the file */}
