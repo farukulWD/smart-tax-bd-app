@@ -10,7 +10,7 @@ export const StatCard = ({ stat }: { stat: ProfileStat }) => (
       {stat.icon}
     </View>
     <AppText className="text-lg font-bold text-foreground">{stat.value}</AppText>
-    <AppText className="text-[11px] text-mutedForeground">{stat.label}</AppText>
+    <AppText className="text-11 text-mutedForeground">{stat.label}</AppText>
   </View>
 );
 

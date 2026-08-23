@@ -156,11 +156,11 @@ const NotificationCard = React.memo(
             </AppText>
             {!item.isRead && <View className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" />}
           </View>
-          <AppText className="text-[13px] leading-5 text-mutedForeground" numberOfLines={3}>
+          <AppText className="text-13 leading-5 text-mutedForeground" numberOfLines={3}>
             {item.message}
           </AppText>
           <View className="flex-row items-center justify-between">
-            <AppText className="text-[11px] font-medium text-mutedForeground/70">
+            <AppText className="text-11 font-medium text-mutedForeground/70">
               {formatRelativeTime(item.createdAt)}
             </AppText>
             <TouchableOpacity onPress={onDelete} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
@@ -348,7 +348,7 @@ const NotificationScreen = () => {
               unreadCount > 0 ? (
                 <View className="mb-4 mt-4 flex-row items-center gap-3 rounded-2xl bg-muted px-4 py-3">
                   <Bell size={18} color="hsl(0, 0%, 60%)" />
-                  <AppText className="flex-1 text-[13px] text-mutedForeground">
+                  <AppText className="flex-1 text-13 text-mutedForeground">
                     You have {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
                   </AppText>
                 </View>

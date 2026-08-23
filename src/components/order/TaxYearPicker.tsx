@@ -14,7 +14,7 @@ const TaxYearPicker = ({ value, onChange }: { value: string; onChange: (v: strin
         className="h-10 flex-row items-center justify-between rounded-xl border border-border bg-muted px-4"
         onPress={() => setOpen((p) => !p)}>
         <Text className="text-sm text-foreground">{value}</Text>
-        <Text className="text-[11px] text-foreground">{open ? '▲' : '▼'}</Text>
+        <Text className="text-11 text-foreground">{open ? '▲' : '▼'}</Text>
       </Pressable>
 
       {open && (

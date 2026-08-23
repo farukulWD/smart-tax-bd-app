@@ -91,6 +91,7 @@ function Text({
       className={cn(textVariants({ variant }), textClass, className)}
       role={variant ? ROLE[variant] : undefined}
       aria-level={variant ? ARIA_LEVEL[variant] : undefined}
+      maxFontSizeMultiplier={1.2}
       {...androidTextFix}
       {...props}>
       {androidTextFix ? <>{children} </> : children}

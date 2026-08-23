@@ -5,7 +5,7 @@ import AppText from '@/src/components/common/AppText';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { CircleQuestionMark, FileText, Home, Newspaper, User } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { gGap } from '../utils/Sizes';
+import { scaleFont, scaleSpace } from '../utils/scale';
 import { cn } from '@/lib/utils';
 import { useThemeColors } from '../theme/useThemeColors';
 import { useTranslation } from 'react-i18next';
@@ -71,7 +71,7 @@ const TabIcon: React.FC<TabIconProps> = ({ routeName, isFocused }) => {
       <AppText
         className={cn('font-okra font-semibold')}
         style={{
-          fontSize: 10,
+          fontSize: scaleFont(10),
           marginTop: 2,
           color: labelColor,
         }}>
@@ -97,7 +97,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
       style={{
         flexDirection: 'row',
         paddingBottom: bottom,
-        paddingTop: gGap(5),
+        paddingTop: scaleSpace(5),
         borderTopWidth: 1,
         borderTopColor: colors.border,
       }}>

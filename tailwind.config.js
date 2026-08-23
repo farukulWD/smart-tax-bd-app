@@ -1,3 +1,14 @@
+const { FONT_SIZES, SPACING, varName } = require('./design-tokens');
+
+// Every size becomes a runtime CSS variable so it can scale per device (see
+// src/utils/scale.ts). The `${px}px` fallback matters: if a subtree ever
+// renders outside the `vars()` provider, an unresolved var drops the style
+// entirely — a missing color is survivable, a missing padding is not.
+const scaledVars = (prefix, table) =>
+  Object.fromEntries(
+    Object.entries(table).map(([key, px]) => [key, `var(--${varName(prefix, key)}, ${px}px)`])
+  );
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
@@ -13,6 +24,8 @@ module.exports = {
       fontFamily: {
         okra: ['Okra-Regular', 'Okra-Medium', 'Okra-ExtraBold', 'Okra-Bold', 'Okra-MediumLight'],
       },
+      fontSize: scaledVars('fs', FONT_SIZES),
+      spacing: scaledVars('sp', SPACING),
       colors: {
         background: 'rgb(var(--color-background) / <alpha-value>)',
         foreground: 'rgb(var(--color-foreground) / <alpha-value>)',

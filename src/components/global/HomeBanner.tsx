@@ -9,7 +9,7 @@ import {
   NativeSyntheticEvent,
 } from 'react-native';
 
-import { screenWidth } from '../../utils/Sizes';
+import { screenWidth } from '../../utils/scale';
 import { TSlide } from '@/src/types/productTypes';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 
@@ -80,7 +80,11 @@ const HomeBanner: React.FC<HomeBannerProps> = ({ containerStyle }) => {
 
     return (
       <View style={styles.page}>
-        <Image source={source} style={[styles.image, { backgroundColor: colors.background }]} resizeMode="cover" />
+        <Image
+          source={source}
+          style={[styles.image, { backgroundColor: colors.background }]}
+          resizeMode="cover"
+        />
       </View>
     );
   };

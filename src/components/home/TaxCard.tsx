@@ -20,14 +20,6 @@ const getInitials = (raw: string): string => {
 // Legacy values fall back to the title initials.
 const isIconUrl = (icon?: string) => !!icon && /^https?:\/\//.test(icon);
 
-const cardShadow = {
-  shadowColor: '#000',
-  shadowOpacity: 0.05,
-  shadowRadius: 8,
-  shadowOffset: { width: 0, height: 2 },
-  elevation: 2,
-};
-
 const TaxCard = ({ item }: { item: TaxTypeItem }) => {
   const { locale } = useLocale();
   const title = item.title[locale as keyof typeof item.title] || item.title.en;
@@ -37,9 +29,7 @@ const TaxCard = ({ item }: { item: TaxTypeItem }) => {
     <Pressable
       onPress={() => navigate('CreateTaxOrder', { taxType: item.value })}
       className="flex-1">
-      <View
-        className="min-h-[104px] items-center justify-center rounded-2xl border border-border bg-card p-2"
-        style={cardShadow}>
+      <View className="min-h-28 flex-1 items-center justify-center rounded-2xl border border-border bg-card p-2">
         <View className="mb-2 h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-secondary/10">
           {isIconUrl(item.icon) ? (
             <Image

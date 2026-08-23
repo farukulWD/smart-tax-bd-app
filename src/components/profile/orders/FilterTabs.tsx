@@ -41,7 +41,7 @@ export const FilterTabs = ({
               isActive ? 'bg-primaryForeground/20' : 'bg-background'
             }`}>
             <AppText
-              className={`text-[10px] font-bold ${
+              className={`text-10 font-bold ${
                 isActive ? 'text-primaryForeground' : 'text-mutedForeground'
               }`}>
               {counts[f.key]}

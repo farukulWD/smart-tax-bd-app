@@ -19,14 +19,14 @@ const NoData: React.FC<NoDataProps> = ({ title, message, compact = false }) => {
       ].join(' ')}>
       {/* Icon */}
       <View className="h-10 w-10 items-center justify-center rounded-full bg-muted">
-        <AppText className="text-[18px]">📭</AppText>
+        <AppText className="text-lg">📭</AppText>
       </View>
 
       {/* Text */}
       <AppText className="mt-2 text-2xl font-semibold text-foreground">
         {title || t('common.noDataTitle')}
       </AppText>
-      <AppText className="mt-1 text-center text-[12px] leading-4 text-mutedForeground">
+      <AppText className="mt-1 text-center text-xs leading-4 text-mutedForeground">
         {message || t('common.noDataMessage')}
       </AppText>
     </View>

@@ -8,6 +8,7 @@ import { StatusBar } from 'expo-status-bar';
 import Toast from 'react-native-toast-message';
 import { createToastConfig } from '../utils/ToastConfig';
 import useAppUpdate from '../hook/useAppUpdate';
+import { scaleVars } from '../utils/scale';
 
 const hslToRgbChannels = (color: string) => {
   const match = color.match(/^hsla?\((.+)\)$/i);
@@ -120,6 +121,7 @@ const ThemedApp = () => {
         'color-sidebarAccentForeground': hslToRgbChannels(colors.sidebarAccentForeground),
         'color-sidebarBorder': hslToRgbChannels(colors.sidebarBorder),
         'color-sidebarRing': hslToRgbChannels(colors.sidebarRing),
+        ...scaleVars,
       })}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} backgroundColor="transparent" />
       <Navigation />

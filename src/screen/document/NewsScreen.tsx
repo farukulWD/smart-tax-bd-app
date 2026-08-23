@@ -71,12 +71,12 @@ const NewsCard = ({
           <View className="flex-row items-center justify-between">
             <View className="flex-row items-center gap-1">
               <Calendar size={11} color="hsl(0, 0%, 60%)" />
-              <AppText className="text-[11px] text-mutedForeground">
+              <AppText className="text-11 text-mutedForeground">
                 {formatDate(item.createdAt)}
               </AppText>
             </View>
             <View className="flex-row items-center gap-0.5">
-              <AppText className="text-[11px] font-semibold text-primary">Read more</AppText>
+              <AppText className="text-11 font-semibold text-primary">Read more</AppText>
               <ChevronRight size={12} color="hsl(125, 70%, 33%)" />
             </View>
           </View>

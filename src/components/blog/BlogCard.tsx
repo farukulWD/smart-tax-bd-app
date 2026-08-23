@@ -28,9 +28,7 @@ const BlogCard = ({ item, onPress, compact = false }: BlogCardProps) => (
     <View className="px-3 py-3">
       <View className="flex-row">
         <View className="rounded-full bg-primary/15 px-2.5 py-1">
-          <AppText className="text-[11px] font-bold capitalize text-primary">
-            {item.category}
-          </AppText>
+          <AppText className="text-11 font-bold capitalize text-primary">{item.category}</AppText>
         </View>
       </View>
 
@@ -47,12 +45,12 @@ const BlogCard = ({ item, onPress, compact = false }: BlogCardProps) => (
       )}
 
       <View className="mt-3 flex-row items-center justify-between">
-        <AppText className="text-[11px] text-mutedForeground">
+        <AppText className="text-11 text-mutedForeground">
           {item.authorName} · {dayjs(item.publishedAt ?? item.createdAt).format('MMM DD, YYYY')}
         </AppText>
         <View className="flex-row items-center gap-1">
           <Eye size={12} color="hsl(0, 0%, 60%)" />
-          <AppText className="text-[11px] text-mutedForeground">{item.views}</AppText>
+          <AppText className="text-11 text-mutedForeground">{item.views}</AppText>
         </View>
       </View>
     </View>

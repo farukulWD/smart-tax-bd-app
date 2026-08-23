@@ -98,7 +98,7 @@ const UploadFileModal = ({ visible, isUploading, onClose, onUpload }: UploadFile
             onChangeText={setName}
             placeholder="e.g. TIN Certificate"
             placeholderTextColor="hsl(0, 0%, 60%)"
-            className="mb-4 h-10 rounded-xl border border-border bg-background px-4 text-sm text-foreground"
+            className="mb-4 h-12 rounded-xl border border-border bg-background px-4 text-sm text-foreground"
             autoComplete="off"
             autoCorrect={false}
             spellCheck={false}
@@ -117,7 +117,7 @@ const UploadFileModal = ({ visible, isUploading, onClose, onUpload }: UploadFile
                   ? DOCUMENT_TYPES.find((t) => t.value === selectedType)?.label
                   : 'Select type'}
               </AppText>
-              <AppText className="text-[11px] text-foreground">{typeOpen ? '▲' : '▼'}</AppText>
+              <AppText className="text-11 text-foreground">{typeOpen ? '▲' : '▼'}</AppText>
             </Pressable>
             {typeOpen && (
               <View className="z-50 mt-1 overflow-hidden rounded-xl border border-border bg-muted shadow-md">

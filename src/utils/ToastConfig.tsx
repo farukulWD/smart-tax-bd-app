@@ -3,6 +3,7 @@ import AppText from '@/src/components/common/AppText';
 import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react-native';
 import Toast, { BaseToast, ErrorToast, ToastConfig } from 'react-native-toast-message';
 import type { lightColors } from '@/src/theme/colors';
+import { scaleFont } from './scale';
 
 type ThemeColors = typeof lightColors;
 
@@ -107,11 +108,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   title: {
-    fontSize: 15,
+    fontSize: scaleFont(15),
     fontWeight: '700',
   },
   description: {
-    fontSize: 13,
+    fontSize: scaleFont(13),
     fontWeight: '500',
   },
 
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   customTitle: {
-    fontSize: 15,
+    fontSize: scaleFont(15),
     flex: 1,
   },
 });

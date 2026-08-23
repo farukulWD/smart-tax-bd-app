@@ -61,7 +61,7 @@ const BlogDetailsScreen = () => {
         <View className="px-4 pt-4">
           <View className="flex-row">
             <View className="rounded-full bg-primary/15 px-2.5 py-1">
-              <AppText className="text-[11px] font-bold capitalize text-primary">
+              <AppText className="text-11 font-bold capitalize text-primary">
                 {blog.category}
               </AppText>
             </View>
@@ -77,7 +77,7 @@ const BlogDetailsScreen = () => {
             </AppText>
             <View className="flex-row items-center gap-1">
               <Eye size={12} color="hsl(0, 0%, 60%)" />
-              <AppText className="text-[11px] text-mutedForeground">{blog.views}</AppText>
+              <AppText className="text-11 text-mutedForeground">{blog.views}</AppText>
             </View>
           </View>
 
@@ -89,7 +89,7 @@ const BlogDetailsScreen = () => {
             <View className="mt-4 flex-row flex-wrap gap-2">
               {blog.tags.map((tag) => (
                 <View key={tag} className="rounded-full bg-muted px-2.5 py-1">
-                  <AppText className="text-[11px] text-mutedForeground">#{tag}</AppText>
+                  <AppText className="text-11 text-mutedForeground">#{tag}</AppText>
                 </View>
               ))}
             </View>

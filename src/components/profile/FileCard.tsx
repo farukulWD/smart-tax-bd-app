@@ -69,13 +69,13 @@ const FileCard = ({
           </View>
 
           <View className="flex-1 gap-1">
-            <AppText className="text-[15px] font-bold text-cardForeground" numberOfLines={1}>
+            <AppText className="text-15 font-bold text-cardForeground" numberOfLines={1}>
               {item.name}
             </AppText>
 
             <View className="flex-row items-center gap-2">
               <View className={`rounded-full px-2 py-px ${fg.badgeBg}`}>
-                <AppText className={`text-[10px] font-bold ${fg.badgeText}`}>
+                <AppText className={`text-10 font-bold ${fg.badgeText}`}>
                   {fileType === 'image' ? 'IMG' : fileType === 'pdf' ? 'PDF' : ext}
                 </AppText>
               </View>

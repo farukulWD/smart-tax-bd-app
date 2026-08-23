@@ -84,7 +84,7 @@ const QUERY_TAX_TYPE_TO_INCOME_SOURCE: Record<string, IncomeSource> = {
 
 const SectionCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <View className="gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
-    <AppText className="text-[17px] font-bold text-foreground">{title}</AppText>
+    <AppText className="text-17 font-bold text-foreground">{title}</AppText>
     {children}
   </View>
 );
@@ -120,8 +120,7 @@ const CheckboxItem = ({
         }`}>
         {checked && <AppText className="text-xs font-bold text-white">✓</AppText>}
       </View>
-      <AppText
-        className={cn('flex-1 text-[13.5px]', checked ? 'text-success' : 'text-mutedForeground')}>
+      <AppText className={cn('flex-1 text-13', checked ? 'text-success' : 'text-mutedForeground')}>
         {label}
       </AppText>
     </Pressable>
@@ -217,12 +216,12 @@ const CreateTaxOrderScreen = () => {
 
           <View className="flex-1">
             <View className="mb-1.5 self-start rounded-full border border-success/30 bg-success/10 px-3 py-0.5">
-              <AppText className="text-[11px] font-bold text-success">TAX STEP 1</AppText>
+              <AppText className="text-11 font-bold text-success">TAX STEP 1</AppText>
             </View>
             <AppText className="text-2xl font-extrabold tracking-tight text-foreground">
               Create Tax Order
             </AppText>
-            <AppText className="mt-0.5 text-[13px] text-mutedForeground">
+            <AppText className="mt-0.5 text-13 text-mutedForeground">
               Submit step-1 details to create your tax order draft.
             </AppText>
           </View>
@@ -244,7 +243,7 @@ const CreateTaxOrderScreen = () => {
                   name="name"
                   render={({ field: { value, onChange } }) => (
                     <TextInput
-                      className="h-10 rounded-xl border border-border bg-muted px-4 text-sm text-mutedForeground"
+                      className="h-12 rounded-xl border border-border bg-muted px-4 text-sm text-mutedForeground"
                       value={value}
                       onChangeText={onChange}
                       editable={false}
@@ -269,7 +268,7 @@ const CreateTaxOrderScreen = () => {
                   name="email"
                   render={({ field: { value, onChange } }) => (
                     <TextInput
-                      className="h-10 rounded-xl border border-border bg-muted px-4 text-sm text-mutedForeground"
+                      className="h-12 rounded-xl border border-border bg-muted px-4 text-sm text-mutedForeground"
                       value={value}
                       onChangeText={onChange}
                       editable={false}
@@ -296,7 +295,7 @@ const CreateTaxOrderScreen = () => {
                   name="mobile"
                   render={({ field: { value, onChange } }) => (
                     <TextInput
-                      className="h-10 rounded-xl border border-border bg-muted px-4 text-sm text-foreground"
+                      className="h-12 rounded-xl border border-border bg-muted px-4 text-sm text-foreground"
                       value={value}
                       onChangeText={onChange}
                       placeholder="e.g. 01712345678"
@@ -360,21 +359,21 @@ const CreateTaxOrderScreen = () => {
 
           {/* Order Summary */}
           <View className="gap-3 rounded-3xl border border-border bg-card p-6">
-            <AppText className="text-[18px] font-bold text-foreground">Order Summary</AppText>
-            <AppText className="-mt-1 text-[13px] text-mutedForeground">
+            <AppText className="text-lg font-bold text-foreground">Order Summary</AppText>
+            <AppText className="-mt-1 text-13 text-mutedForeground">
               Step 1 will create a draft order.
             </AppText>
 
             <View className="flex-row justify-between">
-              <AppText className="text-[13px] text-mutedForeground">Income sources</AppText>
-              <AppText className="text-[13px] font-bold text-foreground">
+              <AppText className="text-13 text-mutedForeground">Income sources</AppText>
+              <AppText className="text-13 font-bold text-foreground">
                 {selectedIncomeSources.length} selected
               </AppText>
             </View>
 
             <View className="flex-row justify-between">
-              <AppText className="text-[13px] text-mutedForeground">Tax year</AppText>
-              <AppText className="text-[13px] font-bold text-foreground">{selectedTaxYear}</AppText>
+              <AppText className="text-13 text-mutedForeground">Tax year</AppText>
+              <AppText className="text-13 font-bold text-foreground">{selectedTaxYear}</AppText>
             </View>
 
             <TouchableOpacity
