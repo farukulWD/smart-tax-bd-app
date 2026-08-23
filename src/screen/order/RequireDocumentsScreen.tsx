@@ -301,7 +301,7 @@ const RequireDocumentsScreen = () => {
   return (
     <ProtectedScreen>
       <View style={{ paddingTop: top, paddingBottom: bottom }} className="flex-1 bg-background">
-        <View className="m-4 mt-0">
+        <View className="m-4 mt-2">
           <AppText className="text-2xl font-bold tracking-tight text-foreground">
             {t('documents.stepTitle')}
           </AppText>
