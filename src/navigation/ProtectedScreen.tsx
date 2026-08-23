@@ -8,9 +8,9 @@ type Props = {
 };
 
 export default function ProtectedScreen({ children }: Props) {
-  const { isLoggedIn } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
 
-  if (!isLoggedIn) {
+  if (!user?.accessToken) {
     return <AuthScreen initialScreen={SCREEN_NAME.SIGNIN} />;
   }
 

@@ -27,7 +27,6 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 // The cache must be cleared *after* the logout reducer runs. Clearing it first
-// wipes the cache while isLoggedIn is still true, so ProtectedScreen has not yet
 // swapped its children out and every still-subscribed query refetches at once —
 // each refetch 401s, dispatches logout again, and the cycle repeats forever.
 const resetApiOnLogout: Middleware = (storeAPI) => (next) => (action) => {

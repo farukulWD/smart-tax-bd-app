@@ -4,7 +4,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 type AuthState = {
   token: string | null;
   user: IUser | null;
-  isLoggedIn: boolean;
   theme: 'dark' | 'light';
   insets: {
     top: number;
@@ -17,7 +16,6 @@ type AuthState = {
 const initialState: AuthState = {
   token: null,
   user: null,
-  isLoggedIn: false,
   theme: 'light',
   insets: {
     top: 0,
@@ -34,7 +32,6 @@ const authSlice = createSlice({
     setCredentials: (state, action: PayloadAction<{ token: string; user: IUser }>) => {
       state.token = action.payload.token;
       state.user = action.payload.user;
-      state.isLoggedIn = true;
     },
 
     setUser: (state, action: PayloadAction<IUser>) => {
@@ -44,7 +41,6 @@ const authSlice = createSlice({
     logout: (state) => {
       state.token = null;
       state.user = null;
-      state.isLoggedIn = false;
     },
     setToken: (state, action) => {
       state.token = action.payload;

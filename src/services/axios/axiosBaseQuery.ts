@@ -45,9 +45,7 @@ const refreshAccessToken = (): Promise<string | null> => {
 };
 
 export const axiosBaseQuery =
-  (
-    { baseUrl }: { baseUrl: string } = { baseUrl: '' }
-  ): BaseQueryFn<Args, unknown, unknown> =>
+  ({ baseUrl }: { baseUrl: string } = { baseUrl: '' }): BaseQueryFn<Args, unknown, unknown> =>
   async ({ url, method = 'GET', data, params, headers }, api) => {
     const state = api.getState() as any;
     let accessToken: string | null = state?.auth?.token ?? null;
@@ -65,14 +63,13 @@ export const axiosBaseQuery =
       });
 
     const endSession = () => {
-      // Clears token AND isLoggedIn so ProtectedScreen sends the user to sign-in
       // instead of leaving every screen stuck on a generic failure state.
       //
       // Dispatching it again once the session is already gone would reset the
       // API cache a second time and make every still-mounted query refetch, so
       // a stale 401 that lands late cannot restart the refresh/retry cycle.
       const current = api.getState() as any;
-      if (!current?.auth?.isLoggedIn) return;
+      if (!current?.auth?.user?.accessToken) return;
       api.dispatch(logout());
     };
 
