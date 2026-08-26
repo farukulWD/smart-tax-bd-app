@@ -1,6 +1,12 @@
 import { TResponse } from '../types/commonTypes';
 import { baseApi } from './baseApi';
 
+/**
+ * Legacy income-source keys. Income sources are an admin-managed collection
+ * now, so this enum is no longer the full set — it is kept only for the
+ * tax-type deep-link preselection in CreateTaxOrderScreen. Anything carrying a
+ * source over the wire is typed `string[]`.
+ */
 export enum IncomeSource {
   GovtJob = 'Income from Govt.Job',
   PrivateJob = 'Income from Private Job',
@@ -32,7 +38,7 @@ export interface IOrder {
   are_you_get_notice_from_tax_office: boolean;
   income_from_partnership_firm: boolean;
   income_from_ldt_company: boolean;
-  source_of_income: IncomeSource[];
+  source_of_income: string[];
   tax_year: string;
   documents?: string[];
   tax_payable_amount: number;
@@ -51,7 +57,7 @@ export interface IOrder {
 export interface ICreateTaxStepOnePayload {
   personal_information: IPersonalInformation;
   tax_year: string;
-  source_of_income: IncomeSource[];
+  source_of_income: string[];
   income_from_ldt_company?: boolean;
   income_from_partnership_firm?: boolean;
   are_you_get_notice_from_tax_office?: boolean;

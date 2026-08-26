@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import AppText from '@/src/components/common/AppText';
 import { useForm, useWatch, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,6 +17,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { IncomeSource } from '@/src/services/orderApi';
 import { useGetUserInfoQuery } from '@/src/services/auth';
 import { useCreateTaxStepOneMutation } from '@/src/services/orderApi';
+import { useGetAllIncomeSourcesQuery } from '@/src/services/publicApi';
+import { readLocalized, toLocale } from '@/src/utils/localize';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { CURRENT_YEAR } from '@/src/utils/commonFunction';
 import { toast } from '@/src/utils/ToastConfig';
@@ -36,8 +39,11 @@ const formSchema = z.object({
     .string()
     .min(1, 'Mobile number is required')
     .regex(/^(\+8801|01)[3-9]\d{8}$/, 'Invalid mobile number format'),
+  // Plain strings, not z.nativeEnum: the acceptable values live in the
+  // admin-managed income source catalog, so a newly added one must not be a
+  // client-side validation error. The server checks them against the catalog.
   source_of_income: z
-    .array(z.nativeEnum(IncomeSource))
+    .array(z.string())
     .min(1, 'Please select at least one source of income'),
   tax_year: z.string().min(1, 'Tax year is required'),
 });
@@ -45,18 +51,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-
-const INCOME_SOURCES: { value: IncomeSource; label: string }[] = [
-  { value: IncomeSource.GovtJob, label: 'Income from Govt. Job' },
-  { value: IncomeSource.PrivateJob, label: 'Income from Private Job' },
-  { value: IncomeSource.Business, label: 'Income from Business' },
-  { value: IncomeSource.Rent, label: 'Income from Rent' },
-  { value: IncomeSource.Agriculture, label: 'Income from Agriculture' },
-  { value: IncomeSource.FinancialAsset, label: 'Income from Financial Asset' },
-  { value: IncomeSource.CapitalGain, label: 'Income from Capital Gain' },
-  { value: IncomeSource.OthersSource, label: 'Income from Other Source' },
-  { value: IncomeSource.ForignRemitance, label: 'Income from Foreign Remittance' },
-];
 
 const QUERY_TAX_TYPE_TO_INCOME_SOURCE: Record<string, IncomeSource> = {
   income_tax: IncomeSource.PrivateJob,
@@ -143,6 +137,12 @@ const CreateTaxOrderScreen = () => {
   const { data } = useGetUserInfoQuery();
   const profileData = data?.data;
   const [createTaxStepOne, { isLoading: isCreatingOrder }] = useCreateTaxStepOneMutation();
+
+  const { i18n } = useTranslation();
+  const locale = toLocale(i18n.language);
+  const { data: incomeSourcesResponse, isLoading: isIncomeSourcesLoading } =
+    useGetAllIncomeSourcesQuery();
+  const incomeSources = incomeSourcesResponse?.data ?? [];
 
   const {
     control,
@@ -334,23 +334,33 @@ const CreateTaxOrderScreen = () => {
               name="source_of_income"
               render={({ field: { value, onChange } }) => (
                 <View className="gap-2.5">
-                  {INCOME_SOURCES.map((source) => {
-                    const checked = value.includes(source.value);
-                    return (
-                      <CheckboxItem
-                        key={source.value}
-                        label={source.label}
-                        checked={checked}
-                        onPress={() => {
-                          if (checked) {
-                            onChange(value.filter((v) => v !== source.value));
-                          } else {
-                            onChange([...value, source.value]);
-                          }
-                        }}
-                      />
-                    );
-                  })}
+                  {isIncomeSourcesLoading ? (
+                    <AppText className="text-13 text-mutedForeground">
+                      Loading income sources...
+                    </AppText>
+                  ) : incomeSources.length === 0 ? (
+                    <AppText className="text-13 text-mutedForeground">
+                      No income sources available right now.
+                    </AppText>
+                  ) : (
+                    incomeSources.map((source) => {
+                      const checked = value.includes(source.value);
+                      return (
+                        <CheckboxItem
+                          key={source._id}
+                          label={readLocalized(source.title, locale) || source.value}
+                          checked={checked}
+                          onPress={() => {
+                            if (checked) {
+                              onChange(value.filter((v) => v !== source.value));
+                            } else {
+                              onChange([...value, source.value]);
+                            }
+                          }}
+                        />
+                      );
+                    })
+                  )}
                 </View>
               )}
             />

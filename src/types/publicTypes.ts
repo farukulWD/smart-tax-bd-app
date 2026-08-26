@@ -70,3 +70,20 @@ export type GetAllFaqsResponse = {
   message: string;
   data: FaqItemType[];
 };
+
+export type IncomeSourceItem = {
+  _id: string;
+  /** Stable key submitted with the order — not display copy, use `title`. */
+  value: string;
+  title: { en: string; bn: string };
+  order: number;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type GetAllIncomeSourcesResponse = {
+  success: boolean;
+  message: string;
+  data: IncomeSourceItem[];
+};
