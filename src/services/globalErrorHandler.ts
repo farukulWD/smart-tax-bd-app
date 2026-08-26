@@ -13,16 +13,6 @@ export interface TGenericErrorResponse {
   stack?: string | null;
 }
 
-export const globalErrorHandler = (error: unknown) => {
-  const typeError = error as { data: TGenericErrorResponse };
-
-  if (typeError?.data?.errorSources?.length > 0) {
-    toast.error(typeError.data?.errorSources[0]?.message);
-  } else {
-    toast.error('An unknown error occurred');
-  }
-};
-
 /**
  * Pulls a human-readable message out of an RTK Query / axiosBaseQuery error.
  * Returns '' when nothing useful is available so callers can fall back to their
@@ -38,4 +28,13 @@ export const getApiErrorMessage = (error: unknown): string => {
   return (
     data?.errorSources?.[0]?.message || data?.message || data?.error || err?.error || err?.message || ''
   );
+};
+
+export const globalErrorHandler = (error: unknown) => {
+  // Not every failure carries `errorSources`: rate-limit rejections and other
+  // middleware answer before the API's error handler shapes the body, and a
+  // dropped connection has no body at all. Reading only `errorSources` turned
+  // all of those into "An unknown error occurred", hiding messages the user
+  // needed to act on.
+  toast.error(getApiErrorMessage(error) || 'An unknown error occurred');
 };
