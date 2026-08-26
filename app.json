@@ -40,7 +40,8 @@
           "enableFileSharing": true
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "expo-secure-store"
     ],
     "experiments": {},
     "extra": {

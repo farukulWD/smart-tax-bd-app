@@ -2,10 +2,15 @@ import env from '@/env';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
+// Treat a token as expired slightly early: one that expires while the request
+// is in flight would otherwise come back as a 401 instead of being refreshed
+// up front.
+const EXPIRY_LEEWAY_SECONDS = 30;
+
 export const isTokenExpired = (token: string) => {
   const decodedToken = jwtDecode<{ exp: number }>(token);
   const currentTime = Date.now() / 1000;
-  return decodedToken?.exp < currentTime;
+  return decodedToken?.exp < currentTime + EXPIRY_LEEWAY_SECONDS;
 };
 
 export const instance = axios.create({

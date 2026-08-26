@@ -29,6 +29,7 @@ import { navigateToStack, replace } from '@/src/utils/NavigationUtils';
 import { useTranslation } from 'react-i18next';
 import { BackButton } from '@/src/components/global/BackButton';
 import { normalizeMobile } from '@/src/utils/commonFunction';
+import { saveRefreshToken } from '@/src/services/auth/refreshTokenStore';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
@@ -42,7 +43,7 @@ const createSignInSchema = (t: (key: string) => string) =>
     password: z
       .string()
       .trim()
-      .min(6, { message: t('auth.passwordMin') }),
+      .min(1, { message: t('auth.passwordRequired') }),
   });
 
 export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>;
@@ -108,6 +109,10 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
           user: res.data.user,
         })
       );
+
+      // Persist the long-lived half of the session to the device keystore so it
+      // outlives the app process — and every future refresh.
+      await saveRefreshToken(res.data.refreshToken);
 
       // Refresh the profile from /users/get-me so the store holds the full user record.
       try {

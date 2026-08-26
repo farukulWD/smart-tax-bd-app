@@ -31,7 +31,7 @@ const ProfileScreen = () => {
   const { t } = useTranslation();
   const { setLocale, isEnglish } = useLocale();
   const { colorScheme, toggleColorScheme } = useThemeColors();
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, token } = useAppSelector((state) => state.auth);
   const [activeConfirm, setActiveConfirm] = useState<'logout' | null>(null);
   const [logoutRequest, { isLoading: isLoggingOut }] = useLogoutMutation();
 
@@ -79,7 +79,7 @@ const ProfileScreen = () => {
         contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}>
         {/* ── User Card ─────────────────────────────────────────────────── */}
-        {user?.accessToken ? (
+        {token ? (
           <View className="mx-4 mt-2 overflow-hidden rounded-3xl border border-border bg-card">
             {/* Green accent strip */}
             <View className="h-2 w-full bg-primary" />
@@ -140,7 +140,7 @@ const ProfileScreen = () => {
         )}
 
         {/* ── Stats ─────────────────────────────────────────────────────── */}
-        {user?.accessToken && (
+        {token && (
           <>
             <SectionLabel label={t('profile.overview')} />
             <View className="mx-4 flex-row gap-3">
@@ -221,7 +221,7 @@ const ProfileScreen = () => {
         {/* ── Account Actions ───────────────────────────────────────────── */}
         <SectionLabel label={t('profile.account')} />
         <View className="mx-4 overflow-hidden rounded-2xl border border-border bg-card">
-          {user?.accessToken ? (
+          {token ? (
             <TouchableOpacity
               onPress={handleLogout}
               activeOpacity={0.75}

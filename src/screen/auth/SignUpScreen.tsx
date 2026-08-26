@@ -42,7 +42,7 @@ const createRegisterSchema = (t: (key: string) => string) =>
       password: z
         .string()
         .trim()
-        .min(6, { message: t('auth.passwordMin') }),
+        .min(4, { message: t('auth.passwordMin') }),
       confirmPassword: z.string().trim(),
     })
     .refine((data) => data.password === data.confirmPassword, {

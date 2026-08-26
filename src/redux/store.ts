@@ -17,6 +17,7 @@ import { rootReducer } from './rootReducer';
 import { baseApi } from '../services/baseApi';
 import { logout } from './slices/authSlice';
 import { cancelInFlightRefresh } from '../services/axios/axiosBaseQuery';
+import { clearRefreshToken } from '../services/auth/refreshTokenStore';
 
 const persistConfig = {
   key: 'root',
@@ -38,6 +39,9 @@ const resetApiOnLogout: Middleware = (storeAPI) => (next) => (action) => {
     // token and profile can still be sitting in AsyncStorage if the app is
     // killed right after signing out. flush() writes the cleared state now.
     persistor?.flush();
+    // The refresh token lives outside Redux, so clearing the slice does not
+    // reach it. Covers both the manual logout and the one endSession() fires.
+    void clearRefreshToken();
   }
   return result;
 };
