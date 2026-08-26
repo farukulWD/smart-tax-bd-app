@@ -1,12 +1,5 @@
-import React, { useEffect } from 'react';
-import {
-  View,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
-  Pressable,
-  ActivityIndicator,
-} from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, ScrollView, TouchableOpacity, Pressable, ActivityIndicator } from 'react-native';
 import AppText from '@/src/components/common/AppText';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -32,19 +25,14 @@ import { setUser } from '@/src/redux/slices/authSlice';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
+// Name, email and phone are not in the form: they are read-only profile data,
+// so the screen submits them straight from the profile instead of echoing three
+// uneditable inputs back at the user.
 const formSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Email is required'),
-  mobile: z
-    .string()
-    .min(1, 'Mobile number is required')
-    .regex(/^(\+8801|01)[3-9]\d{8}$/, 'Invalid mobile number format'),
   // Plain strings, not z.nativeEnum: the acceptable values live in the
   // admin-managed income source catalog, so a newly added one must not be a
   // client-side validation error. The server checks them against the catalog.
-  source_of_income: z
-    .array(z.string())
-    .min(1, 'Please select at least one source of income'),
+  source_of_income: z.array(z.string()).min(1, 'Please select at least one source of income'),
   tax_year: z.string().min(1, 'Tax year is required'),
 });
 
@@ -72,7 +60,23 @@ const QUERY_TAX_TYPE_TO_INCOME_SOURCE: Record<string, IncomeSource> = {
   gift_tax: IncomeSource.OthersSource,
   inheritance_tax: IncomeSource.OthersSource,
   wealth_tax: IncomeSource.FinancialAsset,
+  agriculture_tax_return: IncomeSource.Agriculture,
+  non_resident_bangladeshis: IncomeSource.ForignRemitance,
+  housewife_tax_return: IncomeSource.OthersSource,
 };
+
+// Half the gutter between grid cards. Applied as a margin on every card and
+// cancelled with the same value negated on the wrapper, so the outer edges stay
+// flush with the section padding.
+//
+// The card itself carries a fixed `h-26`: a `flex: 1` child of a wrapping row
+// has no content-driven height, so without it every card stretches to the line's
+// cross size and the grid blows up to full-screen rows (same reason DocumentCard
+// pins `h-52`). 104px is the floor that still fits a 3-line label — `leading-5`
+// is a flat 20px (line heights are not on the scaled token scale), so the label
+// box tops out at 60px + `p-3` either side, which must survive the 0.82 space
+// factor on the smallest devices.
+const CARD_GUTTER = 5;
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -83,14 +87,10 @@ const SectionCard = ({ title, children }: { title: string; children: React.React
   </View>
 );
 
-const FieldLabel = ({ label }: { label: string }) => (
-  <AppText className="mb-1 font-semibold text-foreground">{label}</AppText>
-);
-
 const ErrorText = ({ message }: { message?: string }) =>
   message ? <AppText className="mt-1 text-xs text-destructive">{message}</AppText> : null;
 
-const CheckboxItem = ({
+const IncomeSourceCard = ({
   label,
   checked,
   onPress,
@@ -104,58 +104,77 @@ const CheckboxItem = ({
   return (
     <Pressable
       onPress={onPress}
-      className={`h-10 flex-row items-center gap-3 rounded-xl border px-4 ${
-        checked ? 'border-success bg-success/10' : 'border-border bg-muted'
-      }`}
+      className="h-26"
+      style={{ flex: 1, margin: CARD_GUTTER, minWidth: 130, maxWidth: '48%' }}
       android_ripple={{ color: colors.muted }}>
       <View
-        className={`h-5 w-5 items-center justify-center rounded-[5px] border-2 ${
-          checked ? 'border-success bg-success' : 'border-mutedForeground bg-card'
-        }`}>
-        {checked && <AppText className="text-xs font-bold text-white">✓</AppText>}
+        className={cn(
+          'flex-1 justify-center rounded-xl border p-3',
+          checked ? 'border-success bg-success/10' : 'border-border bg-muted'
+        )}>
+        <View
+          className={cn(
+            'absolute right-2 top-2 h-5 w-5 items-center justify-center rounded-full border',
+            checked ? 'border-success bg-success' : 'border-mutedForeground bg-card'
+          )}>
+          {checked && <AppText className="text-11 font-bold text-white">✓</AppText>}
+        </View>
+        <AppText
+          className={cn(
+            'px-1 text-center text-13 font-semibold leading-5',
+            checked ? 'text-success' : 'text-mutedForeground'
+          )}
+          numberOfLines={3}
+          ellipsizeMode="tail">
+          {label}
+        </AppText>
       </View>
-      <AppText className={cn('flex-1 text-13', checked ? 'text-success' : 'text-mutedForeground')}>
-        {label}
-      </AppText>
     </Pressable>
   );
 };
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
-const CreateTaxOrderScreen = () => {
+// The form lives below the auth gate on purpose. `ProtectedScreen` swaps its
+// children when the token lands, so a form mounted above it would have already
+// run its one-shot tax-type preselect while the login screen was showing —
+// which is how a deep-linked tax type came out with nothing selected.
+const CreateTaxOrderForm = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const taxType: string = route.params?.taxType ?? '';
 
   const dispatch = useAppDispatch();
-  // The persisted profile is already in the store on mount, so the form renders
-  // filled instead of flashing empty fields while /users/get-me is in flight.
+  // The persisted profile is already in the store on mount, so the order can be
+  // submitted without waiting on /users/get-me.
   const cachedUser = useAppSelector((state) => state.auth.user);
 
   const { data } = useGetUserInfoQuery();
   const profileData = data?.data;
+  // Fresh server copy wins; the persisted one covers the in-flight window.
+  const profile = profileData ?? cachedUser;
   const [createTaxStepOne, { isLoading: isCreatingOrder }] = useCreateTaxStepOneMutation();
 
   const { i18n } = useTranslation();
   const locale = toLocale(i18n.language);
   const { data: incomeSourcesResponse, isLoading: isIncomeSourcesLoading } =
     useGetAllIncomeSourcesQuery();
-  const incomeSources = incomeSourcesResponse?.data ?? [];
+  // The server only accepts active catalog values, so a deactivated source on
+  // screen would just be a 400 at submit time.
+  const visibleIncomeSources = (incomeSourcesResponse?.data ?? [])
+    .filter((source) => source.isActive)
+    .sort((a, b) => a.order - b.order);
 
   const {
     control,
     handleSubmit,
     setValue,
     getValues,
-    formState: { errors, dirtyFields },
+    formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: cachedUser?.name ?? '',
-      email: cachedUser?.email ?? '',
-      mobile: cachedUser?.mobile ?? '',
       source_of_income: [],
       tax_year: `${CURRENT_YEAR}-${CURRENT_YEAR + 1}`,
     },
@@ -163,30 +182,44 @@ const CreateTaxOrderScreen = () => {
 
   useEffect(() => {
     if (!profileData) return;
-    // Fresh server copy wins, except over fields the user already edited.
-    if (profileData.name) setValue('name', profileData.name);
-    if (profileData.email) setValue('email', profileData.email);
-    if (profileData.mobile && !dirtyFields.mobile) setValue('mobile', profileData.mobile);
     dispatch(setUser(profileData));
   }, [profileData]);
 
+  // Runs at most once. The catalog has to be in before it can fire: preselecting
+  // a source the admin has since deactivated would read as "1 selected" with no
+  // card checked, which is worse than not preselecting at all.
+  const preselectApplied = useRef(false);
   useEffect(() => {
+    if (preselectApplied.current || isIncomeSourcesLoading) return;
+
+    preselectApplied.current = true;
+
     const mapped = QUERY_TAX_TYPE_TO_INCOME_SOURCE[taxType];
-    if (mapped && getValues('source_of_income').length === 0) {
+    if (!mapped) return;
+
+    const inCatalog = visibleIncomeSources.some((source) => source.value === mapped);
+    if (inCatalog && getValues('source_of_income').length === 0) {
       setValue('source_of_income', [mapped]);
     }
-  }, [taxType]);
+  }, [taxType, isIncomeSourcesLoading, visibleIncomeSources]);
 
   const selectedIncomeSources = useWatch({ control, name: 'source_of_income' });
   const selectedTaxYear = useWatch({ control, name: 'tax_year' });
 
   const onSubmit = async (values: FormValues) => {
+    // Both are required on the user record, so this only fires on a stale
+    // session — better than the raw 400 the server would answer with.
+    if (!profile?.name || !profile?.mobile) {
+      toast.error('Complete your profile before creating an order');
+      return;
+    }
+
     try {
       const res = await createTaxStepOne({
         personal_information: {
-          name: values.name,
-          email: values.email,
-          phone: values.mobile,
+          name: profile.name,
+          ...(profile.email ? { email: profile.email } : {}),
+          phone: profile.mobile,
           are_you_student: false,
           are_you_house_wife: false,
         },
@@ -208,202 +241,131 @@ const CreateTaxOrderScreen = () => {
   };
 
   return (
-    <ProtectedScreen>
-      <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
-        {/* Header */}
-        <View className="flex-row items-start gap-3 px-4 py-4">
-          <BackButton />
+    <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
+      {/* Header */}
+      <View className="flex-row items-start gap-3 px-4 py-4">
+        <BackButton />
 
-          <View className="flex-1">
-            <View className="mb-1.5 self-start rounded-full border border-success/30 bg-success/10 px-3 py-0.5">
-              <AppText className="text-11 font-bold text-success">TAX STEP 1</AppText>
-            </View>
-            <AppText className="text-2xl font-extrabold tracking-tight text-foreground">
-              Create Tax Order
-            </AppText>
-            <AppText className="mt-0.5 text-13 text-mutedForeground">
-              Submit step-1 details to create your tax order draft.
-            </AppText>
+        <View className="flex-1">
+          <View className="mb-1.5 self-start rounded-full border border-success/30 bg-success/10 px-3 py-0.5">
+            <AppText className="text-11 font-bold text-success">TAX STEP 1</AppText>
           </View>
+          <AppText className="text-2xl font-extrabold tracking-tight text-foreground">
+            Create Tax Order
+          </AppText>
+          <AppText className="mt-0.5 text-13 text-mutedForeground">
+            Submit step-1 details to create your tax order draft.
+          </AppText>
         </View>
-
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="px-4 gap-4 pb-10"
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled">
-          {/* Personal Information */}
-          <SectionCard title="Personal Information">
-            <View className="gap-4">
-              {/* Name */}
-              <View>
-                <FieldLabel label="Full Name" />
-                <Controller
-                  control={control}
-                  name="name"
-                  render={({ field: { value, onChange } }) => (
-                    <TextInput
-                      className="h-12 rounded-xl border border-border bg-muted px-4 text-sm text-mutedForeground"
-                      value={value}
-                      onChangeText={onChange}
-                      editable={false}
-                      placeholder="Your full name"
-                      placeholderClassName="text-mutedForeground"
-                      autoComplete="off"
-                      autoCorrect={false}
-                      spellCheck={false}
-                      textContentType="none"
-                      importantForAutofill="no"
-                    />
-                  )}
-                />
-                <ErrorText message={errors.name?.message} />
-              </View>
-
-              {/* Email */}
-              <View>
-                <FieldLabel label="Email" />
-                <Controller
-                  control={control}
-                  name="email"
-                  render={({ field: { value, onChange } }) => (
-                    <TextInput
-                      className="h-12 rounded-xl border border-border bg-muted px-4 text-sm text-mutedForeground"
-                      value={value}
-                      onChangeText={onChange}
-                      editable={false}
-                      placeholder="Your email"
-                      placeholderClassName="text-mutedForeground"
-                      keyboardType="email-address"
-                      autoCapitalize="none"
-                      autoComplete="off"
-                      autoCorrect={false}
-                      spellCheck={false}
-                      textContentType="none"
-                      importantForAutofill="no"
-                    />
-                  )}
-                />
-                <ErrorText message={errors.email?.message} />
-              </View>
-
-              {/* Mobile */}
-              <View>
-                <FieldLabel label="Mobile Number" />
-                <Controller
-                  control={control}
-                  name="mobile"
-                  render={({ field: { value, onChange } }) => (
-                    <TextInput
-                      className="h-12 rounded-xl border border-border bg-muted px-4 text-sm text-foreground"
-                      value={value}
-                      onChangeText={onChange}
-                      placeholder="e.g. 01712345678"
-                      placeholderClassName="text-mutedForeground"
-                      keyboardType="phone-pad"
-                      autoComplete="off"
-                      autoCorrect={false}
-                      spellCheck={false}
-                      textContentType="none"
-                      importantForAutofill="no"
-                    />
-                  )}
-                />
-                <ErrorText message={errors.mobile?.message} />
-              </View>
-
-              {/* Tax Year */}
-              <View>
-                <FieldLabel label="Tax Filing Year" />
-                <Controller
-                  control={control}
-                  name="tax_year"
-                  render={({ field: { value, onChange } }) => (
-                    <TaxYearPicker value={value} onChange={onChange} />
-                  )}
-                />
-                <ErrorText message={errors.tax_year?.message} />
-              </View>
-            </View>
-          </SectionCard>
-
-          {/* Source of Income */}
-          <SectionCard title="Source of Income">
-            <Controller
-              control={control}
-              name="source_of_income"
-              render={({ field: { value, onChange } }) => (
-                <View className="gap-2.5">
-                  {isIncomeSourcesLoading ? (
-                    <AppText className="text-13 text-mutedForeground">
-                      Loading income sources...
-                    </AppText>
-                  ) : incomeSources.length === 0 ? (
-                    <AppText className="text-13 text-mutedForeground">
-                      No income sources available right now.
-                    </AppText>
-                  ) : (
-                    incomeSources.map((source) => {
-                      const checked = value.includes(source.value);
-                      return (
-                        <CheckboxItem
-                          key={source._id}
-                          label={readLocalized(source.title, locale) || source.value}
-                          checked={checked}
-                          onPress={() => {
-                            if (checked) {
-                              onChange(value.filter((v) => v !== source.value));
-                            } else {
-                              onChange([...value, source.value]);
-                            }
-                          }}
-                        />
-                      );
-                    })
-                  )}
-                </View>
-              )}
-            />
-            <ErrorText message={errors.source_of_income?.message} />
-          </SectionCard>
-
-          {/* Order Summary */}
-          <View className="gap-3 rounded-3xl border border-border bg-card p-6">
-            <AppText className="text-lg font-bold text-foreground">Order Summary</AppText>
-            <AppText className="-mt-1 text-13 text-mutedForeground">
-              Step 1 will create a draft order.
-            </AppText>
-
-            <View className="flex-row justify-between">
-              <AppText className="text-13 text-mutedForeground">Income sources</AppText>
-              <AppText className="text-13 font-bold text-foreground">
-                {selectedIncomeSources.length} selected
-              </AppText>
-            </View>
-
-            <View className="flex-row justify-between">
-              <AppText className="text-13 text-mutedForeground">Tax year</AppText>
-              <AppText className="text-13 font-bold text-foreground">{selectedTaxYear}</AppText>
-            </View>
-
-            <TouchableOpacity
-              className={`mt-1 h-10 items-center justify-center rounded-2xl bg-primary ${
-                isCreatingOrder ? 'opacity-70' : ''
-              }`}
-              onPress={handleSubmit(onSubmit)}
-              disabled={isCreatingOrder}
-              activeOpacity={0.85}>
-              {isCreatingOrder ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <AppText className="text-base font-bold text-primaryForeground">Next ✓</AppText>
-              )}
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
       </View>
-    </ProtectedScreen>
+
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="px-4 gap-4 pb-10"
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
+        {/* Tax Filing Year */}
+        <SectionCard title="Tax Filing Year">
+          <Controller
+            control={control}
+            name="tax_year"
+            render={({ field: { value, onChange } }) => (
+              <TaxYearPicker value={value} onChange={onChange} />
+            )}
+          />
+          <ErrorText message={errors.tax_year?.message} />
+        </SectionCard>
+
+        {/* Source of Income */}
+        <SectionCard title="Source of Income">
+          <Controller
+            control={control}
+            name="source_of_income"
+            render={({ field: { value, onChange } }) => {
+              if (isIncomeSourcesLoading) {
+                return (
+                  <AppText className="text-13 text-mutedForeground">
+                    Loading income sources...
+                  </AppText>
+                );
+              }
+
+              if (visibleIncomeSources.length === 0) {
+                return (
+                  <AppText className="text-13 text-mutedForeground">
+                    No income sources available right now.
+                  </AppText>
+                );
+              }
+
+              return (
+                <View className="flex-row flex-wrap" style={{ margin: -CARD_GUTTER }}>
+                  {visibleIncomeSources.map((source) => {
+                    const checked = value.includes(source.value);
+                    return (
+                      <IncomeSourceCard
+                        key={source._id}
+                        label={readLocalized(source.title, locale) || source.value}
+                        checked={checked}
+                        onPress={() =>
+                          onChange(
+                            checked
+                              ? value.filter((v) => v !== source.value)
+                              : [...value, source.value]
+                          )
+                        }
+                      />
+                    );
+                  })}
+                </View>
+              );
+            }}
+          />
+          <ErrorText message={errors.source_of_income?.message} />
+        </SectionCard>
+
+        {/* Order Summary */}
+        <View className="gap-3 rounded-3xl border border-border bg-card p-6">
+          <AppText className="text-lg font-bold text-foreground">Order Summary</AppText>
+          <AppText className="-mt-1 text-13 text-mutedForeground">
+            Step 1 will create a draft order.
+          </AppText>
+
+          <View className="flex-row justify-between">
+            <AppText className="text-13 text-mutedForeground">Income sources</AppText>
+            <AppText className="text-13 font-bold text-foreground">
+              {selectedIncomeSources.length} selected
+            </AppText>
+          </View>
+
+          <View className="flex-row justify-between">
+            <AppText className="text-13 text-mutedForeground">Tax year</AppText>
+            <AppText className="text-13 font-bold text-foreground">{selectedTaxYear}</AppText>
+          </View>
+
+          <TouchableOpacity
+            className={`mt-1 h-10 items-center justify-center rounded-2xl bg-primary ${
+              isCreatingOrder ? 'opacity-70' : ''
+            }`}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isCreatingOrder}
+            activeOpacity={0.85}>
+            {isCreatingOrder ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <AppText className="text-base font-bold text-primaryForeground">Next ✓</AppText>
+            )}
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
+
+const CreateTaxOrderScreen = () => (
+  <ProtectedScreen>
+    <CreateTaxOrderForm />
+  </ProtectedScreen>
+);
 
 export default CreateTaxOrderScreen;

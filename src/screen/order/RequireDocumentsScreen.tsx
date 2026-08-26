@@ -95,6 +95,8 @@ const RequireDocumentsScreen = () => {
   const uploadedDocTypes = Object.keys(latestFileByType);
   const missingDocuments = requiredDocuments.filter((doc) => !uploadedDocTypes.includes(doc));
   const stepTwoReady = requiredDocuments.length > 0 && missingDocuments.length === 0;
+  // Only in-flight work greys the payment button out — missing documents do not.
+  const isPaymentBusy = isSubmittingStepTwo || isSkipping || isFilesLoading;
 
   // ── handlers ────────────────────────────────────────────────────────────────
 
@@ -270,11 +272,14 @@ const RequireDocumentsScreen = () => {
   const handleSubmitStepTwo = async () => {
     if (!taxId) return;
 
+    // Missing documents do not block payment. The order is parked with
+    // `files_upload_pending` instead, and the server's `syncTaxDocumentState`
+    // attaches whatever is uploaded afterwards and clears the flag on its own —
+    // so anything already uploaded is kept, not discarded by taking this path.
     if (!stepTwoReady) {
       const missing = missingDocuments.join(', ');
-      toast.error(
-        missing ? t('documents.uploadMissingFirst', { missing }) : t('documents.uploadAllFirst')
-      );
+      if (missing) toast.warning(t('documents.uploadMissingLater', { missing }));
+      await handleSkipUpload();
       return;
     }
 
@@ -371,6 +376,8 @@ const RequireDocumentsScreen = () => {
                   <AppText className="flex-1 text-xs text-warning">
                     {t('documents.missing')}
                     <AppText className="font-semibold">{missingDocuments.join(', ')}</AppText>
+                    {'\n'}
+                    {t('documents.missingHint')}
                   </AppText>
                 </View>
               )}
@@ -389,17 +396,17 @@ const RequireDocumentsScreen = () => {
         {/* Submit button */}
         <TouchableOpacity
           onPress={handleSubmitStepTwo}
-          disabled={isSubmittingStepTwo || isFilesLoading || !stepTwoReady}
+          disabled={isPaymentBusy || requiredDocuments.length === 0}
           className={[
             'mx-4 mt-3 h-10 flex-row items-center justify-center gap-2 rounded-2xl',
-            isSubmittingStepTwo || isFilesLoading || !stepTwoReady ? 'bg-primary/50' : 'bg-primary',
+            isPaymentBusy || requiredDocuments.length === 0 ? 'bg-primary/50' : 'bg-primary',
           ].join(' ')}
           activeOpacity={0.8}>
-          {(isSubmittingStepTwo || isFilesLoading) && (
-            <ActivityIndicator size="small" color="#fff" />
-          )}
+          {isPaymentBusy && <ActivityIndicator size="small" color="#fff" />}
           <AppText className="text-base font-bold text-white">
-            {isSubmittingStepTwo ? t('documents.submitting') : t('documents.goToPayment')}
+            {isSubmittingStepTwo || isSkipping
+              ? t('documents.submitting')
+              : t('documents.goToPayment')}
           </AppText>
         </TouchableOpacity>
         <TouchableOpacity
