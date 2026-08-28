@@ -177,7 +177,7 @@ export default {
     fullNameHint: 'e.g. Rahim Hasan',
     emailLabel: 'Email Address',
     emailHint: 'e.g. rahim@email.com',
-    passwordLabel: 'Password',
+    passwordLabel: 'Password (for logging into the app)',
     confirmPasswordLabel: 'Confirm Password',
     newPasswordLabel: 'New Password',
     termsConsent: 'By creating an account you agree to our Terms of Service and Privacy Policy.',
@@ -210,7 +210,7 @@ export default {
     copyright:
       'Mobile App is developed by Smart Tax BD Technology Ltd. smarttaxbd.com.bd is copyrighted by Bangladesh Copyright and Patent office. Copyright registration number is 14748-COPR.',
     forgotPasswordDesc: "Enter the mobile number linked to your account and we'll send a OTP.",
-    mobileLabel: 'Mobile Number',
+    mobileLabel: 'Mobile Number (Personal Mobile Number)',
     sendOtpButton: 'Send OTP',
     rememberPassword: 'Remember your password?',
     verifyOtpDesc: "We've sent a 6-digit verification code to",

@@ -179,7 +179,7 @@ export default {
     fullNameHint: 'যেমন রহিম হাসান',
     emailLabel: 'ইমেল ঠিকানা',
     emailHint: 'যেমন rahim@email.com',
-    passwordLabel: 'পাসওয়ার্ড',
+    passwordLabel: 'পাসওয়ার্ড (অ্যাপ এ লগইন করার জন্য)',
     confirmPasswordLabel: 'পাসওয়ার্ড নিশ্চিত করুন',
     newPasswordLabel: 'নতুন পাসওয়ার্ড',
     termsConsent:
@@ -213,7 +213,7 @@ export default {
     copyright:
       'মোবাইল অ্যাপটি স্মার্ট ট্যাক্স বিডি টেকনোলজি লিমিটেড দ্বারা তৈরি। smarttaxbd.com.bd বাংলাদেশ কপিরাইট এবং পেটেন্ট অফিস দ্বারা কপিরাইট করা। কপিরাইট রেজিস্ট্রেশন নম্বর ১৪৭৪৮-সিওপিআর।',
     forgotPasswordDesc: 'আপনার অ্যাকাউন্টের সাথে যুক্ত মোবাইল নম্বর লিখুন, আমরা একটি ওটিপি পাঠাব।',
-    mobileLabel: 'মোবাইল নম্বর',
+    mobileLabel: 'মোবাইল নম্বর (আপনার মোবাইল নাম্বার)',
     sendOtpButton: 'ওটিপি পাঠান',
     rememberPassword: 'পাসওয়ার্ড মনে আছে?',
     verifyOtpDesc: 'আমরা একটি ৬-ডিজিটের যাচাইকরণ কোড পাঠিয়েছি',
