@@ -82,7 +82,6 @@ const ForgotPasswordScreen = ({
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled">
         <View style={{ marginBottom: bottom }} className="flex-1 justify-start px-6">
-          {/* Header */}
           <View className="items-center pb-10">
             <View className="h-24 w-24 items-center justify-center rounded-full bg-muted">
               <KeyRound size={32} color={colors.mutedForeground} />
@@ -95,7 +94,6 @@ const ForgotPasswordScreen = ({
             </Text>
           </View>
 
-          {/* Form */}
           <View className="gap-4">
             <FormField
               control={form.control}
@@ -131,7 +129,6 @@ const ForgotPasswordScreen = ({
               )}
             </Button>
           </View>
-          {/* Back to Login */}
           <View className="flex-row items-center justify-center pb-8 pt-6">
             <Text className="text-sm text-mutedForeground">{t('auth.rememberedIt')} </Text>
             <TouchableOpacity

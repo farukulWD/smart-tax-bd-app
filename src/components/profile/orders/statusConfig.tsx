@@ -16,8 +16,6 @@ export type StatusConfig = {
 
 type StatusStyle = Omit<StatusConfig, 'label'>;
 
-// Statuses only carry colours and icons here; the visible text comes from the
-// `orderStatuses` translation block so both languages stay in sync.
 const getStatusStyle = (status: string, colors: ThemeColors): StatusStyle => {
   const map: Record<string, StatusStyle> = {
     draft: {
@@ -61,7 +59,6 @@ const getStatusStyle = (status: string, colors: ThemeColors): StatusStyle => {
   );
 };
 
-// Unknown statuses from the API fall back to a readable "Snake Case" label.
 const humanize = (status: string) =>
   status
     .split('_')

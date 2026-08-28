@@ -82,7 +82,7 @@ const OnboardingScreen = () => {
         </View>
         <View className="mt-12 items-center">
           <Text className="text-center text-2xl font-bold text-foreground">{item.title}</Text>
-          <Text className="text-mutedForeground mt-3 text-center text-base leading-6">
+          <Text className="mt-3 text-center text-base leading-6 text-mutedForeground">
             {item.description}
           </Text>
         </View>
@@ -102,7 +102,6 @@ const OnboardingScreen = () => {
         )}
       </View>
 
-      {/* Pages */}
       <FlatList
         ref={flatListRef}
         data={onboardingData}
@@ -120,9 +119,7 @@ const OnboardingScreen = () => {
         })}
       />
 
-      {/* Bottom section */}
       <View className="px-8 pb-8">
-        {/* Pagination dots */}
         <View className="mb-6 flex-row items-center justify-center gap-2">
           {onboardingData.map((_, i) => (
             <View
@@ -135,7 +132,6 @@ const OnboardingScreen = () => {
           ))}
         </View>
 
-        {/* CTA Button */}
         <Button size="lg" onPress={handleNext} className="w-full rounded-full bg-primary">
           <Text>{isLastPage ? 'Get Started' : 'Next'}</Text>
         </Button>

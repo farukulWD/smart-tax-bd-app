@@ -26,12 +26,8 @@ import { BackButton } from '@/src/components/global/BackButton';
 import { getStatusConfig } from '@/src/components/profile/orders/statusConfig';
 import { getAppliedCoupon, getPayableFeeAmount } from '@/src/components/profile/orders/utils';
 
-// ─── helpers ────────────────────────────────────────────────────────────────
-
 const formatBDT = (amount: number) =>
   new Intl.NumberFormat('en-BD', { style: 'currency', currency: 'BDT' }).format(amount);
-
-// ─── sub-components ──────────────────────────────────────────────────────────
 
 const InfoRow = ({
   label,
@@ -55,8 +51,6 @@ const InfoRow = ({
   </View>
 );
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
-
 const OrderPaymentStatusScreen = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'OrderPaymentStatus'>>();
   const navigation = useNavigation<any>();
@@ -73,8 +67,6 @@ const OrderPaymentStatusScreen = () => {
   const [applyCoupon, { isLoading: isApplyingCoupon }] = useApplyCouponMutation();
   const [removeCoupon, { isLoading: isRemovingCoupon }] = useRemoveCouponMutation();
 
-  // ── no taxId ──────────────────────────────────────────────────────────────
-
   if (!taxId) {
     return (
       <View className="flex-1 items-center justify-center bg-background px-6">
@@ -90,8 +82,6 @@ const OrderPaymentStatusScreen = () => {
     );
   }
 
-  // ── loading ───────────────────────────────────────────────────────────────
-
   if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center bg-background">
@@ -99,8 +89,6 @@ const OrderPaymentStatusScreen = () => {
       </View>
     );
   }
-
-  // ── error ─────────────────────────────────────────────────────────────────
 
   if (isError || !data?.data?.tax_order) {
     return (
@@ -118,14 +106,11 @@ const OrderPaymentStatusScreen = () => {
     );
   }
 
-  // ── data ──────────────────────────────────────────────────────────────────
-
   const order = data.data.tax_order;
   const appliedCoupon = getAppliedCoupon(order.applied_coupon);
   const subtotal = Number(order.fee_amount || 0);
   const discount = Number(appliedCoupon?.discount_amount || 0);
   const payableFee = getPayableFeeAmount(order);
-  // A coupon can cover the fee in full, leaving nothing to collect.
   const isPaid = payableFee <= 0 || order.status === 'order_placed';
   const isCouponBusy = isApplyingCoupon || isRemovingCoupon;
   const statusConfig = getStatusConfig(order.status, colors, t);
@@ -164,15 +149,12 @@ const OrderPaymentStatusScreen = () => {
     }
   };
 
-  // ── render ────────────────────────────────────────────────────────────────
-
   return (
     <ProtectedScreen>
       <View style={{ paddingTop: top }} className="flex-1 bg-background">
         <ScrollView
           contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}>
-          {/* Header */}
           <View className="mb-6">
             <View className="flex-row items-center gap-3">
               {route.params.canGoBack && <BackButton />}
@@ -185,9 +167,7 @@ const OrderPaymentStatusScreen = () => {
             </AppText>
           </View>
 
-          {/* Card */}
           <View className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
-            {/* Card header */}
             <View className="border-b border-border px-4 pb-3 pt-5">
               <AppText className="text-base font-bold text-foreground">
                 {t('payment.cardTitle')}
@@ -195,7 +175,6 @@ const OrderPaymentStatusScreen = () => {
             </View>
 
             <View className="px-4 pb-4 pt-2">
-              {/* Info rows */}
               <InfoRow
                 label={t('payment.orderStatus')}
                 value={statusConfig.label}
@@ -205,7 +184,6 @@ const OrderPaymentStatusScreen = () => {
               />
               <InfoRow label={t('payment.currentStep')} value={String(order.current_step)} />
 
-              {/* Coupon — hidden once the fee is settled */}
               {!isPaid && (
                 <View className="py-3">
                   {appliedCoupon ? (
@@ -260,7 +238,6 @@ const OrderPaymentStatusScreen = () => {
                 </View>
               )}
 
-              {/* Fee breakdown */}
               <InfoRow label={t('payment.subtotal')} value={formatBDT(subtotal)} />
               {discount > 0 && (
                 <InfoRow
@@ -276,7 +253,6 @@ const OrderPaymentStatusScreen = () => {
               )}
               <InfoRow label={t('payment.total')} value={formatBDT(payableFee)} />
 
-              {/* Payment status banner */}
               {isPaid ? (
                 <View className="mt-4 flex-row items-center gap-3 rounded-2xl border border-success/30 bg-success/10 px-4 py-3">
                   <CheckCircle2 size={20} color={colors.success} />
@@ -293,11 +269,9 @@ const OrderPaymentStatusScreen = () => {
                 </View>
               )}
 
-              {/* Action buttons */}
               <View className="mt-5 gap-3">
                 {!isPaid && (
                   <>
-                    {/* Start Payment */}
                     <TouchableOpacity
                       onPress={() => setShowBkashModal(true)}
                       activeOpacity={0.8}
@@ -308,7 +282,6 @@ const OrderPaymentStatusScreen = () => {
                       </AppText>
                     </TouchableOpacity>
 
-                    {/* Refresh Status */}
                     <TouchableOpacity
                       onPress={() => refetch()}
                       activeOpacity={0.8}
@@ -321,7 +294,6 @@ const OrderPaymentStatusScreen = () => {
                   </>
                 )}
 
-                {/* Back to Step 2 */}
                 <TouchableOpacity
                   onPress={() => navigation.popTo('RequireDocuments', { taxId })}
                   activeOpacity={0.7}
@@ -336,7 +308,6 @@ const OrderPaymentStatusScreen = () => {
           </View>
         </ScrollView>
 
-        {/* bKash manual payment modal */}
         <Modal
           visible={showBkashModal}
           transparent

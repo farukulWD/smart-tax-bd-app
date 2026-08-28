@@ -1,4 +1,5 @@
-import { toast } from "./ToastConfig";
+import { toast } from './ToastConfig';
+import { logger } from './logger';
 
 export interface FieldError {
   message: string;
@@ -15,16 +16,16 @@ export const handleErrorResponse = (response: any, source: string) => {
       message: err.message,
     })) || [];
   toast.error(response.response.data.message || response.response.data.error);
-  console.log("error.response.data", JSON.stringify(response.response.data, null, 2));
-  console.log({
+  logger.log('error.response.data', JSON.stringify(response.response.data, null, 2));
+  logger.log({
     success: false,
     from: source,
-    error: response.response.data.error || "Error",
-    message: response.response.data.message || "Message",
+    error: response.response.data.error || 'Error',
+    message: response.response.data.message || 'Message',
   });
   return {
     success: false as const,
-    message: errorData.message || "Something went wrong",
+    message: errorData.message || 'Something went wrong',
     statusCode: errorData.statusCode || response?.status || 500,
     data: null, // ✅ Ensures ApiResponse structure is complete
     errors: errorDetails,

@@ -10,7 +10,6 @@ const blogApi = baseApi.injectEndpoints({
         url: '/blogs',
         params: { page, limit },
       }),
-      // All pages share one cache entry so the list can accumulate.
       serializeQueryArgs: ({ endpointName }) => endpointName,
       merge: (currentCache, newItems) => {
         if (newItems.meta.page === 1) {

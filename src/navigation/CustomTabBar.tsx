@@ -1,4 +1,3 @@
-// src/components/CustomTabBar.tsx
 import React from 'react';
 import { View, TouchableOpacity, Platform, Dimensions, Vibration } from 'react-native';
 import AppText from '@/src/components/common/AppText';

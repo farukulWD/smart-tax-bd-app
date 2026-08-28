@@ -19,8 +19,6 @@ import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { toast } from '@/src/utils/ToastConfig';
 import { normalizeEmail, normalizeMobile, trimLeading } from '@/src/utils/commonFunction';
 
-// ─── Schema ───────────────────────────────────────────────────────────────────
-
 const createRegisterSchema = (t: (key: string) => string) =>
   z
     .object({
@@ -52,8 +50,6 @@ const createRegisterSchema = (t: (key: string) => string) =>
 
 export type RegisterFormValues = z.infer<ReturnType<typeof createRegisterSchema>>;
 
-// ─── SignUpScreen ─────────────────────────────────────────────────────────────
-
 const SignUpScreen = ({
   setScreen,
   setAuthMobile,
@@ -68,7 +64,6 @@ const SignUpScreen = ({
 
   const [register, { isLoading }] = useRegisterMutation();
 
-  // Keyboard "next" chain: each field hands focus to the one below it.
   const mobileRef = useRef<TextInput>(null);
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
@@ -87,26 +82,18 @@ const SignUpScreen = ({
     },
   });
 
-  // Whatever the fields hold, the request carries normalized values: names
-  // collapse their inner whitespace, mobile/email go through the same helpers
-  // the inputs use, and the password loses stray edge spaces (SignIn and
-  // ResetPassword trim too, so the three stay in sync).
   const buildRegisterPayload = (data: RegisterFormValues) => {
     const name = data.name.trim().replace(/\s+/g, ' ');
     const mobile = normalizeMobile(data.mobile);
     const email = normalizeEmail(data.email ?? '');
     const password = data.password.trim();
 
-    // Send email only when filled — an empty string collides on the backend's
-    // unique email index once a second user registers without one.
     return email ? { name, mobile, password, email } : { name, mobile, password };
   };
 
   const onSubmit = async (data: RegisterFormValues) => {
     const payload = buildRegisterPayload(data);
 
-    // Normalizing can change what the user typed, so the payload gets checked
-    // again before it leaves — a field that fell out of spec never reaches the API.
     const check = registerSchema.safeParse({
       ...payload,
       email: payload.email ?? '',
@@ -138,7 +125,6 @@ const SignUpScreen = ({
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled">
         <View className="flex-1 px-6 pt-6">
-          {/* Header */}
           <View className="items-center pb-8">
             <Image
               resizeMode="contain"
@@ -151,9 +137,7 @@ const SignUpScreen = ({
             </Text>
           </View>
 
-          {/* Form */}
           <View className="gap-4">
-            {/* Full Name */}
             <FormField
               control={form.control}
               name="name"
@@ -182,7 +166,6 @@ const SignUpScreen = ({
               )}
             />
 
-            {/* Mobile */}
             <FormField
               control={form.control}
               name="mobile"
@@ -210,7 +193,6 @@ const SignUpScreen = ({
               )}
             />
 
-            {/* Email */}
             <FormField
               control={form.control}
               name="email"
@@ -238,7 +220,6 @@ const SignUpScreen = ({
               )}
             />
 
-            {/* Password */}
             <FormField
               control={form.control}
               name="password"
@@ -278,7 +259,6 @@ const SignUpScreen = ({
               )}
             />
 
-            {/* Confirm Password */}
             <FormField
               control={form.control}
               name="confirmPassword"
@@ -317,7 +297,6 @@ const SignUpScreen = ({
               )}
             />
 
-            {/* Submit */}
             <Button
               onPress={form.handleSubmit(onSubmit)}
               disabled={isLoading}
@@ -331,14 +310,12 @@ const SignUpScreen = ({
               )}
             </Button>
 
-            {/* Terms consent */}
             <Text className="px-2 text-center text-xs leading-5 text-mutedForeground">
               {t('auth.termsConsent')}
             </Text>
           </View>
         </View>
 
-        {/* Login Link */}
         <View className="flex-row items-center justify-center pb-8 pt-6">
           <Text className="text-sm text-mutedForeground">{t('auth.alreadyHaveAccount')} </Text>
           <TouchableOpacity

@@ -1,7 +1,6 @@
 import { View, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import AppText from '@/src/components/common/AppText';
 import { FileText, Trash2, Calendar, Hash, Eye } from 'lucide-react-native';
-// import { Pencil } from 'lucide-react-native';
 import { IFile } from '@/src/types/filesTypes';
 import { getFileType, getExtension, formatDate, shortenId } from '@/src/utils/fileHelpers';
 
@@ -31,7 +30,6 @@ const FILE_STYLES = {
 
 const ACTION_STYLES = [
   { icon: Eye, color: 'hsl(131, 56%, 33%)', textClass: 'text-secondary', label: 'Preview' },
-  // { icon: Pencil, color: 'hsl(220, 70%, 50%)', textClass: 'text-[hsl(220,70%,50%)]', label: 'Rename' },
   { icon: Trash2, color: 'hsl(0, 83%, 49%)', textClass: 'text-destructive', label: 'Delete' },
 ];
 
@@ -39,7 +37,6 @@ const FileCard = ({
   item,
   onPreview,
   onDelete,
-  // onRename,
   isDeleting,
 }: {
   item: IFile;

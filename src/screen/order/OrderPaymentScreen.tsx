@@ -10,8 +10,6 @@ import { CheckCircle2, XCircle, AlertTriangle } from 'lucide-react-native';
 import { navigateToStack } from '@/src/utils/NavigationUtils';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 
-// ─── types ───────────────────────────────────────────────────────────────────
-
 type PaymentResult = 'success' | 'failed' | 'cancelled' | null;
 
 const SUCCESS_PATTERNS = ['/success', '/payment-success', 'status=VALID', 'status=VALIDATED'];
@@ -29,8 +27,6 @@ const extractTransactionId = (url: string): string | null => {
     return null;
   }
 };
-
-// ─── Result Modal ─────────────────────────────────────────────────────────────
 
 const ResultModal = ({
   visible,
@@ -75,27 +71,21 @@ const ResultModal = ({
 
   return (
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent>
-      {/* Backdrop */}
       <View className="flex-1 items-center justify-center bg-background px-6">
-        {/* Card */}
         <View className="w-full items-center rounded-3xl border border-border bg-card px-6 py-8">
-          {/* Icon circle */}
           <View
             className={`h-24 w-24 rounded-full ${config.iconBg} mb-5 items-center justify-center`}>
             {config.icon}
           </View>
 
-          {/* Title */}
           <AppText className="mb-3 text-center text-xl font-bold text-foreground">
             {config.title}
           </AppText>
 
-          {/* Message */}
           <AppText className="mb-5 text-center text-sm leading-5 text-mutedForeground">
             {config.message}
           </AppText>
 
-          {/* Transaction ID */}
           {transactionId && (
             <View className="mb-6 w-full rounded-xl border border-border bg-muted px-4 py-2.5">
               <AppText className="text-center text-xs text-foreground">
@@ -105,7 +95,6 @@ const ResultModal = ({
             </View>
           )}
 
-          {/* Go To Orders */}
           <TouchableOpacity
             onPress={onGoToOrders}
             activeOpacity={0.85}
@@ -113,7 +102,6 @@ const ResultModal = ({
             <AppText className="text-base font-bold text-white">Go To Orders</AppText>
           </TouchableOpacity>
 
-          {/* View Payments */}
           <TouchableOpacity
             onPress={onViewPayments}
             activeOpacity={0.75}
@@ -196,7 +184,6 @@ const OrderPaymentScreen = () => {
             />
           )}
 
-          {/* Loading overlay */}
           {isLoading && (
             <View className="absolute inset-0 items-center justify-center gap-3 bg-background">
               <ActivityIndicator size="large" color={colors.primary} />
@@ -204,7 +191,6 @@ const OrderPaymentScreen = () => {
             </View>
           )}
 
-          {/* Error overlay */}
           {hasError && (
             <View className="absolute inset-0 items-center justify-center gap-4 bg-background px-6">
               <XCircle size={40} color={colors.destructive} />
@@ -222,7 +208,6 @@ const OrderPaymentScreen = () => {
         </View>
       </View>
 
-      {/* Result Modal */}
       <ResultModal
         visible={modalVisible}
         result={paymentResult}

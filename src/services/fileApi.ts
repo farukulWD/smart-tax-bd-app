@@ -34,7 +34,10 @@ const fileApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['files'],
     }),
-    updateFile: builder.mutation<TResponse<any>, { id: string; data: Partial<Pick<IFile, 'name' | 'type'>> }>({
+    updateFile: builder.mutation<
+      TResponse<any>,
+      { id: string; data: Partial<Pick<IFile, 'name' | 'type'>> }
+    >({
       query: ({ id, data }) => ({
         url: `/files/update-file/${id}`,
         method: 'PATCH',

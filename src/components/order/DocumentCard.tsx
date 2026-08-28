@@ -41,7 +41,6 @@ const DocumentCard = ({
         uploaded ? 'border-border bg-card' : 'border-warning/30 bg-warning/10',
       ].join(' ')}
       style={{ flex: 1, margin: 6, minWidth: 140, maxWidth: '48%' }}>
-      {/* Thumbnail area */}
       <View className="roundcard mb-2 flex-1 items-center justify-center overflow-hidden bg-muted/50">
         {pending ? (
           <View className="h-full w-full items-center justify-center">
@@ -91,7 +90,6 @@ const DocumentCard = ({
         )}
       </View>
 
-      {/* Label */}
       <AppText
         className="mb-0.5 text-center text-sm font-semibold text-foreground"
         numberOfLines={1}>
@@ -101,7 +99,6 @@ const DocumentCard = ({
         {uploaded ? t('common.tapToReplace') : t('common.tapToUpload')}
       </AppText>
 
-      {/* Status / View button */}
       {pending ? (
         <View className="flex-row items-center justify-center gap-1 rounded-lg bg-primary/10 py-1.5">
           <ActivityIndicator size="small" color={colors.primary} />
@@ -129,7 +126,6 @@ const DocumentCard = ({
         </TouchableOpacity>
       )}
 
-      {/* Replace badge — hints the card can be tapped to swap the file */}
       {!!file && !pending && (
         <TouchableOpacity
           onPress={(e) => {
@@ -144,7 +140,6 @@ const DocumentCard = ({
         </TouchableOpacity>
       )}
 
-      {/* Active ring overlay */}
       {isActive && (
         <View
           pointerEvents="none"

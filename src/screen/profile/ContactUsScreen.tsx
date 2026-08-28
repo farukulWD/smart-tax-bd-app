@@ -35,7 +35,6 @@ const openLink = async (url: string) => {
   try {
     await Linking.openURL(url);
   } catch {
-    // Emulators and some devices have no dialer/mail client registered.
     Alert.alert('Unable to open', url);
   }
 };
@@ -44,98 +43,87 @@ const ContactUsScreen = () => {
   const { colors } = useThemeColors();
   return (
     <ProtectedScreen>
-    <SafeAreaView edges={['top']} className="flex-1 bg-background">
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ flexGrow: 1 }}
-        showsVerticalScrollIndicator={false}>
-        {/* ── Back Button ──────────────────────────────────────────────── */}
-        <View className="px-5 pb-2 pt-2">
-          <BackButton />
-        </View>
+      <SafeAreaView edges={['top']} className="flex-1 bg-background">
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false}>
+          <View className="px-5 pb-2 pt-2">
+            <BackButton />
+          </View>
 
-        {/* ── Hero Section ─────────────────────────────────────────────── */}
-        <View className="items-center px-5 py-5">
-          {/* Badge */}
-          <View className="mb-4 rounded-full border border-border bg-muted px-4 py-1">
-            <Text className="text-xs font-semibold uppercase tracking-widest text-mutedForeground">
-              Contact Smart Tax
+          <View className="items-center px-5 py-5">
+            <View className="mb-4 rounded-full border border-border bg-muted px-4 py-1">
+              <Text className="text-xs font-semibold uppercase tracking-widest text-mutedForeground">
+                Contact Smart Tax
+              </Text>
+            </View>
+
+            <Text className="mb-4 text-center text-3xl font-extrabold leading-tight text-foreground">
+              Let's discuss your tax needs
+            </Text>
+
+            <Text className="text-center text-base leading-relaxed text-mutedForeground">
+              Reach out to our team for service details, onboarding support, or help with your
+              ongoing tax requests.
             </Text>
           </View>
 
-          {/* Heading */}
-          <Text className="mb-4 text-center text-3xl font-extrabold leading-tight text-foreground">
-            Let's discuss your tax needs
-          </Text>
+          <View className="gap-4 px-5 pb-6">
+            {contactCards.map((item) => (
+              <View key={item.title} className="rounded-2xl border border-border bg-card p-5">
+                <View className="mb-4 h-10 w-10 items-center justify-center rounded-full bg-muted">
+                  <item.icon size={20} color={colors.primary} />
+                </View>
+                <Text className="text-base font-semibold text-cardForeground">{item.title}</Text>
+                <Text className="mt-2 text-sm font-medium text-foreground">{item.value}</Text>
+                <Text className="mt-1 text-sm text-mutedForeground">{item.subtext}</Text>
 
-          {/* Subtitle */}
-          <Text className="text-center text-base leading-relaxed text-mutedForeground">
-            Reach out to our team for service details, onboarding support, or help with your ongoing
-            tax requests.
-          </Text>
-        </View>
-
-        {/* ── Contact Cards ─────────────────────────────────────────────── */}
-        <View className="gap-4 px-5 pb-6">
-          {contactCards.map((item) => (
-            <View key={item.title} className="rounded-2xl border border-border bg-card p-5">
-              {/* Icon */}
-              <View className="mb-4 h-10 w-10 items-center justify-center rounded-full bg-muted">
-                <item.icon size={20} color={colors.primary} />
+                {item.action && (
+                  <TouchableOpacity
+                    onPress={() => openLink(item.action.url)}
+                    className="mt-4 self-start rounded-full bg-primary px-5 py-2"
+                    activeOpacity={0.8}>
+                    <Text className="text-sm font-semibold text-primaryForeground">
+                      {item.action.label}
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
-              {/* Title */}
-              <Text className="text-base font-semibold text-cardForeground">{item.title}</Text>
-              {/* Value */}
-              <Text className="mt-2 text-sm font-medium text-foreground">{item.value}</Text>
-              {/* Subtext */}
-              <Text className="mt-1 text-sm text-mutedForeground">{item.subtext}</Text>
-
-              {/* Action */}
-              {item.action && (
-                <TouchableOpacity
-                  onPress={() => openLink(item.action.url)}
-                  className="mt-4 self-start rounded-full bg-primary px-5 py-2"
-                  activeOpacity={0.8}>
-                  <Text className="text-sm font-semibold text-primaryForeground">
-                    {item.action.label}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          ))}
-        </View>
-
-        {/* ── Next Steps ───────────────────────────────────────────────── */}
-        <View className="mx-5 mb-12 rounded-3xl border border-border bg-card p-6">
-          <Text className="text-xl font-bold text-foreground">Next Steps</Text>
-          <Text className="mt-2 text-sm leading-relaxed text-mutedForeground">
-            Already have an account? Create a tax order directly and we'll follow up with document
-            requirements and estimated timelines.
-          </Text>
-
-          {/* CTA Buttons */}
-          <View className="mt-6 flex-row flex-wrap gap-3">
-            <TouchableOpacity
-              onPress={() => {
-                navigate('CreateTaxOrder');
-              }}
-              className="rounded-full bg-primary px-6 py-2.5"
-              activeOpacity={0.8}>
-              <Text className="text-sm font-semibold text-primaryForeground">Create Tax Order</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                navigate('AboutUs');
-              }}
-              className="rounded-full border border-primary px-6 py-2.5"
-              activeOpacity={0.8}>
-              <Text className="text-sm font-semibold text-primary">About Us</Text>
-            </TouchableOpacity>
+            ))}
           </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+
+          <View className="mx-5 mb-12 rounded-3xl border border-border bg-card p-6">
+            <Text className="text-xl font-bold text-foreground">Next Steps</Text>
+            <Text className="mt-2 text-sm leading-relaxed text-mutedForeground">
+              Already have an account? Create a tax order directly and we'll follow up with document
+              requirements and estimated timelines.
+            </Text>
+
+            <View className="mt-6 flex-row flex-wrap gap-3">
+              <TouchableOpacity
+                onPress={() => {
+                  navigate('CreateTaxOrder');
+                }}
+                className="rounded-full bg-primary px-6 py-2.5"
+                activeOpacity={0.8}>
+                <Text className="text-sm font-semibold text-primaryForeground">
+                  Create Tax Order
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  navigate('AboutUs');
+                }}
+                className="rounded-full border border-primary px-6 py-2.5"
+                activeOpacity={0.8}>
+                <Text className="text-sm font-semibold text-primary">About Us</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </ProtectedScreen>
   );
 };

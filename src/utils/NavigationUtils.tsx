@@ -6,6 +6,7 @@ import {
 } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../navigation/AppStack';
+import { logger } from './logger';
 
 export const navigationRef = createNavigationContainerRef();
 export const useAppNavigation = () => useNavigation<NativeStackNavigationProp<AppStackParamList>>();
@@ -55,11 +56,9 @@ export function navigateToStack(stackName: string, options?: StackParams) {
 
 export async function goBack() {
   if (navigationRef.isReady()) {
-    // Check if canGoBack is true
     if (navigationRef.canGoBack()) {
       navigationRef.dispatch(CommonActions.goBack());
     } else {
-      // Fallback: Navigate to default screen (e.g., Drawer > BottomTabNavigator > HomeStack)
       navigationRef.dispatch(
         CommonActions.navigate({
           name: 'BottomTabNavigator',
@@ -68,7 +67,7 @@ export async function goBack() {
       );
     }
   } else {
-    console.warn('Navigation ref is not ready');
+    logger.warn('Navigation ref is not ready');
   }
 }
 

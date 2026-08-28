@@ -44,8 +44,6 @@ const VerifyOTPScreen = ({
 }) => {
   const { t } = useTranslation();
   const { colors } = useThemeColors();
-  // One string, not six pieces of state: the code lives in a single hidden
-  // TextInput so paste, SMS autofill and backspace are handled by the platform.
   const [otp, setOtp] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [timer, setTimer] = useState(RESEND_COOLDOWN);
@@ -70,8 +68,6 @@ const VerifyOTPScreen = ({
 
   const handleOtpChange = (text: string) => {
     const digits = text.replace(/\D/g, '');
-    // A paste lands after whatever is already in the field, so an overflow means
-    // the tail is the pasted code — keep that and drop the stale prefix.
     setOtp(digits.length > OTP_LENGTH ? digits.slice(-OTP_LENGTH) : digits);
   };
 
@@ -142,7 +138,6 @@ const VerifyOTPScreen = ({
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled">
         <View style={{ marginBottom: bottom }} className="flex-1 justify-start px-6">
-          {/* Header */}
           <View className="items-center pb-10">
             <View className="h-24 w-24 items-center justify-center rounded-full bg-muted">
               <MailCheck size={32} color={colors.mutedForeground} />
@@ -158,7 +153,6 @@ const VerifyOTPScreen = ({
             </Text>
           </View>
 
-          {/* OTP boxes — display only; the real field is the hidden input on top */}
           <View className="gap-2">
             <Text className="text-center text-sm font-medium text-foreground">
               {t('auth.verificationCodeLabel')}
@@ -197,23 +191,18 @@ const VerifyOTPScreen = ({
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 keyboardType="number-pad"
-                // Room for a paste that arrives on top of typed digits; the
-                // handler trims back down to OTP_LENGTH.
                 maxLength={OTP_LENGTH * 2}
                 textContentType="oneTimeCode"
                 autoComplete={Platform.OS === 'android' ? 'sms-otp' : 'one-time-code'}
                 importantForAutofill="yes"
                 autoFocus
                 caretHidden
-                // Invisible but still hit-testable: long-press anywhere on the
-                // row opens the system Paste menu.
                 style={{ opacity: 0 }}
                 className="absolute left-0 top-0 h-full w-full text-center text-2xl"
               />
             </Pressable>
           </View>
 
-          {/* Verify Button */}
           <Button
             onPress={handleVerify}
             disabled={!isOtpComplete || isVerifying}

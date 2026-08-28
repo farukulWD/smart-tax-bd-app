@@ -1,10 +1,8 @@
 import env from '@/env';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { logger } from '@/src/utils/logger';
 
-// Treat a token as expired slightly early: one that expires while the request
-// is in flight would otherwise come back as a 401 instead of being refreshed
-// up front.
 const EXPIRY_LEEWAY_SECONDS = 30;
 
 export const isTokenExpired = (token: string) => {
@@ -27,19 +25,17 @@ export const refreshInstance = axios.create({
   timeout: 60000,
 });
 
-// Logs every response (and failed response) that goes through the app's axios
-// clients. Useful for tracing 401s / session-expiry issues from the device.
 const attachResponseLogger = (client: typeof instance, label: string) => {
   client.interceptors.response.use(
     (response) => {
-      console.log(
+      logger.log(
         `[${label}] ${response.config.method?.toUpperCase()} ${response.config.url} -> ${response.status}`,
         JSON.stringify(response.data, null, 2)
       );
       return response;
     },
     (error) => {
-      console.log(
+      logger.log(
         `[${label}] ${error?.config?.method?.toUpperCase()} ${error?.config?.url} -> ${
           error?.response?.status ?? 'NO_RESPONSE'
         }`,

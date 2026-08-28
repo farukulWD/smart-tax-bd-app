@@ -1,6 +1,5 @@
 export type BlogStatus = 'draft' | 'published';
 
-// List queries use .select('-content') server-side, so list items carry no content.
 export type BlogListItem = {
   _id: string;
   title: string;

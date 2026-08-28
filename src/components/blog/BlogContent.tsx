@@ -3,8 +3,6 @@ import { Linking } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 
-// Content arrives already sanitized by the server (sanitizeContent on write),
-// so the WebView only needs styling and a height probe.
 const buildHtml = (content: string, colors: Record<string, string>) => `
 <!DOCTYPE html>
 <html>
@@ -80,7 +78,6 @@ const BlogContent = ({ content }: { content: string }) => {
 
   return (
     <WebView
-      // Remount on theme flip so the injected CSS variables refresh.
       key={isDark ? 'dark' : 'light'}
       originWhitelist={['*']}
       source={{ html: buildHtml(content, colors as unknown as Record<string, string>) }}
@@ -95,8 +92,6 @@ const BlogContent = ({ content }: { content: string }) => {
         }
       }}
       onShouldStartLoadWithRequest={(request) => {
-        // Only the initial about:blank document load happens in-place;
-        // tapped links go to the system browser.
         if (request.url === 'about:blank' || request.url.startsWith('data:')) {
           return true;
         }

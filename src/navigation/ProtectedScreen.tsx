@@ -8,9 +8,6 @@ type Props = {
 };
 
 export default function ProtectedScreen({ children }: Props) {
-  // Gate on the live access token, not user.accessToken: the login response
-  // deliberately blanks that field and only /users/get-me ever fills it in, so
-  // it is a stale mirror of a DB column rather than the current session.
   const token = useAppSelector((state) => state.auth.token);
 
   if (!token) {

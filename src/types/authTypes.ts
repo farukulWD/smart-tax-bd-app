@@ -31,8 +31,6 @@ export interface IUser {
 
 export interface ILoginData {
   accessToken: string;
-  // The mobile app stores its own copy of the refresh token; the web clients
-  // get the same value as an httpOnly cookie instead.
   refreshToken: string;
   user: IUser;
 }

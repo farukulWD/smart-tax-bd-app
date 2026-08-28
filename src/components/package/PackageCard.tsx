@@ -37,7 +37,6 @@ export const PackageCard: React.FC<PackageCardProps> = ({
   const [isOpen, setIsOpen] = React.useState(false);
   const isContactPrice = typeof price === 'string' && price.includes('Contact');
 
-  // Map “special” states to your palette tokens (no raw grays/emerald/amber)
   const badgeBg = isPlatinum ? 'bg-primary' : highlighted ? 'bg-primary' : 'bg-muted';
   const badgeText = isPlatinum || highlighted ? 'text-primaryForeground' : 'text-foreground';
 
@@ -52,7 +51,6 @@ export const PackageCard: React.FC<PackageCardProps> = ({
           ? 'border-2 border-primary bg-accent'
           : 'border border-border bg-accent'
       )}>
-      {/* Header */}
       <View className="flex-row items-center justify-between px-4 pt-3">
         <View className="flex-1 flex-row items-center gap-3">
           <Text className="text-xl font-bold text-foreground" numberOfLines={1}>
@@ -68,7 +66,6 @@ export const PackageCard: React.FC<PackageCardProps> = ({
           )}
         </View>
 
-        {/* Price */}
         <View>
           {isContactPrice ? (
             <View className="h-12 items-end justify-center">
@@ -89,7 +86,6 @@ export const PackageCard: React.FC<PackageCardProps> = ({
 
       <Text className="px-4 pt-1 text-sm text-mutedForeground">{description}</Text>
 
-      {/* CTA */}
       <View>
         <TouchableOpacity
           onPress={onSelect}
@@ -99,7 +95,6 @@ export const PackageCard: React.FC<PackageCardProps> = ({
         </TouchableOpacity>
       </View>
 
-      {/* Collapsible Features */}
       <Collapsible>
         <CollapsibleTrigger onPress={() => setIsOpen(!isOpen)}>
           <View className="h-12 justify-center border-t border-border bg-secondary px-4">

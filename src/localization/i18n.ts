@@ -21,7 +21,6 @@ const locales = {
   bn: { translation: bn },
 };
 
-// Bangla is the default; a saved preference (loadSavedLocale) overrides it on startup.
 const DEFAULT_LANGUAGE = 'bn';
 
 i18n.use(initReactI18next).init({
@@ -33,7 +32,6 @@ i18n.use(initReactI18next).init({
   },
 });
 
-// Load saved language preference on app startup
 loadSavedLocale();
 
 export default i18n;

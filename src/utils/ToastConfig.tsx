@@ -24,8 +24,6 @@ const CustomToastLayout = ({ text1, icon, bgStyle, textStyle }: CustomToastLayou
 );
 
 export const createToastConfig = (colors: ThemeColors): ToastConfig => {
-  // The capsule sits on the theme's card surface with a status-tinted border and
-  // label, so it stays legible in both themes. A fixed pastel fill could not.
   const capsule = (accent: string): { bg: ViewStyle; text: TextStyle } => ({
     bg: { backgroundColor: colors.card, borderColor: accent },
     text: { color: accent },
@@ -116,7 +114,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  // --- Capsule design ---
   customBaseContainer: {
     flexDirection: 'row',
     alignItems: 'center',

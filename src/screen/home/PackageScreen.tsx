@@ -1,8 +1,8 @@
-// screens/PackagesScreen.tsx
 import { ScrollView, View } from 'react-native';
 import AppText from '@/src/components/common/AppText';
 import { PackageCard } from '../../components/package/PackageCard';
 import TitleHeader from '@/src/components/global/TitleHeader';
+import { logger } from '@/src/utils/logger';
 
 const packages = [
   {
@@ -69,11 +69,7 @@ export default function PackagesScreen() {
         <AppText className="my-2 text-3xl font-bold text-foreground">Choose Your Package</AppText>
         <View className="gap-3 pb-6">
           {packages.map((pkg, index) => (
-            <PackageCard
-              key={index}
-              {...pkg}
-              onSelect={() => console.log(`${pkg.name} selected`)}
-            />
+            <PackageCard key={index} {...pkg} onSelect={() => logger.log(`${pkg.name} selected`)} />
           ))}
         </View>
       </ScrollView>

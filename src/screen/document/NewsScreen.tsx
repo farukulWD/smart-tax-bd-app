@@ -5,8 +5,6 @@ import { Newspaper, Calendar, AlertCircle, ChevronRight } from 'lucide-react-nat
 import ScreenHeader from '@/src/components/common/ScreenHeader';
 import { navigate } from '@/src/utils/NavigationUtils';
 
-// ─── helpers ──────────────────────────────────────────────────────────────────
-
 const formatDate = (dateStr: string) =>
   new Date(dateStr).toLocaleDateString('en-BD', {
     day: '2-digit',
@@ -21,7 +19,6 @@ const getInitials = (title: string) =>
     .map((w) => w[0]?.toUpperCase() ?? '')
     .join('');
 
-// Cycle through a few accent shades based on index
 const ACCENT_SETS = [
   { bg: 'bg-primary/15', text: 'text-primary' },
   { bg: 'bg-warning/15', text: 'text-warning' },
@@ -29,8 +26,6 @@ const ACCENT_SETS = [
   { bg: 'bg-primary/10', text: 'text-primary' },
 ];
 const getAccent = (idx: number) => ACCENT_SETS[idx % ACCENT_SETS.length];
-
-// ─── News Card ────────────────────────────────────────────────────────────────
 
 const NewsCard = ({
   item,
@@ -49,14 +44,12 @@ const NewsCard = ({
       activeOpacity={0.78}
       className="mx-4 mb-3 overflow-hidden rounded-2xl border border-border bg-card">
       <View className="flex-row items-stretch">
-        {/* Left avatar */}
         <View className={`w-14 items-center justify-center ${accent.bg} flex-shrink-0`}>
           <AppText className={`text-base font-bold ${accent.text}`}>
             {getInitials(item.title)}
           </AppText>
         </View>
 
-        {/* Content */}
         <View className="flex-1 px-3 py-3.5">
           <AppText
             className="mb-1 text-sm font-bold leading-5 text-cardForeground"
@@ -67,7 +60,6 @@ const NewsCard = ({
             {item.description}
           </AppText>
 
-          {/* Footer meta */}
           <View className="flex-row items-center justify-between">
             <View className="flex-row items-center gap-1">
               <Calendar size={11} color="hsl(0, 0%, 60%)" />
@@ -86,8 +78,6 @@ const NewsCard = ({
   );
 };
 
-// ─── Empty State ──────────────────────────────────────────────────────────────
-
 const EmptyState = () => (
   <View className="flex-1 items-center justify-center gap-3 px-8 py-16">
     <View className="mb-2 h-16 w-16 items-center justify-center rounded-full bg-muted">
@@ -99,8 +89,6 @@ const EmptyState = () => (
     </AppText>
   </View>
 );
-
-// ─── Main Screen ──────────────────────────────────────────────────────────────
 
 const NewsScreen = () => {
   const { data, isLoading, error, refetch, isFetching } = useGetAllNewsQuery();

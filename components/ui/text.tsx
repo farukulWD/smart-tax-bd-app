@@ -77,11 +77,6 @@ function Text({
   }) {
   const textClass = React.useContext(TextClassContext);
   const Component = asChild ? Slot.Text : RNText;
-  // Android clips the last cluster of Bangla text ("লগ ইন" renders as "লগ")
-  // with the default high-quality break strategy; the simple strategy plus a
-  // trailing space keeps the whole string on screen.
-  // Slot.Text forwards to a single child element, so it must not be handed the
-  // extra trailing space or the Android-only text props.
   const androidTextFix =
     Platform.OS === 'android' && !asChild
       ? ({ textBreakStrategy: 'simple', android_hyphenationFrequency: 'none' } as const)

@@ -1,5 +1,6 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { TAuth } from '../types/authTypes';
+import { logger } from '@/src/utils/logger';
 
 const useAuthInfo = () => {
   const [authInfo, setAuthInfo] = useState({
@@ -9,7 +10,7 @@ const useAuthInfo = () => {
     screen: 'SignIn' as TAuth,
   });
 
-  console.log('authInfo', JSON.stringify(authInfo, null, 2));
+  logger.log('authInfo', JSON.stringify(authInfo, null, 2));
   const handleAuthInfo = (key: string, value: any) => {
     setAuthInfo({ ...authInfo, [key]: value });
   };

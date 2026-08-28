@@ -1,5 +1,3 @@
-// ─── sub-components ──────────────────────────────────────────────────────────
-
 import { PreviewFile } from '@/src/types/commonTypes';
 import { Download, FileText, X } from 'lucide-react-native';
 import { ActivityIndicator, Image, Linking, Modal, TouchableOpacity, View } from 'react-native';
@@ -7,8 +5,6 @@ import AppText from '@/src/components/common/AppText';
 import { useTranslation } from 'react-i18next';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-// ─── Preview Modal ────────────────────────────────────────────────────────────
 
 const PreviewModal = ({
   visible,
@@ -30,7 +26,6 @@ const PreviewModal = ({
   return (
     <Modal visible={visible} animationType="slide" statusBarTranslucent onRequestClose={onClose}>
       <SafeAreaView className="flex-1 bg-card">
-        {/* Header */}
         <View className="flex-row items-center justify-between border-b border-border px-4 pb-3 pt-5">
           <View className="mr-3 flex-1">
             <AppText className="text-base font-bold text-foreground" numberOfLines={1}>
@@ -49,7 +44,6 @@ const PreviewModal = ({
           </TouchableOpacity>
         </View>
 
-        {/* Content */}
         <View className="m-4 flex-1 items-center justify-center overflow-hidden rounded-2xl bg-muted">
           {file.type === 'image' ? (
             <Image source={{ uri: file.url }} className="h-full w-full" resizeMode="contain" />
@@ -77,7 +71,6 @@ const PreviewModal = ({
           )}
         </View>
 
-        {/* Footer */}
         <View className="flex-row gap-3 px-4 pb-8 pt-2">
           <TouchableOpacity
             onPress={onClose}

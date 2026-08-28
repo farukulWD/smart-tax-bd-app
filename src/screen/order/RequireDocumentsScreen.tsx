@@ -27,12 +27,10 @@ import { isImageUrl, isPdfUrl } from '@/src/utils/commonFunction';
 import { PreviewFile } from '@/src/types/commonTypes';
 import PreviewModal from '@/src/components/order/PreviewModal';
 import { useThemeColors } from '@/src/theme/useThemeColors';
+import { logger } from '@/src/utils/logger';
 
 type LocalPreview = { doc: string; uri: string; name: string; isImage: boolean };
 
-// axiosBaseQuery puts the raw axios message (a plain string) in `error.data`
-// whenever the server did not answer with JSON — timeouts, 413s and network
-// drops all land here, so reading `error.data.message` alone loses the reason.
 const errorMessage = (error: any, fallback: string) => {
   const data = error?.data;
   const detail =
@@ -95,10 +93,7 @@ const RequireDocumentsScreen = () => {
   const uploadedDocTypes = Object.keys(latestFileByType);
   const missingDocuments = requiredDocuments.filter((doc) => !uploadedDocTypes.includes(doc));
   const stepTwoReady = requiredDocuments.length > 0 && missingDocuments.length === 0;
-  // Only in-flight work greys the payment button out — missing documents do not.
   const isPaymentBusy = isSubmittingStepTwo || isSkipping || isFilesLoading;
-
-  // ── handlers ────────────────────────────────────────────────────────────────
 
   const openPreview = (url: string, name: string, type: PreviewFile['type']) => {
     setPreviewFile({ url, name, type });
@@ -122,7 +117,7 @@ const RequireDocumentsScreen = () => {
         toast.success(t('documents.downloadComplete'));
       }
     } catch (err: any) {
-      console.log('err', JSON.stringify(err, null, 2));
+      logger.log('err', JSON.stringify(err, null, 2));
       toast.error(err?.message || t('documents.downloadFailed'));
     } finally {
       setIsDownloading(false);
@@ -150,7 +145,7 @@ const RequireDocumentsScreen = () => {
         await refetchOrder();
       } catch (_) {}
     } catch (error: any) {
-      console.log('upload error', JSON.stringify(error, null, 2));
+      logger.log('upload error', JSON.stringify(error, null, 2));
       toast.error(errorMessage(error, t('documents.uploadFailed')));
     } finally {
       setIsLocalUploading(false);
@@ -180,7 +175,6 @@ const RequireDocumentsScreen = () => {
       const asset = result.assets[0];
       const mimeType = asset.mimeType || 'application/octet-stream';
 
-      // optimistic thumbnail from the local file while the upload runs
       setLocalPreview({
         doc,
         uri: asset.uri,
@@ -204,10 +198,6 @@ const RequireDocumentsScreen = () => {
         return;
       }
 
-      // Compressed on purpose: a raw full-size capture was large enough to be
-      // rejected by the upload endpoint. expo-image-picker re-encodes before
-      // resolving, so the capture takes a moment — the card is already marked
-      // busy by startUpload() so the spinner is on screen when we come back.
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ['images'],
         quality: 0.8,
@@ -230,10 +220,6 @@ const RequireDocumentsScreen = () => {
     }
   };
 
-  // The native camera/file picker resolves only after it has written and
-  // compressed the file, which takes a while. Marking the card busy before the
-  // picker is launched means the spinner is already on screen the moment the
-  // picker closes, instead of appearing seconds later.
   const startUpload = (doc: string, launch: (doc: string) => Promise<void>) => {
     setActiveDoc(doc);
     setIsLocalUploading(true);
@@ -247,9 +233,6 @@ const RequireDocumentsScreen = () => {
     setShowUploadOptions(true);
   };
 
-  // navigate() pushes a new screen in React Navigation 7, so a stale
-  // CreateTaxOrder entry lower in the stack has to be popped to explicitly —
-  // goBack() alone can land on whatever screen pushed this one.
   const handleBackToCreateOrder = () => {
     const hasCreateOrderScreen = navigation
       .getState()
@@ -272,10 +255,6 @@ const RequireDocumentsScreen = () => {
   const handleSubmitStepTwo = async () => {
     if (!taxId) return;
 
-    // Missing documents do not block payment. The order is parked with
-    // `files_upload_pending` instead, and the server's `syncTaxDocumentState`
-    // attaches whatever is uploaded afterwards and clears the flag on its own —
-    // so anything already uploaded is kept, not discarded by taking this path.
     if (!stepTwoReady) {
       const missing = missingDocuments.join(', ');
       if (missing) toast.warning(t('documents.uploadMissingLater', { missing }));
@@ -301,8 +280,6 @@ const RequireDocumentsScreen = () => {
     }
   };
 
-  // ── render ───────────────────────────────────────────────────────────────────
-
   return (
     <ProtectedScreen>
       <View style={{ paddingTop: top, paddingBottom: bottom }} className="flex-1 bg-background">
@@ -315,8 +292,6 @@ const RequireDocumentsScreen = () => {
           </AppText>
         </View>
         <View className="mx-4 flex-1 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
-          {/* Card */}
-          {/* Card header */}
           <View className="border-b border-border p-4 pb-3">
             <AppText className="text-base font-bold text-foreground">
               {t('documents.cardTitle')}
@@ -327,9 +302,6 @@ const RequireDocumentsScreen = () => {
               paddingVertical: 16,
             }}
             showsVerticalScrollIndicator={false}>
-            {/* Header */}
-
-            {/* Document grid */}
             <View className="mx-4 flex-1">
               {requiredDocuments.length === 0 ? (
                 <View className="items-center gap-2 py-10">
@@ -369,7 +341,6 @@ const RequireDocumentsScreen = () => {
                 </View>
               )}
 
-              {/* Missing notice */}
               {!stepTwoReady && missingDocuments.length > 0 && (
                 <View className="mt-4 flex-row items-center gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3">
                   <AlertCircle size={15} color={colors.warning} />
@@ -393,7 +364,6 @@ const RequireDocumentsScreen = () => {
             </View>
           </ScrollView>
         </View>
-        {/* Submit button */}
         <TouchableOpacity
           onPress={handleSubmitStepTwo}
           disabled={isPaymentBusy || requiredDocuments.length === 0}
@@ -429,7 +399,6 @@ const RequireDocumentsScreen = () => {
           </AppText>
         </TouchableOpacity>
 
-        {/* Upload option modal */}
         <UploadOptionModal
           visible={showUploadOptions}
           doc={pendingDoc}
@@ -447,7 +416,6 @@ const RequireDocumentsScreen = () => {
           }}
         />
 
-        {/* Preview Modal */}
         <PreviewModal
           visible={isPreviewOpen}
           file={previewFile}

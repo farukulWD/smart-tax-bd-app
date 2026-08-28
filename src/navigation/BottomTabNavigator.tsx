@@ -1,4 +1,3 @@
-// src/navigation/BottomTabNavigator.tsx
 import { View } from 'react-native';
 import { createBottomTabNavigator, type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import type { NavigatorScreenParams } from '@react-navigation/native';

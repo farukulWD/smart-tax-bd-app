@@ -14,15 +14,8 @@ import { FolderOpen, AlertCircle } from 'lucide-react-native';
 import PreviewModal from '@/src/components/order/PreviewModal';
 import ConfirmModal from '@/src/components/global/ConfirmModal';
 import FileCard from '@/src/components/profile/FileCard';
-// import RenameModal from '@/src/components/profile/RenameModal';
 import ScreenHeader from '@/src/components/common/ScreenHeader';
-import {
-  useGetMyFilesQuery,
-  // useUploadFileMutation,
-  useDeleteFileMutation,
-  // useUpdateFileMutation,
-} from '@/src/services/fileApi';
-// import { useGetMyOrdersQuery } from '@/src/services/orderApi';
+import { useGetMyFilesQuery, useDeleteFileMutation } from '@/src/services/fileApi';
 import { IFile } from '@/src/types/filesTypes';
 import { toPreviewFile } from '@/src/utils/fileHelpers';
 import { toast } from '@/src/utils/ToastConfig';
@@ -44,33 +37,15 @@ const EmptyState = () => (
 const MyFilesScreen = () => {
   const [selectedFile, setSelectedFile] = useState<IFile | null>(null);
   const [previewVisible, setPreviewVisible] = useState(false);
-  // const [renameFile, setRenameFile] = useState<IFile | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<IFile | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const { data, isLoading, error, refetch, isFetching } = useGetMyFilesQuery(undefined);
   const [deleteFile] = useDeleteFileMutation();
-  // const [updateFile, { isLoading: isUpdating }] = useUpdateFileMutation();
 
   const files: IFile[] = data?.data ?? [];
 
   const errorMessage = getApiErrorMessage(error);
-
-  // const handleRename = useCallback(
-  //   async (name: string) => {
-  //     if (!renameFile || !name || name === renameFile.name) return;
-  //     try {
-  //       await updateFile({ id: renameFile._id, data: { name } }).unwrap();
-  //       toast.success('File renamed successfully');
-  //       setRenameFile(null);
-  //     } catch (err: any) {
-  //       const message =
-  //         err?.data?.message || err?.data?.error || err?.message || 'Failed to rename file';
-  //       toast.error(message);
-  //     }
-  //   },
-  //   [renameFile, updateFile]
-  // );
 
   const handleConfirmDelete = useCallback(async () => {
     if (!deleteTarget) return;
@@ -92,22 +67,6 @@ const MyFilesScreen = () => {
   const handleCancelDelete = useCallback(() => {
     setDeleteTarget(null);
   }, []);
-
-  // const handleRename = useCallback(
-  //   async (name: string) => {
-  //     if (!renameFile || !name || name === renameFile.name) return;
-  //     try {
-  //       await updateFile({ id: renameFile._id, data: { name } }).unwrap();
-  //       toast.success('File renamed successfully');
-  //       setRenameFile(null);
-  //     } catch (err: any) {
-  //       const message =
-  //         err?.data?.message || err?.data?.error || err?.message || 'Failed to rename file';
-  //       toast.error(message);
-  //     }
-  //   },
-  //   [renameFile, updateFile]
-  // );
 
   const downloadFile = useCallback(async (url: string, name?: string) => {
     try {
@@ -194,16 +153,6 @@ const MyFilesScreen = () => {
           onDownload={() => downloadFile(selectedFile!.file, selectedFile!.name)}
           isDownloading={isDownloading}
         />
-
-        {/*
-      <RenameModal
-        visible={!!renameFile}
-        currentName={renameFile?.name ?? ''}
-        isUpdating={isUpdating}
-        onClose={() => setRenameFile(null)}
-        onSave={handleRename}
-      />
-      */}
 
         <ConfirmModal
           visible={!!deleteTarget}

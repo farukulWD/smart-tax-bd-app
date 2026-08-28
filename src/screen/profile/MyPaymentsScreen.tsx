@@ -14,11 +14,7 @@ import ScreenHeader from '@/src/components/common/ScreenHeader';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { getApiErrorMessage } from '@/src/services/globalErrorHandler';
 
-// ─── types ────────────────────────────────────────────────────────────────────
-
 type FilterStatus = 'all' | 'completed' | 'pending' | 'failed';
-
-// ─── helpers ──────────────────────────────────────────────────────────────────
 
 const formatAmount = (amount: number) => `৳ ${amount.toLocaleString('en-BD')}`;
 
@@ -29,8 +25,6 @@ const formatPaymentFor = (paymentFor: string) =>
     .join(' ');
 
 const shortenId = (id: string) => `…${id.slice(-8)}`;
-
-// ─── status config (uses only green/amber/destructive semantic tokens) ────────
 
 const statusConfig = {
   completed: {
@@ -55,8 +49,6 @@ const statusConfig = {
     amountText: 'text-destructive',
   },
 };
-
-// ─── Summary Bar ──────────────────────────────────────────────────────────────
 
 const SummaryBar = ({ payments }: { payments: IPayment[] }) => {
   const completed = payments.filter((p) => p.status === 'completed');
@@ -86,8 +78,6 @@ const SummaryBar = ({ payments }: { payments: IPayment[] }) => {
     </View>
   );
 };
-
-// ─── Filter Tabs ──────────────────────────────────────────────────────────────
 
 const FILTERS: { key: FilterStatus; label: string }[] = [
   { key: 'all', label: 'All' },
@@ -140,15 +130,12 @@ const FilterTabs = ({
   </View>
 );
 
-// ─── Payment Card ─────────────────────────────────────────────────────────────
-
 const PaymentCard = ({ item }: { item: IPayment }) => {
   const cfg = statusConfig[item.status] ?? statusConfig.pending;
   return (
     <View
       className={`mx-4 mb-3 border border-l-4 border-border bg-card ${cfg.borderAccent} overflow-hidden rounded-2xl`}>
       <View className="px-4 py-4">
-        {/* Top row */}
         <View className="mb-3 flex-row items-start justify-between">
           <View className="mr-3 flex-1">
             <AppText className="mb-0.5 text-sm font-bold text-cardForeground">
@@ -164,9 +151,7 @@ const PaymentCard = ({ item }: { item: IPayment }) => {
           </AppText>
         </View>
 
-        {/* Bottom row */}
         <View className="flex-row items-center justify-between">
-          {/* Transaction ID */}
           <View className="mr-2 flex-1 flex-row items-center gap-1.5">
             <Receipt size={11} color="hsl(0, 0%, 60%)" />
             <AppText className="text-xs text-mutedForeground" numberOfLines={1}>
@@ -174,7 +159,6 @@ const PaymentCard = ({ item }: { item: IPayment }) => {
             </AppText>
           </View>
 
-          {/* Status pill */}
           <View className={`flex-row items-center gap-1 rounded-full px-2.5 py-1 ${cfg.pillBg}`}>
             {item.status === 'completed' && <CheckCircle2 size={13} color="hsl(125, 70%, 33%)" />}
             {item.status === 'pending' && <Clock size={13} color="hsl(48, 96%, 53%)" />}
@@ -187,8 +171,6 @@ const PaymentCard = ({ item }: { item: IPayment }) => {
   );
 };
 
-// ─── Empty State ──────────────────────────────────────────────────────────────
-
 const EmptyState = ({ filter }: { filter: FilterStatus }) => (
   <View className="flex-1 items-center justify-center gap-3 px-8 py-16">
     <View className="mb-2 h-16 w-16 items-center justify-center rounded-full bg-muted">
@@ -200,8 +182,6 @@ const EmptyState = ({ filter }: { filter: FilterStatus }) => (
     </AppText>
   </View>
 );
-
-// ─── Error State ──────────────────────────────────────────────────────────────
 
 const ErrorState = ({ onRetry, message }: { onRetry: () => void; message?: string }) => (
   <View className="flex-1 items-center justify-center gap-4 px-8">
@@ -219,8 +199,6 @@ const ErrorState = ({ onRetry, message }: { onRetry: () => void; message?: strin
     </TouchableOpacity>
   </View>
 );
-
-// ─── Main Screen ──────────────────────────────────────────────────────────────
 
 const MyPaymentsScreen = () => {
   const [filter, setFilter] = useState<FilterStatus>('all');

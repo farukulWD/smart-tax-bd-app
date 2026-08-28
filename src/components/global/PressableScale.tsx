@@ -1,34 +1,35 @@
-import React, { useCallback, useMemo } from "react";
-import { GestureResponderEvent, TouchableWithoutFeedbackProps, TouchableWithoutFeedback, View } from "react-native";
-import Reanimated, { useAnimatedStyle, useSharedValue, withSpring, WithSpringConfig } from "react-native-reanimated";
+import React, { useCallback, useMemo } from 'react';
+import {
+  GestureResponderEvent,
+  TouchableWithoutFeedbackProps,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
+import Reanimated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  WithSpringConfig,
+} from 'react-native-reanimated';
 
-export interface PressableScaleProps extends TouchableWithoutFeedbackProps, Partial<Omit<WithSpringConfig, "mass">> {
+export interface PressableScaleProps
+  extends TouchableWithoutFeedbackProps, Partial<Omit<WithSpringConfig, 'mass'>> {
   children: React.ReactNode;
-  /**
-   * The value to scale to when the Pressable is being pressed.
-   * @default 0.95
-   */
   activeScale?: number;
 
-  /**
-   * The weight physics of this button
-   * @default 'heavy'
-   */
-  weight?: "light" | "medium" | "heavy";
+  weight?: 'light' | 'medium' | 'heavy';
   className?: string;
   restSpeedThreshold?: number;
   restDisplacementThreshold?: number;
 }
 
-const ReanimatedTouchableWithoutFeedback = Reanimated.createAnimatedComponent(TouchableWithoutFeedback);
+const ReanimatedTouchableWithoutFeedback =
+  Reanimated.createAnimatedComponent(TouchableWithoutFeedback);
 
-/**
- * A Pressable that scales down when pressed. Uses the JS Pressability API.
- */
 export function PressableScale(props: PressableScaleProps): React.ReactElement {
   const {
     activeScale = 0.95,
-    weight = "heavy",
+    weight = 'heavy',
     damping = 15,
     stiffness = 150,
     overshootClamping = true,
@@ -45,11 +46,11 @@ export function PressableScale(props: PressableScaleProps): React.ReactElement {
 
   const mass = useMemo(() => {
     switch (weight) {
-      case "light":
+      case 'light':
         return 0.15;
-      case "medium":
+      case 'medium':
         return 0.2;
-      case "heavy":
+      case 'heavy':
       default:
         return 0.3;
     }
@@ -96,8 +97,7 @@ export function PressableScale(props: PressableScaleProps): React.ReactElement {
       onPressIn={onPressIn}
       onPressOut={onPressOut}
       style={touchableStyle}
-      {...passThroughProps}
-    >
+      {...passThroughProps}>
       <View style={style} className={className}>
         {children}
       </View>

@@ -25,8 +25,6 @@ import {
   ProfileStat,
 } from '@/src/components/profile/ProfileComponents';
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
-
 const ProfileScreen = () => {
   const { t } = useTranslation();
   const { setLocale, isEnglish } = useLocale();
@@ -78,15 +76,12 @@ const ProfileScreen = () => {
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}>
-        {/* ── User Card ─────────────────────────────────────────────────── */}
         {token ? (
           <View className="mx-4 mt-2 overflow-hidden rounded-3xl border border-border bg-card">
-            {/* Green accent strip */}
             <View className="h-2 w-full bg-primary" />
 
             <View className="px-4 pb-4 pt-4">
               <View className="flex-row items-center">
-                {/* Avatar */}
                 <View className="h-14 w-14 items-center justify-center rounded-full border-2 border-primary bg-primary/20">
                   <AppText className="text-lg font-bold text-primary">{initials}</AppText>
                 </View>
@@ -97,7 +92,6 @@ const ProfileScreen = () => {
                   <AppText className="text-xs text-mutedForeground">{user?.mobile}</AppText>
                 </View>
 
-                {/* Status badge */}
                 <View className="rounded-full border border-primary/50 bg-primary/10 px-3 py-1">
                   <AppText className="text-xs font-bold capitalize text-primary">
                     {user?.status}
@@ -107,7 +101,6 @@ const ProfileScreen = () => {
             </View>
           </View>
         ) : (
-          /* ── Guest Card ─────────────────────────────────────────────── */
           <View className="mx-4 mt-2 rounded-3xl border border-border bg-card px-4 py-5">
             <View className="mb-3 h-14 w-14 items-center justify-center rounded-full border border-border bg-muted">
               <LucideIcon name="User" className="text-mutedForeground" size={24} />
@@ -139,7 +132,6 @@ const ProfileScreen = () => {
           </View>
         )}
 
-        {/* ── Stats ─────────────────────────────────────────────────────── */}
         {token && (
           <>
             <SectionLabel label={t('profile.overview')} />
@@ -151,7 +143,6 @@ const ProfileScreen = () => {
           </>
         )}
 
-        {/* ── Activity ──────────────────────────────────────────────────── */}
         <SectionLabel label={t('profile.activity')} />
         <View className="mx-4 overflow-hidden rounded-2xl border border-border bg-card">
           <MenuItem
@@ -178,7 +169,6 @@ const ProfileScreen = () => {
           />
         </View>
 
-        {/* ── Info & Support ────────────────────────────────────────────── */}
         <SectionLabel label={t('profile.infoSupport')} />
         <View className="mx-4 overflow-hidden rounded-2xl border border-border bg-card">
           <MenuItem
@@ -218,7 +208,6 @@ const ProfileScreen = () => {
           />
         </View>
 
-        {/* ── Account Actions ───────────────────────────────────────────── */}
         <SectionLabel label={t('profile.account')} />
         <View className="mx-4 overflow-hidden rounded-2xl border border-border bg-card">
           {token ? (
@@ -250,7 +239,6 @@ const ProfileScreen = () => {
           )}
         </View>
 
-        {/* ── App Version ───────────────────────────────────────────────── */}
         <AppText className="mt-6 text-center text-xs text-mutedForeground">
           {t('profile.version', { version: APP_VERSION })}
         </AppText>
@@ -265,16 +253,9 @@ const ProfileScreen = () => {
         destructive
         isLoading={isLoggingOut}
         onConfirm={async () => {
-          // Clears the httpOnly refresh-token cookie server side. Without it the
-          // device keeps a valid session that /auth/refresh-token would happily
-          // trade for a new access token after the local state was wiped.
-          // A failure here must not strand the user in a signed-in shell, so the
-          // local logout runs either way.
           try {
             await logoutRequest(undefined).unwrap();
-          } catch {
-            // ignore — offline or already-expired session
-          }
+          } catch {}
           store.dispatch(logout());
           setActiveConfirm(null);
         }}

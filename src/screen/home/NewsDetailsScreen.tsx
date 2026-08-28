@@ -19,8 +19,6 @@ import ScreenHeader from '@/src/components/common/ScreenHeader';
 
 type Props = RouteProp<AppStackParamList, 'NewsDetails'>;
 
-// ─── Meta Row ─────────────────────────────────────────────────────────────────
-
 const MetaRow = ({
   icon,
   label,
@@ -49,8 +47,6 @@ const MetaRow = ({
   </View>
 );
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
-
 const NewsDetailsScreen = () => {
   const route = useRoute<Props>();
   const { newsId } = route.params;
@@ -58,8 +54,6 @@ const NewsDetailsScreen = () => {
 
   const { data, isLoading, error, refetch } = useGetSingleNewsQuery(newsId);
   const news = data?.data;
-
-  // ── Loading ──────────────────────────────────────────────────────────────
 
   if (isLoading) {
     return (
@@ -71,8 +65,6 @@ const NewsDetailsScreen = () => {
       </View>
     );
   }
-
-  // ── Error ────────────────────────────────────────────────────────────────
 
   if (error) {
     return (
@@ -105,8 +97,6 @@ const NewsDetailsScreen = () => {
     );
   }
 
-  // ── Not Found ────────────────────────────────────────────────────────────
-
   if (!news) {
     return (
       <View
@@ -130,8 +120,6 @@ const NewsDetailsScreen = () => {
     );
   }
 
-  // ── Content ──────────────────────────────────────────────────────────────
-
   return (
     <View className="flex-1 bg-background">
       <ScreenHeader title="News Details" />
@@ -139,7 +127,6 @@ const NewsDetailsScreen = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        {/* Status badge */}
         <View className="mb-4 flex-row">
           <View
             className={`flex-row items-center gap-1.5 rounded-full px-3 py-1.5 ${
@@ -156,12 +143,10 @@ const NewsDetailsScreen = () => {
           </View>
         </View>
 
-        {/* Title */}
         <AppText className="mb-5 text-2xl font-bold leading-8 text-foreground">
           {news.title}
         </AppText>
 
-        {/* Description card */}
         <View className="mb-4 rounded-2xl border border-border bg-card p-4">
           <AppText className="mb-3 text-xs font-bold uppercase tracking-wider text-mutedForeground">
             Description
@@ -169,7 +154,6 @@ const NewsDetailsScreen = () => {
           <AppText className="text-sm leading-7 text-foreground">{news.description}</AppText>
         </View>
 
-        {/* Meta card */}
         <View className="mb-4 rounded-2xl border border-border bg-card px-4">
           <MetaRow
             icon={<Hash size={13} color="hsl(0, 0%, 60%)" />}
@@ -200,7 +184,6 @@ const NewsDetailsScreen = () => {
           />
         </View>
 
-        {/* Back button */}
         <TouchableOpacity
           onPress={() => goBack()}
           activeOpacity={0.85}

@@ -58,9 +58,7 @@ const UploadFileModal = ({ visible, isUploading, onClose, onUpload }: UploadFile
       if (!result.canceled && result.assets?.[0]) {
         setSelectedAsset(result.assets[0]);
       }
-    } catch {
-      /* ignore */
-    }
+    } catch {}
   };
 
   const handleSubmit = async () => {

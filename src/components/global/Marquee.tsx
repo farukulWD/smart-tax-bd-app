@@ -7,7 +7,6 @@ import Animated, {
   SharedValue,
 } from 'react-native-reanimated';
 
-// ─── MeasureElement ───────────────────────────────────────────────────────────
 interface MeasureElementProps {
   onLayout: (width: number) => void;
   children: React.ReactNode;
@@ -19,7 +18,6 @@ const MeasureElement: React.FC<MeasureElementProps> = ({ onLayout, children }) =
   </Animated.ScrollView>
 );
 
-// ─── TranslatedElement ────────────────────────────────────────────────────────
 interface TranslatedElementProps {
   index: number;
   children: React.ReactNode;
@@ -43,7 +41,6 @@ const TranslatedElement: React.FC<TranslatedElementProps> = ({
   );
 };
 
-// ─── Cloner ───────────────────────────────────────────────────────────────────
 const getIndicesArray = (length: number): number[] => Array.from({ length }, (_, i) => i);
 
 interface ClonerProps {
@@ -55,9 +52,7 @@ const Cloner: React.FC<ClonerProps> = ({ count, renderChild }) => (
   <>{getIndicesArray(count).map(renderChild)}</>
 );
 
-// ─── ChildrenScroller ─────────────────────────────────────────────────────────
 interface ChildrenScrollerProps {
-  /** Pixels per millisecond */
   speed: number;
   childrenWidth: number;
   parentWidth: number;
@@ -72,7 +67,6 @@ const ChildrenScroller: React.FC<ChildrenScrollerProps> = ({
 }) => {
   const offset = useSharedValue(0);
 
-  // Constant pixel-per-ms speed — independent of content width
   useFrameCallback((frameInfo) => {
     const delta = (frameInfo.timeSincePreviousFrame ?? 16) * speed;
     offset.value = (offset.value + delta) % childrenWidth;
@@ -93,13 +87,7 @@ const ChildrenScroller: React.FC<ChildrenScrollerProps> = ({
   return <Cloner count={count} renderChild={renderChild} />;
 };
 
-// ─── Marquee (public API) ─────────────────────────────────────────────────────
 interface MarqueeProps {
-  /**
-   * Scroll speed in pixels per second.
-   * Constant regardless of content length — short or long text moves at the same pace.
-   * @default 50
-   */
   speed?: number;
   children: React.ReactNode;
   style?: any;
@@ -110,7 +98,6 @@ const Marquee: React.FC<MarqueeProps> = ({ speed = 50, children, style, classNam
   const [parentWidth, setParentWidth] = React.useState(0);
   const [childrenWidth, setChildrenWidth] = React.useState(0);
 
-  // Convert px/s → px/ms for frame callback
   const pxPerMs = speed / 1000;
 
   return (
@@ -120,10 +107,8 @@ const Marquee: React.FC<MarqueeProps> = ({ speed = 50, children, style, classNam
       onLayout={(ev) => setParentWidth(ev.nativeEvent.layout.width)}
       pointerEvents="box-none">
       <View style={marqueeStyles.row} pointerEvents="box-none">
-        {/* Invisible measurement pass */}
         <MeasureElement onLayout={setChildrenWidth}>{children}</MeasureElement>
 
-        {/* Render only after both widths are known */}
         {childrenWidth > 0 && parentWidth > 0 && (
           <ChildrenScroller speed={pxPerMs} parentWidth={parentWidth} childrenWidth={childrenWidth}>
             {children}
@@ -134,7 +119,6 @@ const Marquee: React.FC<MarqueeProps> = ({ speed = 50, children, style, classNam
   );
 };
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
 const marqueeStyles = StyleSheet.create({
   hidden: {
     opacity: 0,
@@ -150,16 +134,3 @@ const marqueeStyles = StyleSheet.create({
 });
 
 export default Marquee;
-
-// ─── Usage example ────────────────────────────────────────────────────────────
-// <Marquee speed={60}>
-//   <Text>Short text</Text>
-// </Marquee>
-//
-// <Marquee speed={60}>
-//   <Text>A very very long piece of text that scrolls at the exact same speed</Text>
-// </Marquee>
-//
-// <Marquee speed={80} style={{ backgroundColor: '#000', paddingVertical: 8 }}>
-//   <Text style={{ color: '#fff' }}>Custom styled marquee</Text>
-// </Marquee>

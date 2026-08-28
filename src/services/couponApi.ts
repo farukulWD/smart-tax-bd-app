@@ -5,8 +5,6 @@ import { IOrder } from './orderApi';
 const couponApi = baseApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    // The discount is computed and stored server-side; the app only ever sends
-    // the code and re-reads the order.
     applyCoupon: builder.mutation<
       TResponse<{ tax_order: IOrder }>,
       { taxId: string; code: string }

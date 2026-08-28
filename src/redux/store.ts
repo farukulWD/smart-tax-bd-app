@@ -1,5 +1,3 @@
-//src/redux/store.ts
-
 import { configureStore, Middleware } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,20 +25,12 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// The cache must be cleared *after* the logout reducer runs. Clearing it first
-// swapped its children out and every still-subscribed query refetches at once —
-// each refetch 401s, dispatches logout again, and the cycle repeats forever.
 const resetApiOnLogout: Middleware = (storeAPI) => (next) => (action) => {
   const result = next(action);
   if ((action as { type: string }).type === logout.type) {
     storeAPI.dispatch(baseApi.util.resetApiState());
     cancelInFlightRefresh();
-    // redux-persist only writes on its own throttle, so the previous user's
-    // token and profile can still be sitting in AsyncStorage if the app is
-    // killed right after signing out. flush() writes the cleared state now.
     persistor?.flush();
-    // The refresh token lives outside Redux, so clearing the slice does not
-    // reach it. Covers both the manual logout and the one endSession() fires.
     void clearRefreshToken();
   }
   return result;

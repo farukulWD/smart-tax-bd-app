@@ -73,7 +73,6 @@ export type GetAllFaqsResponse = {
 
 export type IncomeSourceItem = {
   _id: string;
-  /** Stable key submitted with the order — not display copy, use `title`. */
   value: string;
   title: { en: string; bn: string };
   order: number;

@@ -91,7 +91,6 @@ const ResetPasswordScreen = ({
         contentContainerStyle={{ flexGrow: 1, paddingTop: top + 50 }}
         keyboardShouldPersistTaps="handled">
         <View style={{ marginBottom: bottom + 100 }} className="flex-1 justify-start px-6">
-          {/* Header */}
           <View className="items-center pb-10">
             <View className="h-24 w-24 items-center justify-center rounded-full bg-muted">
               <Lock size={32} color={colors.mutedForeground} />
@@ -104,7 +103,6 @@ const ResetPasswordScreen = ({
             </Text>
           </View>
 
-          {/* Form */}
           <View className="gap-4">
             <FormField
               control={form.control}

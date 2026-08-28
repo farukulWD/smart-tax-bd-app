@@ -22,23 +22,14 @@ import { useThemeColors } from '@/src/theme/useThemeColors';
 import { cn } from '@/lib/utils';
 import { useAppDispatch, useAppSelector } from '@/src/redux/hooks';
 import { setUser } from '@/src/redux/slices/authSlice';
+import { logger } from '@/src/utils/logger';
 
-// ─── Schema ───────────────────────────────────────────────────────────────────
-
-// Name, email and phone are not in the form: they are read-only profile data,
-// so the screen submits them straight from the profile instead of echoing three
-// uneditable inputs back at the user.
 const formSchema = z.object({
-  // Plain strings, not z.nativeEnum: the acceptable values live in the
-  // admin-managed income source catalog, so a newly added one must not be a
-  // client-side validation error. The server checks them against the catalog.
   source_of_income: z.array(z.string()).min(1, 'Please select at least one source of income'),
   tax_year: z.string().min(1, 'Tax year is required'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
-
-// ─── Constants ────────────────────────────────────────────────────────────────
 
 const QUERY_TAX_TYPE_TO_INCOME_SOURCE: Record<string, IncomeSource> = {
   income_tax: IncomeSource.PrivateJob,
@@ -65,20 +56,7 @@ const QUERY_TAX_TYPE_TO_INCOME_SOURCE: Record<string, IncomeSource> = {
   housewife_tax_return: IncomeSource.OthersSource,
 };
 
-// Half the gutter between grid cards. Applied as a margin on every card and
-// cancelled with the same value negated on the wrapper, so the outer edges stay
-// flush with the section padding.
-//
-// The card itself carries a fixed `h-26`: a `flex: 1` child of a wrapping row
-// has no content-driven height, so without it every card stretches to the line's
-// cross size and the grid blows up to full-screen rows (same reason DocumentCard
-// pins `h-52`). 104px is the floor that still fits a 3-line label — `leading-5`
-// is a flat 20px (line heights are not on the scaled token scale), so the label
-// box tops out at 60px + `p-3` either side, which must survive the 0.82 space
-// factor on the smallest devices.
 const CARD_GUTTER = 5;
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
 
 const SectionCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <View className="gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
@@ -133,12 +111,6 @@ const IncomeSourceCard = ({
   );
 };
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
-
-// The form lives below the auth gate on purpose. `ProtectedScreen` swaps its
-// children when the token lands, so a form mounted above it would have already
-// run its one-shot tax-type preselect while the login screen was showing —
-// which is how a deep-linked tax type came out with nothing selected.
 const CreateTaxOrderForm = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
@@ -146,13 +118,10 @@ const CreateTaxOrderForm = () => {
   const taxType: string = route.params?.taxType ?? '';
 
   const dispatch = useAppDispatch();
-  // The persisted profile is already in the store on mount, so the order can be
-  // submitted without waiting on /users/get-me.
   const cachedUser = useAppSelector((state) => state.auth.user);
 
   const { data } = useGetUserInfoQuery();
   const profileData = data?.data;
-  // Fresh server copy wins; the persisted one covers the in-flight window.
   const profile = profileData ?? cachedUser;
   const [createTaxStepOne, { isLoading: isCreatingOrder }] = useCreateTaxStepOneMutation();
 
@@ -160,8 +129,6 @@ const CreateTaxOrderForm = () => {
   const locale = toLocale(i18n.language);
   const { data: incomeSourcesResponse, isLoading: isIncomeSourcesLoading } =
     useGetAllIncomeSourcesQuery();
-  // The server only accepts active catalog values, so a deactivated source on
-  // screen would just be a 400 at submit time.
   const visibleIncomeSources = (incomeSourcesResponse?.data ?? [])
     .filter((source) => source.isActive)
     .sort((a, b) => a.order - b.order);
@@ -185,9 +152,6 @@ const CreateTaxOrderForm = () => {
     dispatch(setUser(profileData));
   }, [profileData]);
 
-  // Runs at most once. The catalog has to be in before it can fire: preselecting
-  // a source the admin has since deactivated would read as "1 selected" with no
-  // card checked, which is worse than not preselecting at all.
   const preselectApplied = useRef(false);
   useEffect(() => {
     if (preselectApplied.current || isIncomeSourcesLoading) return;
@@ -207,8 +171,6 @@ const CreateTaxOrderForm = () => {
   const selectedTaxYear = useWatch({ control, name: 'tax_year' });
 
   const onSubmit = async (values: FormValues) => {
-    // Both are required on the user record, so this only fires on a stale
-    // session — better than the raw 400 the server would answer with.
     if (!profile?.name || !profile?.mobile) {
       toast.error('Complete your profile before creating an order');
       return;
@@ -233,16 +195,14 @@ const CreateTaxOrderForm = () => {
       }
 
       navigation.navigate('RequireDocuments', { taxId: orderId });
-      // navigation.navigate('UploadDocuments', { orderId });
     } catch (error: any) {
-      console.log('error', JSON.stringify(error, null, 2));
+      logger.log('error', JSON.stringify(error, null, 2));
       globalErrorHandler(error);
     }
   };
 
   return (
     <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
-      {/* Header */}
       <View className="flex-row items-start gap-3 px-4 py-4">
         <BackButton />
 
@@ -264,7 +224,6 @@ const CreateTaxOrderForm = () => {
         contentContainerClassName="px-4 gap-4 pb-10"
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-        {/* Tax Filing Year */}
         <SectionCard title="Tax Filing Year">
           <Controller
             control={control}
@@ -276,7 +235,6 @@ const CreateTaxOrderForm = () => {
           <ErrorText message={errors.tax_year?.message} />
         </SectionCard>
 
-        {/* Source of Income */}
         <SectionCard title="Source of Income">
           <Controller
             control={control}
@@ -324,7 +282,6 @@ const CreateTaxOrderForm = () => {
           <ErrorText message={errors.source_of_income?.message} />
         </SectionCard>
 
-        {/* Order Summary */}
         <View className="gap-3 rounded-3xl border border-border bg-card p-6">
           <AppText className="text-lg font-bold text-foreground">Order Summary</AppText>
           <AppText className="-mt-1 text-13 text-mutedForeground">

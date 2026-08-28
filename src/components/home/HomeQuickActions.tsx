@@ -5,7 +5,6 @@ import { navigate, navigateToStack } from '@/src/utils/NavigationUtils';
 
 const HomeQuickActions = () => (
   <View className="flex-row gap-3 px-4">
-    {/* Start Filing — red card */}
     <Pressable
       onPress={() => navigate('CreateTaxOrder', { taxType: '' })}
       className="flex-1 rounded-2xl bg-primary p-4">
@@ -16,7 +15,6 @@ const HomeQuickActions = () => (
       <AppText className="text-sm text-white/80">New tax return</AppText>
     </Pressable>
 
-    {/* Track Status — white card */}
     <Pressable
       onPress={() => navigateToStack('ProfileStack', { screen: 'MyOrders' })}
       className="flex-1 rounded-2xl border border-border bg-card p-4">

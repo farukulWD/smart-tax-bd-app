@@ -31,8 +31,7 @@ import { BackButton } from '@/src/components/global/BackButton';
 import { normalizeMobile } from '@/src/utils/commonFunction';
 import { saveRefreshToken } from '@/src/services/auth/refreshTokenStore';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-// ─── Schema ───────────────────────────────────────────────────────────────────
+import { logger } from '@/src/utils/logger';
 
 const createSignInSchema = (t: (key: string) => string) =>
   z.object({
@@ -47,8 +46,6 @@ const createSignInSchema = (t: (key: string) => string) =>
   });
 
 export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>;
-
-// ─── SignInScreen ─────────────────────────────────────────────────────────────
 
 const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
   const { t } = useTranslation();
@@ -110,23 +107,20 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
         })
       );
 
-      // Persist the long-lived half of the session to the device keystore so it
-      // outlives the app process — and every future refresh.
       await saveRefreshToken(res.data.refreshToken);
 
-      // Refresh the profile from /users/get-me so the store holds the full user record.
       try {
         const profile = await fetchUserInfo().unwrap();
         if (profile?.data) {
           dispatch(setUser(profile.data));
         }
       } catch (profileError) {
-        console.log('profileError', JSON.stringify(profileError, null, 2));
+        logger.log('profileError', JSON.stringify(profileError, null, 2));
       }
 
       handleNavigation();
     } catch (error) {
-      console.log('error', JSON.stringify(error, null, 2));
+      logger.log('error', JSON.stringify(error, null, 2));
       globalErrorHandler(error);
     }
   };
@@ -146,7 +140,6 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
         contentContainerStyle={{ flexGrow: 1, paddingTop: top + 50 }}
         keyboardShouldPersistTaps="handled">
         <View style={{ marginBottom: bottom }} className="flex-1 justify-start px-6">
-          {/* Logo + Heading */}
           <View className="items-center pb-4">
             <Image
               resizeMode="contain"
@@ -159,9 +152,7 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             </Text>
           </View>
 
-          {/* Form */}
           <View className="gap-4">
-            {/* Mobile */}
             <FormField
               control={form.control}
               name="mobile"
@@ -188,7 +179,6 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               )}
             />
 
-            {/* Password */}
             <FormField
               control={form.control}
               name="password"
@@ -227,7 +217,6 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               )}
             />
 
-            {/* Create Account */}
             <View className="flex-row items-center justify-center">
               <Text className="text-sm text-mutedForeground">{t('auth.signUpLink')} </Text>
               <TouchableOpacity
@@ -237,7 +226,6 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
               </TouchableOpacity>
             </View>
 
-            {/* Login Button */}
             <Button
               onPress={form.handleSubmit(onSubmit)}
               disabled={isLoading || isFetchingUser}
@@ -259,8 +247,6 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* Create Account */}
       </ScrollView>
     </KeyboardAvoidingView>
   );

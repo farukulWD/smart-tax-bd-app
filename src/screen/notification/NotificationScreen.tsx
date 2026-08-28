@@ -29,7 +29,6 @@ type UITheme = 'tax_reminder' | 'news' | 'payment' | 'system' | 'deadline';
 
 type ThemeColors = typeof lightColors;
 
-// `news` uses secondary to match the green news badge on the home screen.
 const getNotificationIcons = (
   colors: ThemeColors
 ): Record<UITheme, { icon: React.ReactNode; color: string }> => ({
@@ -220,9 +219,7 @@ const NotificationScreen = () => {
       if (!item.isRead) {
         try {
           await markAsRead(item._id).unwrap();
-        } catch {
-          // silently fail
-        }
+        } catch {}
       }
     },
     [markAsRead]
@@ -235,9 +232,7 @@ const NotificationScreen = () => {
   const handleConfirmMarkAllAsRead = useCallback(async () => {
     try {
       await markAllAsRead().unwrap();
-    } catch {
-      // silently fail
-    }
+    } catch {}
     setShowMarkAllModal(false);
   }, [markAllAsRead]);
 
@@ -249,9 +244,7 @@ const NotificationScreen = () => {
     if (!deleteTarget) return;
     try {
       await deleteNotification(deleteTarget).unwrap();
-    } catch {
-      // silently fail
-    }
+    } catch {}
     setDeleteTarget(null);
   }, [deleteTarget, deleteNotification]);
 
@@ -260,9 +253,7 @@ const NotificationScreen = () => {
     setPage(1);
     try {
       await refetch();
-    } catch {
-      // ignore
-    }
+    } catch {}
     setRefreshing(false);
   }, [refetch]);
 

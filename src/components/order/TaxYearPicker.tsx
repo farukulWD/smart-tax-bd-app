@@ -1,5 +1,3 @@
-// ─── Tax Year Picker ──────────────────────────────────────────────────────────
-
 import { useState } from 'react';
 import { Text } from '@/components/ui/text';
 import { Pressable, ScrollView, View } from 'react-native';

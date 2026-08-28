@@ -32,13 +32,6 @@ const OrderSuccessScreen = () => {
             <Home size={18} color="#fff" />
             <AppText className="text-base font-bold text-white">{t('order.goHome')}</AppText>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Profile' })}
-            activeOpacity={0.8}
- className="h-10 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-muted">
-            <ClipboardList size={18} color="hsl(0, 0%, 60%)" />
-            <AppText className="text-sm font-semibold text-mutedForeground">{t('order.goOrders')}</AppText>
-          </TouchableOpacity> */}
         </View>
       </View>
     </View>

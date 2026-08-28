@@ -40,7 +40,6 @@ const HomeBanner: React.FC<HomeBannerProps> = ({ containerStyle }) => {
       setCurrentIndex((prev) => {
         const next = prev + 1;
 
-        // ⬅️ loop back to start
         if (next >= slides.length) {
           flatListRef.current?.scrollToIndex({
             index: 0,
@@ -63,7 +62,6 @@ const HomeBanner: React.FC<HomeBannerProps> = ({ containerStyle }) => {
     };
   }, [slides.length]);
 
-  /** Sync index on manual scroll */
   const handleMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const index = Math.round(event.nativeEvent.contentOffset.x / PAGE_WIDTH);
     setCurrentIndex(index);
@@ -142,7 +140,6 @@ const styles = StyleSheet.create({
     width: SLIDE_WIDTH,
     height: '100%',
     borderRadius: 20,
-    // backgroundColor is set dynamically via inline style
   },
 
   dotsContainer: {

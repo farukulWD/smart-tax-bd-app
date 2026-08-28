@@ -40,26 +40,21 @@ const AboutUsScreen = () => {
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}>
-        {/* ── Back Button ──────────────────────────────────────────────── */}
         <View className="px-5 pb-2 pt-2">
           <BackButton />
         </View>
 
-        {/* ── Hero Section ─────────────────────────────────────────────── */}
         <View className="items-center px-5 py-5">
-          {/* Badge */}
           <View className="mb-4 rounded-full border border-border bg-muted px-4 py-1">
             <Text className="text-xs font-semibold uppercase tracking-widest text-mutedForeground">
               About Smart Tax
             </Text>
           </View>
 
-          {/* Heading */}
           <Text className="mb-4 text-center text-3xl font-extrabold leading-tight text-foreground">
             Helping Bangladesh stay tax-ready with clarity and confidence
           </Text>
 
-          {/* Subtitle */}
           <Text className="text-center text-base leading-relaxed text-mutedForeground">
             Smart Tax BD combines tax expertise with a modern client experience. We simplify filing,
             documentation, and advisory support so you can focus on your work while we handle the
@@ -67,19 +62,15 @@ const AboutUsScreen = () => {
           </Text>
         </View>
 
-        {/* ── Highlights Cards ──────────────────────────────────────────── */}
         <View className="gap-4 px-5 pb-10">
           {highlights.map((item) => (
             <View
               key={item.title}
               className="rounded-2xl border border-border bg-card p-5 shadow-sm">
-              {/* Icon */}
               <View className="mb-4 h-10 w-10 items-center justify-center rounded-full bg-muted">
                 <item.icon size={20} color={colors.primary} />
               </View>
-              {/* Title */}
               <Text className="text-base font-semibold text-cardForeground">{item.title}</Text>
-              {/* Description */}
               <Text className="mt-2 text-sm leading-relaxed text-mutedForeground">
                 {item.description}
               </Text>
@@ -87,7 +78,6 @@ const AboutUsScreen = () => {
           ))}
         </View>
 
-        {/* ── Why Clients Choose Us ─────────────────────────────────────── */}
         <View className="mx-5 mb-12 rounded-3xl border border-border bg-card p-6">
           <Text className="mb-4 text-xl font-bold text-foreground">Why clients choose us</Text>
 
@@ -100,7 +90,6 @@ const AboutUsScreen = () => {
             ))}
           </View>
 
-          {/* CTA Buttons */}
           <View className="flex-row flex-wrap gap-3">
             <TouchableOpacity
               onPress={() => {

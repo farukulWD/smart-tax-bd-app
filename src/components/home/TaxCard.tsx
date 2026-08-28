@@ -16,8 +16,6 @@ const getInitials = (raw: string): string => {
   return raw.trim().slice(0, 2).toUpperCase();
 };
 
-// `icon` used to hold a lucide icon name; it now holds an uploaded image URL.
-// Legacy values fall back to the title initials.
 const isIconUrl = (icon?: string) => !!icon && /^https?:\/\//.test(icon);
 
 const TaxCard = ({ item }: { item: TaxTypeItem }) => {

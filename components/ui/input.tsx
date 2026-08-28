@@ -22,9 +22,6 @@ function Input({ className, ...props }: TextInputProps & React.RefAttributes<Tex
         className
       )}
       maxFontSizeMultiplier={1.2}
-      // Keyboard suggestions and the system autofill chip are off by default —
-      // a field that genuinely wants them (SignIn, the OTP box) opts back in
-      // through props, which land after these and win.
       autoComplete="off"
       autoCorrect={false}
       spellCheck={false}

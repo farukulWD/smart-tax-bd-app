@@ -54,7 +54,6 @@ export const darkColors = {
   accentForeground: 'hsl(0 0% 96%)',
   destructive: 'hsl(0 83% 49%)',
   destructiveForeground: 'hsl(0 0% 96%)',
-  // Lifted vs light mode so they stay legible against the near-black background.
   success: 'hsl(131, 45%, 45%)',
   successForeground: 'hsl(0 0% 96%)',
   warning: 'hsl(38, 92%, 55%)',

@@ -1,12 +1,6 @@
 import { TResponse } from '../types/commonTypes';
 import { baseApi } from './baseApi';
 
-/**
- * Legacy income-source keys. Income sources are an admin-managed collection
- * now, so this enum is no longer the full set — it is kept only for the
- * tax-type deep-link preselection in CreateTaxOrderScreen. Anything carrying a
- * source over the wire is typed `string[]`.
- */
 export enum IncomeSource {
   GovtJob = 'Income from Govt.Job',
   PrivateJob = 'Income from Private Job',
@@ -27,12 +21,10 @@ export interface IPersonalInformation {
   are_you_house_wife: boolean;
 }
 
-/** Frozen coupon snapshot the server writes onto the order when one is applied. */
 export interface IAppliedCoupon {
   code: string;
   discountType: 'percentage' | 'fixed';
   discountValue: number;
-  /** BDT taken off the service fee. The only field to use for money math. */
   discount_amount: number;
   applied_at?: string;
 }
@@ -84,9 +76,7 @@ export interface ITaxStepOneResponse {
 export interface ITaxStepThreeResponse {
   tax_order: IOrder;
   payable_amount: number;
-  /** Null when a coupon covered the whole fee — there is nothing to redirect to. */
   gatewayPageURL: string | null;
-  /** True when the order was settled without a gateway hop. */
   paid?: boolean;
   transaction_id: string;
 }

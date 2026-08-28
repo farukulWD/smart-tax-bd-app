@@ -1,5 +1,3 @@
-// Inputs, select-style triggers and call-to-action buttons all share this
-// height so a form and its submit button line up on every screen.
 export const CONTROL_HEIGHT = 'h-12';
 
 export const INPUT_CLASS =

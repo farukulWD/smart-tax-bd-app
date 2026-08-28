@@ -13,8 +13,3 @@ const CONFIG = {
 };
 
 export default CONFIG[ENV];
-/*
-
-01991002474
-123456aA@
- */

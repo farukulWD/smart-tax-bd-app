@@ -3,8 +3,6 @@ import { View } from 'react-native';
 import { Controller, Control, FieldPath, FieldValues } from 'react-hook-form';
 import { Text } from '@/components/ui/text';
 
-// ─── FormField ────────────────────────────────────────────────────────────────
-
 interface FormFieldProps<T extends FieldValues> {
   control: Control<T>;
   name: FieldPath<T>;
@@ -31,25 +29,17 @@ function FormField<T extends FieldValues>({
   );
 }
 
-// ─── FormItem ─────────────────────────────────────────────────────────────────
-
 const FormItem = ({ children }: { children: React.ReactNode }): React.ReactElement => (
   <View className="gap-1.5">{children}</View>
 );
-
-// ─── FormLabel ────────────────────────────────────────────────────────────────
 
 const FormLabel = ({ children }: { children: React.ReactNode }): React.ReactElement => (
   <Text className="text-sm font-medium text-foreground">{children}</Text>
 );
 
-// ─── FormControl ─────────────────────────────────────────────────────────────
-
 const FormControl = ({ children }: { children: React.ReactNode }): React.ReactElement => (
   <View>{children}</View>
 );
-
-// ─── FormMessage ─────────────────────────────────────────────────────────────
 
 const FormMessage = ({ message }: { message?: string }): React.ReactElement | null => {
   if (!message) return null;

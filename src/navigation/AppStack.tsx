@@ -35,8 +35,6 @@ export type AppStackParamList = {
   BlogDetails: { slug: string };
   Notification: undefined;
   MyFiles: undefined;
-  // `taxType` is the tax-type catalog `value`, used only to preselect an income
-  // source; every entry point that has no tax type in hand navigates without it.
   CreateTaxOrder: { taxType?: string } | undefined;
   RequireDocuments: { taxId: string; redirectTo?: { stack: string; screen: string } };
   OrderPaymentStatus: {

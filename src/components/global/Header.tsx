@@ -25,15 +25,6 @@ const Header = () => {
         </View>
       </View>
 
-      {/* <View className="flex-row items-center gap-3">
-        <PressableScale className="h-12 w-12 items-center justify-center rounded-full border border-border bg-secondary">
-          <Bell size={25} color={Colors.mutedForeground} />
-        </PressableScale>
-
-        <PressableScale className="h-12 w-12 items-center justify-center rounded-full border border-border bg-secondary">
-          <MessageCircle size={25} color={Colors.mutedForeground} />
-        </PressableScale>
-      </View> */}
       <ToggleTheme />
     </View>
   );
