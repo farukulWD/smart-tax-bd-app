@@ -2,7 +2,7 @@ import { View, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import AppText from '@/src/components/common/AppText';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IOrder } from '@/src/services/orderApi';
-import { formatAmount, formatDate } from './utils';
+import { formatAmount, formatDate, getAppliedCoupon, getPayableFeeAmount } from './utils';
 
 const formatStatus = (status: string) =>
   status
@@ -76,9 +76,18 @@ export const OrderDetailModal = ({
                 <AppText className="text-sm text-mutedForeground">
                   Fee:{' '}
                   <AppText className="font-semibold text-foreground">
-                    {formatAmount(selectedOrder.fee_amount)}
+                    {formatAmount(getPayableFeeAmount(selectedOrder))}
                   </AppText>
                 </AppText>
+                {getAppliedCoupon(selectedOrder.applied_coupon) ? (
+                  <AppText className="text-sm text-mutedForeground">
+                    Coupon:{' '}
+                    <AppText className="font-semibold text-success">
+                      {selectedOrder.applied_coupon?.code} (−
+                      {formatAmount(Number(selectedOrder.applied_coupon?.discount_amount || 0))})
+                    </AppText>
+                  </AppText>
+                ) : null}
                 <AppText className="text-sm text-mutedForeground">
                   Total:{' '}
                   <AppText className="font-semibold text-foreground">
