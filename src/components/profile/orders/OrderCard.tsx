@@ -4,7 +4,7 @@ import { CalendarDays, Banknote, ChevronRight } from 'lucide-react-native';
 import { IOrder } from '@/src/services/orderApi';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 import { getStatusConfig } from './statusConfig';
-import { formatDate, formatAmount, shortenId } from './utils';
+import { formatDate, formatAmount, shortenId, getPayableFeeAmount } from './utils';
 import { StepDots } from './StepDots';
 import { useTranslation } from 'react-i18next';
 
@@ -42,7 +42,7 @@ export const OrderCard = ({ item, onPress }: { item: IOrder; onPress: () => void
           <View className="flex-row items-center gap-1">
             <Banknote size={12} color="hsl(0, 0%, 60%)" />
             <AppText className="text-xs text-mutedForeground">
-              {formatAmount(item.fee_amount)}
+              {formatAmount(getPayableFeeAmount(item))}
             </AppText>
           </View>
         </View>

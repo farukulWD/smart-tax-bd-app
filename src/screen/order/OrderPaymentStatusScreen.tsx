@@ -5,14 +5,26 @@ import { useTranslation } from 'react-i18next';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useGetTaxOrderByIdQuery, usePlaceManualOrderMutation } from '@/src/services/orderApi';
+import { useApplyCouponMutation, useRemoveCouponMutation } from '@/src/services/couponApi';
+import { Input } from '@/components/ui/input';
+import { getApiErrorMessage } from '@/src/services/globalErrorHandler';
+import { toast } from '@/src/utils/ToastConfig';
 import { AppStackParamList } from '@/src/navigation/AppStack';
-import { CheckCircle2, AlertCircle, ArrowLeft, CreditCard } from 'lucide-react-native';
+import {
+  CheckCircle2,
+  AlertCircle,
+  ArrowLeft,
+  CreditCard,
+  TicketPercent,
+  X,
+} from 'lucide-react-native';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LucideIcon from '@/src/components/common/LucideIcon';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 import { BackButton } from '@/src/components/global/BackButton';
 import { getStatusConfig } from '@/src/components/profile/orders/statusConfig';
+import { getAppliedCoupon, getPayableFeeAmount } from '@/src/components/profile/orders/utils';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -54,9 +66,12 @@ const OrderPaymentStatusScreen = () => {
   const { colors } = useThemeColors();
 
   const [showBkashModal, setShowBkashModal] = useState(false);
+  const [couponInput, setCouponInput] = useState('');
 
   const { data, isLoading, isError, refetch } = useGetTaxOrderByIdQuery(taxId ?? skipToken);
   const [placeManualOrder, { isLoading: isPlacingOrder }] = usePlaceManualOrderMutation();
+  const [applyCoupon, { isLoading: isApplyingCoupon }] = useApplyCouponMutation();
+  const [removeCoupon, { isLoading: isRemovingCoupon }] = useRemoveCouponMutation();
 
   // ── no taxId ──────────────────────────────────────────────────────────────
 
@@ -106,8 +121,35 @@ const OrderPaymentStatusScreen = () => {
   // ── data ──────────────────────────────────────────────────────────────────
 
   const order = data.data.tax_order;
-  const isPaid = Number(order.fee_amount || 0) <= 0 || order.status === 'order_placed';
+  const appliedCoupon = getAppliedCoupon(order.applied_coupon);
+  const subtotal = Number(order.fee_amount || 0);
+  const discount = Number(appliedCoupon?.discount_amount || 0);
+  const payableFee = getPayableFeeAmount(order);
+  // A coupon can cover the fee in full, leaving nothing to collect.
+  const isPaid = payableFee <= 0 || order.status === 'order_placed';
+  const isCouponBusy = isApplyingCoupon || isRemovingCoupon;
   const statusConfig = getStatusConfig(order.status, colors, t);
+
+  const handleApplyCoupon = async () => {
+    const code = couponInput.trim();
+    if (!code) return;
+    try {
+      await applyCoupon({ taxId, code }).unwrap();
+      setCouponInput('');
+      toast.success(t('payment.couponApplied'));
+    } catch (error) {
+      toast.error(getApiErrorMessage(error) || t('payment.couponApplyFailed'));
+    }
+  };
+
+  const handleRemoveCoupon = async () => {
+    try {
+      await removeCoupon(taxId).unwrap();
+      toast.success(t('payment.couponRemoved'));
+    } catch (error) {
+      toast.error(getApiErrorMessage(error) || t('payment.couponRemoveFailed'));
+    }
+  };
 
   const handlePlaceManualOrder = async () => {
     try {
@@ -162,7 +204,77 @@ const OrderPaymentStatusScreen = () => {
                 icon={statusConfig.icon}
               />
               <InfoRow label={t('payment.currentStep')} value={String(order.current_step)} />
-              <InfoRow label={t('payment.fee')} value={formatBDT(Number(order.fee_amount || 0))} />
+
+              {/* Coupon — hidden once the fee is settled */}
+              {!isPaid && (
+                <View className="py-3">
+                  {appliedCoupon ? (
+                    <View className="flex-row items-center justify-between gap-2 rounded-2xl border border-success/30 bg-success/10 px-4 py-3">
+                      <View className="flex-1 flex-row items-center gap-2">
+                        <TicketPercent size={18} color={colors.success} />
+                        <AppText className="text-sm font-semibold text-success">
+                          {appliedCoupon.code}
+                        </AppText>
+                      </View>
+                      <TouchableOpacity
+                        onPress={handleRemoveCoupon}
+                        disabled={isCouponBusy}
+                        activeOpacity={0.7}
+                        className="flex-row items-center gap-1">
+                        {isRemovingCoupon ? (
+                          <ActivityIndicator size="small" color={colors.success} />
+                        ) : (
+                          <X size={16} color={colors.success} />
+                        )}
+                        <AppText className="text-sm font-semibold text-success">
+                          {t('payment.removeCoupon')}
+                        </AppText>
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <View className="flex-row items-center gap-2">
+                      <Input
+                        value={couponInput}
+                        onChangeText={setCouponInput}
+                        placeholder={t('payment.couponPlaceholder')}
+                        autoCapitalize="characters"
+                        editable={!isCouponBusy}
+                        className="flex-1"
+                      />
+                      <TouchableOpacity
+                        onPress={handleApplyCoupon}
+                        disabled={isCouponBusy || !couponInput.trim()}
+                        activeOpacity={0.8}
+                        className={`h-10 flex-row items-center justify-center gap-2 rounded-2xl border border-border bg-muted px-4 ${
+                          isCouponBusy || !couponInput.trim() ? 'opacity-50' : ''
+                        }`}>
+                        {isApplyingCoupon ? (
+                          <ActivityIndicator size="small" color={colors.primary} />
+                        ) : null}
+                        <AppText className="text-sm font-semibold text-primary">
+                          {t('payment.applyCoupon')}
+                        </AppText>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              )}
+
+              {/* Fee breakdown */}
+              <InfoRow label={t('payment.subtotal')} value={formatBDT(subtotal)} />
+              {discount > 0 && (
+                <InfoRow
+                  label={
+                    appliedCoupon?.code
+                      ? `${t('payment.discount')} (${appliedCoupon.code})`
+                      : t('payment.discount')
+                  }
+                  value={`−${formatBDT(discount)}`}
+                  pillBg="bg-success/10"
+                  pillText="text-success"
+                />
+              )}
+              <InfoRow label={t('payment.total')} value={formatBDT(payableFee)} />
 
               {/* Payment status banner */}
               {isPaid ? (
