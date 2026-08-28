@@ -3,6 +3,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Pressable,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -28,7 +29,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const RESEND_COOLDOWN = 240; // 4 minutes
 const OTP_LENGTH = 6;
-const EMPTY_OTP = Array(OTP_LENGTH).fill('') as string[];
+const BOXES = Array.from({ length: OTP_LENGTH }, (_, i) => i);
 
 const VerifyOTPScreen = ({
   setScreen,
@@ -43,9 +44,12 @@ const VerifyOTPScreen = ({
 }) => {
   const { t } = useTranslation();
   const { colors } = useThemeColors();
-  const [otp, setOtp] = useState<string[]>(EMPTY_OTP);
+  // One string, not six pieces of state: the code lives in a single hidden
+  // TextInput so paste, SMS autofill and backspace are handled by the platform.
+  const [otp, setOtp] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const [timer, setTimer] = useState(RESEND_COOLDOWN);
-  const inputRefs = useRef<(TextInput | null)[]>([]);
+  const inputRef = useRef<TextInput>(null);
 
   const [verifyRegisterOtp, { isLoading: isVerifyingRegister }] = useVerifyRegisterOtpMutation();
   const [resendRegisterOtp, { isLoading: isResendingRegister }] = useResendRegisterOtpMutation();
@@ -64,59 +68,25 @@ const VerifyOTPScreen = ({
     }
   }, [timer]);
 
-  const handleOtpChange = (text: string, index: number) => {
+  const handleOtpChange = (text: string) => {
     const digits = text.replace(/\D/g, '');
-
-    if (!digits) {
-      setOtp((prev) => {
-        const next = [...prev];
-        next[index] = '';
-        return next;
-      });
-      return;
-    }
-
-    // A single keystroke advances one box; a paste or SMS autofill arrives as the
-    // whole code at once and spreads across the remaining boxes. Android delivers
-    // one autofill to several boxes, so a full-length code always starts at box 0
-    // instead of at the box that happened to receive the event — otherwise the
-    // delivery to a later box writes only its own digit and blanks the rest.
-    const start = digits.length === OTP_LENGTH ? 0 : index;
-
-    // Functional update: the duplicate autofill events fire before a re-render,
-    // so a `[...otp]` copy would be stale on every call after the first.
-    setOtp((prev) => {
-      const next = [...prev];
-      for (let i = 0; i < digits.length && start + i < OTP_LENGTH; i++) {
-        next[start + i] = digits[i];
-      }
-      return next;
-    });
-
-    const nextIndex = Math.min(start + digits.length, OTP_LENGTH - 1);
-    inputRefs.current[nextIndex]?.focus();
-  };
-
-  const handleKeyPress = (key: string, index: number) => {
-    if (key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
+    // A paste lands after whatever is already in the field, so an overflow means
+    // the tail is the pasted code — keep that and drop the stale prefix.
+    setOtp(digits.length > OTP_LENGTH ? digits.slice(-OTP_LENGTH) : digits);
   };
 
   const handleVerify = async () => {
-    const otpCode = otp.join('');
-
     try {
       if (verifyType === 'register') {
-        await verifyRegisterOtp({ mobile, otp: otpCode }).unwrap();
+        await verifyRegisterOtp({ mobile, otp }).unwrap();
         toast.success(t('auth.otpVerified'));
-        setOtp(EMPTY_OTP);
+        setOtp('');
         setTimer(RESEND_COOLDOWN);
         setScreen(SCREEN_NAME.SIGNIN);
       } else {
-        const res = await verifyForgotOtp({ mobile, otp: otpCode }).unwrap();
+        const res = await verifyForgotOtp({ mobile, otp }).unwrap();
         setResetToken(res.data.resetToken);
-        setOtp(EMPTY_OTP);
+        setOtp('');
         setTimer(RESEND_COOLDOWN);
         setScreen(SCREEN_NAME.RESET_PASSWORD);
       }
@@ -140,47 +110,16 @@ const VerifyOTPScreen = ({
         await forgotPassword({ mobile }).unwrap();
       }
       setTimer(RESEND_COOLDOWN);
-      setOtp(EMPTY_OTP);
-      inputRefs.current[0]?.focus();
+      setOtp('');
+      inputRef.current?.focus();
       toast.success(t('auth.otpSent'));
     } catch (error) {
       globalErrorHandler(error);
     }
   };
 
-  const isOtpComplete = otp.every((digit) => digit !== '');
-
-  const renderBox = (index: number) => (
-    <View
-      key={index}
-      className={`h-10 flex-1 items-center justify-center rounded-xl border-2 ${
-        otp[index] ? 'border-primary bg-primary/5' : 'border-border bg-card'
-      }`}>
-      <TextInput
-        ref={(ref) => {
-          inputRefs.current[index] = ref;
-        }}
-        className="h-full w-full text-center text-2xl font-bold text-foreground"
-        value={otp[index]}
-        onChangeText={(text) => handleOtpChange(text, index)}
-        onKeyPress={({ nativeEvent: { key } }) => handleKeyPress(key, index)}
-        keyboardType="number-pad"
-        // Not 1: iOS autofill and paste deliver all six digits to a single box,
-        // and maxLength would clip them before handleOtpChange could spread them.
-        maxLength={OTP_LENGTH}
-        // Only the first box advertises itself to the autofill/SMS suggestion
-        // strip. Marking all six makes the platform deliver the same code to
-        // several of them, which fires redundant onChangeText events.
-        textContentType={index === 0 ? 'oneTimeCode' : 'none'}
-        autoComplete={
-          index === 0 ? (Platform.OS === 'android' ? 'sms-otp' : 'one-time-code') : 'off'
-        }
-        importantForAutofill={index === 0 ? 'yes' : 'no'}
-        selectTextOnFocus
-        autoFocus={index === 0}
-      />
-    </View>
-  );
+  const isOtpComplete = otp.length === OTP_LENGTH;
+  const activeIndex = Math.min(otp.length, OTP_LENGTH - 1);
 
   const { bottom } = useSafeAreaInsets();
 
@@ -219,19 +158,59 @@ const VerifyOTPScreen = ({
             </Text>
           </View>
 
-          {/* OTP boxes — 3 groups of 2 */}
-          <View className="gap-1.5">
+          {/* OTP boxes — display only; the real field is the hidden input on top */}
+          <View className="gap-2">
             <Text className="text-center text-sm font-medium text-foreground">
               {t('auth.verificationCodeLabel')}
             </Text>
-            <View className="flex-row items-center justify-center gap-2">
-              {[0, 2, 4].map((start) => (
-                <View key={start} className="flex-1 flex-row items-center gap-2">
-                  {renderBox(start)}
-                  {renderBox(start + 1)}
-                </View>
-              ))}
-            </View>
+
+            <Pressable
+              onPress={() => inputRef.current?.focus()}
+              className="relative flex-row items-center justify-center gap-2">
+              {BOXES.map((index) => {
+                const digit = otp[index] ?? '';
+                const isActive = isFocused && index === activeIndex;
+
+                return (
+                  <View
+                    key={index}
+                    className={`h-14 flex-1 items-center justify-center rounded-xl border-2 ${
+                      isActive
+                        ? 'border-primary bg-primary/5'
+                        : digit
+                          ? 'border-primary/40 bg-card'
+                          : 'border-border bg-card'
+                    }`}>
+                    <Text
+                      className="text-2xl font-bold leading-7 text-foreground"
+                      style={{ includeFontPadding: false }}>
+                      {digit}
+                    </Text>
+                  </View>
+                );
+              })}
+
+              <TextInput
+                ref={inputRef}
+                value={otp}
+                onChangeText={handleOtpChange}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                keyboardType="number-pad"
+                // Room for a paste that arrives on top of typed digits; the
+                // handler trims back down to OTP_LENGTH.
+                maxLength={OTP_LENGTH * 2}
+                textContentType="oneTimeCode"
+                autoComplete={Platform.OS === 'android' ? 'sms-otp' : 'one-time-code'}
+                importantForAutofill="yes"
+                autoFocus
+                caretHidden
+                // Invisible but still hit-testable: long-press anywhere on the
+                // row opens the system Paste menu.
+                style={{ opacity: 0 }}
+                className="absolute left-0 top-0 h-full w-full text-center text-2xl"
+              />
+            </Pressable>
           </View>
 
           {/* Verify Button */}
@@ -275,8 +254,6 @@ const VerifyOTPScreen = ({
             )}
           </View>
         </View>
-
-        {/* Resend */}
       </ScrollView>
     </KeyboardAvoidingView>
   );

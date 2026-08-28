@@ -2,6 +2,11 @@
   <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
     <item name="android:enforceNavigationBarContrast" tools:targetApi="29">true</item>
     <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+    <!-- Android tints any field the autofill service filled with a translucent
+         yellow. It survives re-theming and made the signup email/password rows
+         look disabled, so the highlight is turned off and the field keeps its
+         own background. -->
+    <item name="android:autofilledHighlight" tools:targetApi="26">@android:color/transparent</item>
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="android:statusBarColor">#ffffff</item>
   </style>
