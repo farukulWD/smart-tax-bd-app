@@ -16,7 +16,9 @@ const getPaddedData = (data: TaxTypeItem[], columns: number): (TaxTypeItem | nul
 
 const TaxTypeSection = () => {
   const { t } = useTranslation();
-  const { data, isLoading, error } = useGetAllTaxTypesQuery();
+  const { data, isLoading, error } = useGetAllTaxTypesQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
   const types = data?.data || [];
 
   const paddedTypes = useMemo(() => getPaddedData(types, NUM_COLUMNS), [types]);

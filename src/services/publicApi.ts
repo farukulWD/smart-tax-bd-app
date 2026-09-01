@@ -11,6 +11,7 @@ const publicApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getAllNews: build.query<GetAllNewsResponse, void>({
       query: () => ({ url: '/update-news/get-all-news' }),
+      keepUnusedDataFor: LONG_CACHE_SECONDS,
     }),
     getSingleNews: build.query<GetSingleNewsResponse, string>({
       query: (id) => ({ url: `/update-news/get-news/${id}` }),

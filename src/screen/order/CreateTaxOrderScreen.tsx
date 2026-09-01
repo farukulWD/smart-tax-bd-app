@@ -128,7 +128,7 @@ const CreateTaxOrderForm = () => {
   const { i18n } = useTranslation();
   const locale = toLocale(i18n.language);
   const { data: incomeSourcesResponse, isLoading: isIncomeSourcesLoading } =
-    useGetAllIncomeSourcesQuery();
+    useGetAllIncomeSourcesQuery(undefined, { refetchOnMountOrArgChange: true });
   const visibleIncomeSources = (incomeSourcesResponse?.data ?? [])
     .filter((source) => source.isActive)
     .sort((a, b) => a.order - b.order);

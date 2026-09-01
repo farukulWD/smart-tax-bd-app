@@ -1,4 +1,5 @@
 import { toast } from '../utils/ToastConfig';
+import { store } from '../redux/store';
 
 export interface TErrorSourse {
   path: string | number;
@@ -31,5 +32,6 @@ export const getApiErrorMessage = (error: unknown): string => {
 };
 
 export const globalErrorHandler = (error: unknown) => {
+  if (!store.getState().network.isOnline) return;
   toast.error(getApiErrorMessage(error) || 'An unknown error occurred');
 };

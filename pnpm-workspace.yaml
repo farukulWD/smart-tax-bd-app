@@ -1,0 +1,5 @@
+publicHoistPattern:
+  - react-native-css-interop
+
+overrides:
+  react-native-device-info: ^15.0.2

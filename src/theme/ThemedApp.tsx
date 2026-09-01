@@ -9,6 +9,8 @@ import Toast from 'react-native-toast-message';
 import { createToastConfig } from '../utils/ToastConfig';
 import useAppUpdate from '../hook/useAppUpdate';
 import useSessionBootstrap from '../hook/useSessionBootstrap';
+import useNetworkStatus from '../hook/useNetworkStatus';
+import OfflineBanner from '../components/global/OfflineBanner';
 import { scaleVars } from '../utils/scale';
 
 const hslToRgbChannels = (color: string) => {
@@ -78,6 +80,7 @@ const ThemedApp = () => {
 
   useAppUpdate();
   useSessionBootstrap();
+  useNetworkStatus();
 
   useEffect(() => {
     setColorScheme(theme);
@@ -127,6 +130,7 @@ const ThemedApp = () => {
       })}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} backgroundColor="transparent" />
       <Navigation />
+      <OfflineBanner />
       <Toast config={createToastConfig(colors)} />
     </View>
   );

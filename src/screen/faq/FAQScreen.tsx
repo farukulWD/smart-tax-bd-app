@@ -5,7 +5,9 @@ import NoData from '@/src/components/global/NoData';
 import { useGetAllFaqsQuery } from '@/src/services/publicApi';
 
 const FAQScreen = () => {
-  const { data, isLoading, isFetching, error, refetch } = useGetAllFaqsQuery();
+  const { data, isLoading, isFetching, error, refetch } = useGetAllFaqsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   const faqs = data?.data ?? [];
 

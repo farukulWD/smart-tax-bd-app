@@ -61,6 +61,16 @@ export const axiosBaseQuery =
   ({ baseUrl }: { baseUrl: string } = { baseUrl: '' }): BaseQueryFn<Args, unknown, unknown> =>
   async ({ url, method = 'GET', data, params, headers }, api) => {
     const state = api.getState() as any;
+
+    if (state?.network?.isOnline === false) {
+      return {
+        error: {
+          status: 'FETCH_ERROR',
+          data: { message: 'No internet connection. Please check your network and try again.' },
+        },
+      };
+    }
+
     let accessToken: string | null = state?.auth?.token ?? null;
 
     const send = (token: string | null) =>

@@ -91,7 +91,9 @@ const EmptyState = () => (
 );
 
 const NewsScreen = () => {
-  const { data, isLoading, error, refetch, isFetching } = useGetAllNewsQuery();
+  const { data, isLoading, error, refetch, isFetching } = useGetAllNewsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
   const news = (data?.data ?? []).filter((n) => n.isActive);
 
   const openDetail = (item: (typeof news)[number]) => {

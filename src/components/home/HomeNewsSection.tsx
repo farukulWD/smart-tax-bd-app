@@ -32,7 +32,7 @@ const PulseDot = () => {
 
 const HomeNewsSection = () => {
   const { t } = useTranslation();
-  const { data } = useGetAllNewsQuery();
+  const { data } = useGetAllNewsQuery(undefined, { refetchOnMountOrArgChange: true });
   const handleNavigateToNewDetails = (id: string) => {
     navigate('NewsDetails', { newsId: id });
   };
