@@ -194,7 +194,7 @@ const CreateTaxOrderForm = () => {
 
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-4 gap-4 pb-10"
+        contentContainerClassName="px-4 gap-4 pb-6"
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
         <SectionCard title="Tax Filing Year">
@@ -250,40 +250,42 @@ const CreateTaxOrderForm = () => {
           />
           <ErrorText message={errors.tax_types?.message} />
         </SectionCard>
-
-        <View className="gap-3 rounded-3xl border border-border bg-card p-6">
-          <AppText className="text-lg font-bold text-foreground">Order Summary</AppText>
-          <AppText className="-mt-1 text-13 text-mutedForeground">
-            Step 1 will create a draft order.
-          </AppText>
-
-          <View className="flex-row justify-between">
-            <AppText className="text-13 text-mutedForeground">Tax types</AppText>
-            <AppText className="text-13 font-bold text-foreground">
-              {selectedTaxTypes.length} selected
-            </AppText>
-          </View>
-
-          <View className="flex-row justify-between">
-            <AppText className="text-13 text-mutedForeground">Tax year</AppText>
-            <AppText className="text-13 font-bold text-foreground">{selectedTaxYear}</AppText>
-          </View>
-
-          <TouchableOpacity
-            className={`mt-1 h-10 items-center justify-center rounded-2xl bg-primary ${
-              isCreatingOrder ? 'opacity-70' : ''
-            }`}
-            onPress={handleSubmit(onSubmit)}
-            disabled={isCreatingOrder}
-            activeOpacity={0.85}>
-            {isCreatingOrder ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <AppText className="text-base font-bold text-primaryForeground">Next ✓</AppText>
-            )}
-          </TouchableOpacity>
-        </View>
       </ScrollView>
+
+      <View
+        className="gap-2 border-t border-border bg-card px-4 pt-4"
+        style={{ paddingBottom: insets.bottom + 12 }}>
+        <AppText className="text-lg font-bold text-foreground">Order Summary</AppText>
+        <AppText className="-mt-1 text-13 text-mutedForeground">
+          Step 1 will create a draft order.
+        </AppText>
+
+        <View className="flex-row justify-between">
+          <AppText className="text-13 text-mutedForeground">Tax types</AppText>
+          <AppText className="text-13 font-bold text-foreground">
+            {selectedTaxTypes.length} selected
+          </AppText>
+        </View>
+
+        <View className="flex-row justify-between">
+          <AppText className="text-13 text-mutedForeground">Tax year</AppText>
+          <AppText className="text-13 font-bold text-foreground">{selectedTaxYear}</AppText>
+        </View>
+
+        <TouchableOpacity
+          className={`mt-1 h-10 items-center justify-center rounded-2xl bg-primary ${
+            isCreatingOrder ? 'opacity-70' : ''
+          }`}
+          onPress={handleSubmit(onSubmit)}
+          disabled={isCreatingOrder}
+          activeOpacity={0.85}>
+          {isCreatingOrder ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <AppText className="text-base font-bold text-primaryForeground">Next ✓</AppText>
+          )}
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

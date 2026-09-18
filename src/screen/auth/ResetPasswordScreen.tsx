@@ -114,7 +114,7 @@ const ResetPasswordScreen = ({
                     <View className="relative justify-center">
                       <Input
                         className={inputClass}
-                        placeholder={t('auth.newPasswordLabel')}
+                        placeholder={t('auth.newPasswordPlaceholder')}
                         placeholderTextColor={colors.mutedForeground}
                         value={field.value as string}
                         onChangeText={field.onChange}
