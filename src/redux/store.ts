@@ -19,7 +19,7 @@ import { logout } from './slices/authSlice';
 import { cancelInFlightRefresh } from '../services/axios/axiosBaseQuery';
 import { clearRefreshToken } from '../services/auth/refreshTokenStore';
 
-const CACHED_ENDPOINTS = ['getAllTaxTypes', 'getAllFaqs', 'getAllIncomeSources', 'getAllNews'];
+const CACHED_ENDPOINTS = ['getAllTaxTypes', 'getAllFaqs', 'getAllNews'];
 
 const apiCacheTransform = createTransform(
   (inboundState: any) => {

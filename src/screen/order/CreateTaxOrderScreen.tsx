@@ -7,10 +7,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { IncomeSource } from '@/src/services/orderApi';
 import { useGetUserInfoQuery } from '@/src/services/auth';
 import { useCreateTaxStepOneMutation } from '@/src/services/orderApi';
-import { useGetAllIncomeSourcesQuery } from '@/src/services/publicApi';
+import { useGetAllTaxTypesQuery } from '@/src/services/publicApi';
 import { readLocalized, toLocale } from '@/src/utils/localize';
 import ProtectedScreen from '@/src/navigation/ProtectedScreen';
 import { CURRENT_YEAR } from '@/src/utils/commonFunction';
@@ -25,36 +24,11 @@ import { setUser } from '@/src/redux/slices/authSlice';
 import { logger } from '@/src/utils/logger';
 
 const formSchema = z.object({
-  source_of_income: z.array(z.string()).min(1, 'Please select at least one source of income'),
+  tax_types: z.array(z.string()).min(1, 'Please select at least one tax type'),
   tax_year: z.string().min(1, 'Tax year is required'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
-
-const QUERY_TAX_TYPE_TO_INCOME_SOURCE: Record<string, IncomeSource> = {
-  income_tax: IncomeSource.PrivateJob,
-  income_tax_government: IncomeSource.GovtJob,
-  income_tax_non_government: IncomeSource.PrivateJob,
-  sales_tax: IncomeSource.Business,
-  vat: IncomeSource.Business,
-  value_added_tax: IncomeSource.Business,
-  service_tax: IncomeSource.Business,
-  import_duty: IncomeSource.Business,
-  business_tax: IncomeSource.Business,
-  excise_duty: IncomeSource.Business,
-  customs_duty: IncomeSource.Business,
-  entertainment_tax: IncomeSource.Business,
-  environmental_tax: IncomeSource.Business,
-  house_rental_tax: IncomeSource.Rent,
-  property_tax: IncomeSource.Rent,
-  capital_gains_tax: IncomeSource.CapitalGain,
-  gift_tax: IncomeSource.OthersSource,
-  inheritance_tax: IncomeSource.OthersSource,
-  wealth_tax: IncomeSource.FinancialAsset,
-  agriculture_tax_return: IncomeSource.Agriculture,
-  non_resident_bangladeshis: IncomeSource.ForignRemitance,
-  housewife_tax_return: IncomeSource.OthersSource,
-};
 
 const CARD_GUTTER = 5;
 
@@ -68,7 +42,7 @@ const SectionCard = ({ title, children }: { title: string; children: React.React
 const ErrorText = ({ message }: { message?: string }) =>
   message ? <AppText className="mt-1 text-xs text-destructive">{message}</AppText> : null;
 
-const IncomeSourceCard = ({
+const TaxTypeCard = ({
   label,
   checked,
   onPress,
@@ -127,10 +101,12 @@ const CreateTaxOrderForm = () => {
 
   const { i18n } = useTranslation();
   const locale = toLocale(i18n.language);
-  const { data: incomeSourcesResponse, isLoading: isIncomeSourcesLoading } =
-    useGetAllIncomeSourcesQuery(undefined, { refetchOnMountOrArgChange: true });
-  const visibleIncomeSources = (incomeSourcesResponse?.data ?? [])
-    .filter((source) => source.isActive)
+  const { data: taxTypesResponse, isLoading: isTaxTypesLoading } = useGetAllTaxTypesQuery(
+    undefined,
+    { refetchOnMountOrArgChange: true }
+  );
+  const visibleTaxTypes = (taxTypesResponse?.data ?? [])
+    .filter((item) => item.isActive)
     .sort((a, b) => a.order - b.order);
 
   const {
@@ -142,7 +118,7 @@ const CreateTaxOrderForm = () => {
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      source_of_income: [],
+      tax_types: [],
       tax_year: `${CURRENT_YEAR}-${CURRENT_YEAR + 1}`,
     },
   });
@@ -154,20 +130,17 @@ const CreateTaxOrderForm = () => {
 
   const preselectApplied = useRef(false);
   useEffect(() => {
-    if (preselectApplied.current || isIncomeSourcesLoading) return;
+    if (preselectApplied.current || isTaxTypesLoading) return;
 
     preselectApplied.current = true;
 
-    const mapped = QUERY_TAX_TYPE_TO_INCOME_SOURCE[taxType];
-    if (!mapped) return;
-
-    const inCatalog = visibleIncomeSources.some((source) => source.value === mapped);
-    if (inCatalog && getValues('source_of_income').length === 0) {
-      setValue('source_of_income', [mapped]);
+    const inCatalog = visibleTaxTypes.some((item) => item.value === taxType);
+    if (inCatalog && getValues('tax_types').length === 0) {
+      setValue('tax_types', [taxType]);
     }
-  }, [taxType, isIncomeSourcesLoading, visibleIncomeSources]);
+  }, [taxType, isTaxTypesLoading, visibleTaxTypes]);
 
-  const selectedIncomeSources = useWatch({ control, name: 'source_of_income' });
+  const selectedTaxTypes = useWatch({ control, name: 'tax_types' });
   const selectedTaxYear = useWatch({ control, name: 'tax_year' });
 
   const onSubmit = async (values: FormValues) => {
@@ -186,7 +159,7 @@ const CreateTaxOrderForm = () => {
           are_you_house_wife: false,
         },
         tax_year: values.tax_year,
-        source_of_income: values.source_of_income,
+        tax_types: values.tax_types,
       }).unwrap();
       const orderId = res?.data?.tax_order?._id;
       if (!orderId) {
@@ -221,7 +194,7 @@ const CreateTaxOrderForm = () => {
 
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-4 gap-4 pb-10"
+        contentContainerClassName="px-4 gap-4 pb-6"
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
         <SectionCard title="Tax Filing Year">
@@ -235,41 +208,37 @@ const CreateTaxOrderForm = () => {
           <ErrorText message={errors.tax_year?.message} />
         </SectionCard>
 
-        <SectionCard title="Source of Income">
+        <SectionCard title="Tax Type">
           <Controller
             control={control}
-            name="source_of_income"
+            name="tax_types"
             render={({ field: { value, onChange } }) => {
-              if (isIncomeSourcesLoading) {
+              if (isTaxTypesLoading) {
                 return (
-                  <AppText className="text-13 text-mutedForeground">
-                    Loading income sources...
-                  </AppText>
+                  <AppText className="text-13 text-mutedForeground">Loading tax types...</AppText>
                 );
               }
 
-              if (visibleIncomeSources.length === 0) {
+              if (visibleTaxTypes.length === 0) {
                 return (
                   <AppText className="text-13 text-mutedForeground">
-                    No income sources available right now.
+                    No tax types available right now.
                   </AppText>
                 );
               }
 
               return (
                 <View className="flex-row flex-wrap" style={{ margin: -CARD_GUTTER }}>
-                  {visibleIncomeSources.map((source) => {
-                    const checked = value.includes(source.value);
+                  {visibleTaxTypes.map((item) => {
+                    const checked = value.includes(item.value);
                     return (
-                      <IncomeSourceCard
-                        key={source._id}
-                        label={readLocalized(source.title, locale) || source.value}
+                      <TaxTypeCard
+                        key={item._id}
+                        label={readLocalized(item.title, locale) || item.value}
                         checked={checked}
                         onPress={() =>
                           onChange(
-                            checked
-                              ? value.filter((v) => v !== source.value)
-                              : [...value, source.value]
+                            checked ? value.filter((v) => v !== item.value) : [...value, item.value]
                           )
                         }
                       />
@@ -279,42 +248,44 @@ const CreateTaxOrderForm = () => {
               );
             }}
           />
-          <ErrorText message={errors.source_of_income?.message} />
+          <ErrorText message={errors.tax_types?.message} />
         </SectionCard>
-
-        <View className="gap-3 rounded-3xl border border-border bg-card p-6">
-          <AppText className="text-lg font-bold text-foreground">Order Summary</AppText>
-          <AppText className="-mt-1 text-13 text-mutedForeground">
-            Step 1 will create a draft order.
-          </AppText>
-
-          <View className="flex-row justify-between">
-            <AppText className="text-13 text-mutedForeground">Income sources</AppText>
-            <AppText className="text-13 font-bold text-foreground">
-              {selectedIncomeSources.length} selected
-            </AppText>
-          </View>
-
-          <View className="flex-row justify-between">
-            <AppText className="text-13 text-mutedForeground">Tax year</AppText>
-            <AppText className="text-13 font-bold text-foreground">{selectedTaxYear}</AppText>
-          </View>
-
-          <TouchableOpacity
-            className={`mt-1 h-10 items-center justify-center rounded-2xl bg-primary ${
-              isCreatingOrder ? 'opacity-70' : ''
-            }`}
-            onPress={handleSubmit(onSubmit)}
-            disabled={isCreatingOrder}
-            activeOpacity={0.85}>
-            {isCreatingOrder ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <AppText className="text-base font-bold text-primaryForeground">Next ✓</AppText>
-            )}
-          </TouchableOpacity>
-        </View>
       </ScrollView>
+
+      <View
+        className="gap-2 border-t border-border bg-card px-4 pt-4"
+        style={{ paddingBottom: insets.bottom + 12 }}>
+        <AppText className="text-lg font-bold text-foreground">Order Summary</AppText>
+        <AppText className="-mt-1 text-13 text-mutedForeground">
+          Step 1 will create a draft order.
+        </AppText>
+
+        <View className="flex-row justify-between">
+          <AppText className="text-13 text-mutedForeground">Tax types</AppText>
+          <AppText className="text-13 font-bold text-foreground">
+            {selectedTaxTypes.length} selected
+          </AppText>
+        </View>
+
+        <View className="flex-row justify-between">
+          <AppText className="text-13 text-mutedForeground">Tax year</AppText>
+          <AppText className="text-13 font-bold text-foreground">{selectedTaxYear}</AppText>
+        </View>
+
+        <TouchableOpacity
+          className={`mt-1 h-10 items-center justify-center rounded-2xl bg-primary ${
+            isCreatingOrder ? 'opacity-70' : ''
+          }`}
+          onPress={handleSubmit(onSubmit)}
+          disabled={isCreatingOrder}
+          activeOpacity={0.85}>
+          {isCreatingOrder ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <AppText className="text-base font-bold text-primaryForeground">Next ✓</AppText>
+          )}
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

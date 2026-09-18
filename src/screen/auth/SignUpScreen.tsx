@@ -225,12 +225,12 @@ const SignUpScreen = ({
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('auth.passwordLabel')}</FormLabel>
+                  <FormLabel>{t('auth.signUpPasswordLabel')}</FormLabel>
                   <FormControl>
                     <View className="relative justify-center">
                       <Input
                         className={inputClass}
-                        placeholder={t('auth.passwordLabel')}
+                        placeholder={t('auth.passwordPlaceholder')}
                         placeholderTextColor={colors.mutedForeground}
                         ref={passwordRef}
                         value={field.value as string}

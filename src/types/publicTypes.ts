@@ -42,6 +42,7 @@ export type TaxTypeItem = {
   icon?: string;
   tax_orders_id: string[];
   description: LocalizedString;
+  order: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -69,20 +70,4 @@ export type GetAllFaqsResponse = {
   success: boolean;
   message: string;
   data: FaqItemType[];
-};
-
-export type IncomeSourceItem = {
-  _id: string;
-  value: string;
-  title: { en: string; bn: string };
-  order: number;
-  isActive: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-};
-
-export type GetAllIncomeSourcesResponse = {
-  success: boolean;
-  message: string;
-  data: IncomeSourceItem[];
 };

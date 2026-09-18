@@ -1,18 +1,6 @@
 import { TResponse } from '../types/commonTypes';
 import { baseApi } from './baseApi';
 
-export enum IncomeSource {
-  GovtJob = 'Income from Govt.Job',
-  PrivateJob = 'Income from Private Job',
-  Business = 'Income from Business',
-  Rent = 'Income from Rent',
-  Agriculture = 'Income from Agriculture',
-  FinancialAsset = 'Income from Financial Asset',
-  CapitalGain = 'Income from Capital Gain',
-  OthersSource = 'Income from others Source',
-  ForignRemitance = 'Income from Forign Remitance',
-}
-
 export interface IPersonalInformation {
   name: string;
   email?: string;
@@ -40,7 +28,8 @@ export interface IOrder {
   are_you_get_notice_from_tax_office: boolean;
   income_from_partnership_firm: boolean;
   income_from_ldt_company: boolean;
-  source_of_income: string[];
+  /** Tax type `value` keys. */
+  tax_types: string[];
   tax_year: string;
   documents?: string[];
   tax_payable_amount: number;
@@ -60,7 +49,7 @@ export interface IOrder {
 export interface ICreateTaxStepOnePayload {
   personal_information: IPersonalInformation;
   tax_year: string;
-  source_of_income: string[];
+  tax_types: string[];
   income_from_ldt_company?: boolean;
   income_from_partnership_firm?: boolean;
   are_you_get_notice_from_tax_office?: boolean;

@@ -1,6 +1,5 @@
 import {
   GetAllFaqsResponse,
-  GetAllIncomeSourcesResponse,
   GetAllNewsResponse,
   GetAllTaxTypesResponse,
   GetSingleNewsResponse,
@@ -24,10 +23,6 @@ const publicApi = baseApi.injectEndpoints({
       query: () => ({ url: '/faqs' }),
       keepUnusedDataFor: LONG_CACHE_SECONDS,
     }),
-    getAllIncomeSources: build.query<GetAllIncomeSourcesResponse, void>({
-      query: () => ({ url: '/income-sources' }),
-      keepUnusedDataFor: LONG_CACHE_SECONDS,
-    }),
   }),
   overrideExisting: true,
 });
@@ -37,5 +32,4 @@ export const {
   useGetSingleNewsQuery,
   useGetAllTaxTypesQuery,
   useGetAllFaqsQuery,
-  useGetAllIncomeSourcesQuery,
 } = publicApi;
