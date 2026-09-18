@@ -46,3 +46,6 @@ package-lock.json
 pnpm-lock.yaml
 bun.lockb
 bun.lock
+
+# local Expo module build output
+modules/*/android/build/

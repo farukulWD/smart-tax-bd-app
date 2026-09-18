@@ -24,10 +24,10 @@ class AutofillControlModule : Module() {
       // AutofillManager arrived in API 26; the app supports older devices,
       // which have no autofill framework to cancel.
       if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-        return@AsyncFunction
+        return@AsyncFunction null
       }
 
-      val activity = appContext.activityProvider?.currentActivity ?: return@AsyncFunction
+      val activity = appContext.activityProvider?.currentActivity ?: return@AsyncFunction null
       activity.runOnUiThread {
         activity.getSystemService(AutofillManager::class.java)?.cancel()
       }
