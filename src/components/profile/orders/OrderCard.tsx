@@ -7,11 +7,13 @@ import { getStatusConfig } from './statusConfig';
 import { formatDate, formatAmount, shortenId, getPayableFeeAmount } from './utils';
 import { StepDots } from './StepDots';
 import { useTranslation } from 'react-i18next';
+import { useTaxTypeTitle } from './useTaxTypeTitle';
 
 export const OrderCard = ({ item, onPress }: { item: IOrder; onPress: () => void }) => {
   const { colors } = useThemeColors();
   const { t } = useTranslation();
   const cfg = getStatusConfig(item.status, colors, t);
+  const taxTypeTitle = useTaxTypeTitle();
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -47,19 +49,19 @@ export const OrderCard = ({ item, onPress }: { item: IOrder; onPress: () => void
           </View>
         </View>
 
-        {item.source_of_income?.length > 0 && (
+        {item.tax_types?.length > 0 && (
           <View className="mb-3 flex-row flex-wrap gap-1.5">
-            {item.source_of_income.slice(0, 2).map((src) => (
-              <View key={src} className="rounded-lg bg-muted px-2 py-0.5">
+            {item.tax_types.slice(0, 2).map((value) => (
+              <View key={value} className="rounded-lg bg-muted px-2 py-0.5">
                 <AppText className="text-xs text-mutedForeground" numberOfLines={1}>
-                  {src}
+                  {taxTypeTitle(value)}
                 </AppText>
               </View>
             ))}
-            {item.source_of_income.length > 2 && (
+            {item.tax_types.length > 2 && (
               <View className="rounded-lg bg-muted px-2 py-0.5">
                 <AppText className="text-xs text-mutedForeground">
-                  +{item.source_of_income.length - 2}
+                  +{item.tax_types.length - 2}
                 </AppText>
               </View>
             )}
