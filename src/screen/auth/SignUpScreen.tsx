@@ -18,6 +18,7 @@ import { useRegisterMutation } from '@/src/services/auth';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { toast } from '@/src/utils/ToastConfig';
 import { normalizeEmail, normalizeMobile, trimLeading } from '@/src/utils/commonFunction';
+import { cancelAutofillSession } from '@/modules/autofill-control';
 
 const createRegisterSchema = (t: (key: string) => string) =>
   z
@@ -92,6 +93,11 @@ const SignUpScreen = ({
   };
 
   const onSubmit = async (data: RegisterFormValues) => {
+    // The fields already opt out of autofill, but Android offers to save the
+    // password when the autofill session ends. Ending it here keeps that
+    // dialog away from account creation; sign-in still uses autofill.
+    cancelAutofillSession();
+
     const payload = buildRegisterPayload(data);
 
     const check = registerSchema.safeParse({
