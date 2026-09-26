@@ -1,11 +1,24 @@
-import { View, TouchableOpacity, Image, Text } from 'react-native';
+import { View, TouchableOpacity, Image, Text, Share } from 'react-native';
 import AppText from '@/src/components/common/AppText';
-import { BellIcon } from 'lucide-react-native';
+import { BellIcon, Share2Icon } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppNavigation } from '@/src/utils/NavigationUtils';
 import { useAppSelector } from '@/src/redux/hooks';
 import { useGetUnreadCountQuery } from '@/src/services/notificationApi';
 import { Images } from '@/src/utils/Images';
+
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.smarttaxbd';
+
+const shareApp = async () => {
+  try {
+    await Share.share({
+      title: 'Smart Tax BD',
+      message: `File your income tax return easily with Smart Tax BD.\n\nDownload: ${PLAY_STORE_URL}`,
+    });
+  } catch {
+    // User dismissed the sheet or sharing is unavailable — nothing to do.
+  }
+};
 
 const HomeHeader = () => {
   const { top } = useSafeAreaInsets();
@@ -28,6 +41,14 @@ const HomeHeader = () => {
             ) : null}
           </View>
         </View>
+
+        <TouchableOpacity
+          onPress={shareApp}
+          activeOpacity={0.7}
+          accessibilityLabel="Share app"
+          className="mr-3 h-12 w-12 items-center justify-center rounded-full border border-border bg-card">
+          <Share2Icon color="#258336" size={22} />
+        </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => navigation.navigate('Notification')}
