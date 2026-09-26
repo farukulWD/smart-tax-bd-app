@@ -36,6 +36,8 @@ export default {
     createAccount: 'Create Account',
     myFiles: 'My Files',
     myFilesDesc: 'Your all files',
+    taxDocuments: 'Tax Documents',
+    taxDocumentsDesc: 'Acknowledgements & tax certificates',
     language: 'Language',
     theme: 'Theme',
     dark: 'Dark',

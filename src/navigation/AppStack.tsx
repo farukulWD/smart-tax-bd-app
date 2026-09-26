@@ -14,6 +14,7 @@ import OrderPaymentStatusScreen from '../screen/order/OrderPaymentStatusScreen';
 import OrderPaymentScreen from '../screen/order/OrderPaymentScreen';
 import OrderSuccessScreen from '../screen/order/OrderSuccessScreen';
 import MyFilesScreen from '../screen/profile/MyFilesScreen';
+import TaxDocumentsScreen from '../screen/profile/TaxDocumentsScreen';
 import { HAS_SEEN_ONBOARDING } from '../utils/onboarding';
 import { useThemeColors } from '../theme/useThemeColors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -35,6 +36,7 @@ export type AppStackParamList = {
   BlogDetails: { slug: string };
   Notification: undefined;
   MyFiles: undefined;
+  TaxDocuments: undefined;
   CreateTaxOrder: { taxType?: string } | undefined;
   RequireDocuments: { taxId: string; redirectTo?: { stack: string; screen: string } };
   OrderPaymentStatus: {
@@ -90,6 +92,7 @@ export default function AppStack() {
       <Stack.Screen name="OrderPayment" component={OrderPaymentScreen} />
       <Stack.Screen name="OrderSuccess" component={OrderSuccessScreen} />
       <Stack.Screen name="MyFiles" component={MyFilesScreen} />
+      <Stack.Screen name="TaxDocuments" component={TaxDocumentsScreen} />
     </Stack.Navigator>
   );
 }

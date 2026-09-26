@@ -167,6 +167,13 @@ const ProfileScreen = () => {
             description={t('profile.myFilesDesc')}
             onPress={() => navigate('MyFiles')}
           />
+          <MenuItem
+            icon={<LucideIcon name="FileCheck" className="text-secondary" size={16} />}
+            accent="bg-secondary/15"
+            label={t('profile.taxDocuments')}
+            description={t('profile.taxDocumentsDesc')}
+            onPress={() => navigate('TaxDocuments')}
+          />
         </View>
 
         <SectionLabel label={t('profile.infoSupport')} />

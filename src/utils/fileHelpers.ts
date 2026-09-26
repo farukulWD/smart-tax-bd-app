@@ -25,7 +25,7 @@ export const getFileType = (url: string): 'image' | 'pdf' | 'other' => {
   return 'other';
 };
 
-export const toPreviewFile = (file: IFile): PreviewFile => ({
+export const toPreviewFile = (file: Pick<IFile, 'file' | 'name'>): PreviewFile => ({
   url: file.file,
   name: file.name,
   type: getFileType(file.file),

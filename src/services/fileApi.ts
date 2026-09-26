@@ -1,5 +1,5 @@
 import { TResponse } from '../types/commonTypes';
-import { IFile } from '../types/filesTypes';
+import { IFile, ITaxDocument } from '../types/filesTypes';
 import { baseApi } from './baseApi';
 
 const fileApi = baseApi.injectEndpoints({
@@ -16,6 +16,13 @@ const fileApi = baseApi.injectEndpoints({
     getMyFiles: builder.query<TResponse<any>, undefined>({
       query: () => ({
         url: '/files/get-user-files',
+        method: 'GET',
+      }),
+      providesTags: ['files'],
+    }),
+    getMyTaxDocuments: builder.query<TResponse<ITaxDocument[]>, undefined>({
+      query: () => ({
+        url: '/files/get-user-tax-documents',
         method: 'GET',
       }),
       providesTags: ['files'],
@@ -51,6 +58,7 @@ const fileApi = baseApi.injectEndpoints({
 export const {
   useUploadFileMutation,
   useGetMyFilesQuery,
+  useGetMyTaxDocumentsQuery,
   useGetSingleFileQuery,
   useDeleteFileMutation,
   useUpdateFileMutation,

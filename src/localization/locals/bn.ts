@@ -37,6 +37,8 @@ export default {
     createAccount: 'অ্যাকাউন্ট তৈরি করুন',
     myFiles: 'আমার ফাইল',
     myFilesDesc: 'আপনার সব ফাইল',
+    taxDocuments: 'ট্যাক্স ডকুমেন্টস',
+    taxDocumentsDesc: 'প্রাপ্তিস্বীকারপত্র ও ট্যাক্স সার্টিফিকেট',
     language: 'ভাষা',
     theme: 'থিম',
     dark: 'ডার্ক',
