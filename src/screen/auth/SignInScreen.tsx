@@ -19,19 +19,15 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { useLazyGetUserInfoQuery, useLoginMutation } from '@/src/services/auth';
+import { useLoginMutation } from '@/src/services/auth';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
-import { useAppDispatch } from '@/src/redux/hooks';
-import { setCredentials, setUser } from '@/src/redux/slices/authSlice';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { AppStackParamList } from '@/src/navigation/AppStack';
-import { navigateToStack, replace } from '@/src/utils/NavigationUtils';
+import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { BackButton } from '@/src/components/global/BackButton';
 import { normalizeMobile } from '@/src/utils/commonFunction';
-import { saveRefreshToken } from '@/src/services/auth/refreshTokenStore';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { logger } from '@/src/utils/logger';
+import useCompleteLogin from '@/src/hook/useCompleteLogin';
 
 const createSignInSchema = (t: (key: string) => string) =>
   z.object({
@@ -50,14 +46,12 @@ export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>;
 const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>> }) => {
   const { t } = useTranslation();
   const { colors } = useThemeColors();
-  const route = useRoute<RouteProp<AppStackParamList, 'Auth'>>();
   const navigation = useNavigation();
-  const dispatch = useAppDispatch();
   const { bottom, top } = useSafeAreaInsets();
 
   const [showPassword, setShowPassword] = useState(false);
   const [login, { isLoading }] = useLoginMutation();
-  const [fetchUserInfo, { isFetching: isFetchingUser }] = useLazyGetUserInfoQuery();
+  const { completeLogin, isFetchingUser } = useCompleteLogin();
 
   const signInSchema = useMemo(() => createSignInSchema(t), [t]);
   const TEST_ACCOUNTS = {
@@ -80,45 +74,13 @@ const SignInScreen = ({ setScreen }: { setScreen: Dispatch<SetStateAction<TAuth>
     },
   });
 
-  const handleNavigation = () => {
-    if (route?.params?.shouldGoBack) {
-      return navigation.goBack();
-    }
-
-    if (route.params?.redirectTo) {
-      if (route.params?.redirectTo.stack) {
-        navigateToStack(route.params.redirectTo.stack, { screen: route.params.redirectTo.stack });
-      } else {
-        replace(route.params.redirectTo.screen);
-      }
-    }
-  };
-
   const onSubmit = async (data: SignInFormValues) => {
     try {
       const res = await login({
         mobile: data.mobile,
         password: data.password,
       }).unwrap();
-      dispatch(
-        setCredentials({
-          token: res.data.accessToken,
-          user: res.data.user,
-        })
-      );
-
-      await saveRefreshToken(res.data.refreshToken);
-
-      try {
-        const profile = await fetchUserInfo().unwrap();
-        if (profile?.data) {
-          dispatch(setUser(profile.data));
-        }
-      } catch (profileError) {
-        logger.log('profileError', JSON.stringify(profileError, null, 2));
-      }
-
-      handleNavigation();
+      await completeLogin(res.data);
     } catch (error) {
       logger.log('error', JSON.stringify(error, null, 2));
       globalErrorHandler(error);

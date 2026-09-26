@@ -1,5 +1,5 @@
 import { RegisterFormValues } from '../screen/auth/SignUpScreen';
-import { ILoginResponse, IUser } from '../types/authTypes';
+import { ILoginData, ILoginResponse, IUser } from '../types/authTypes';
 import { TResponse } from '../types/commonTypes';
 import { baseApi } from './baseApi';
 
@@ -7,7 +7,7 @@ export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation<
       TResponse<any>,
-      Omit<RegisterFormValues, 'confirmPassword' | 'email'> & { email?: string }
+      Omit<RegisterFormValues, 'confirmPassword' | 'email'> & { email?: string; appHash?: string }
     >({
       query: (data) => ({
         url: '/users/register',
@@ -15,14 +15,14 @@ export const authApi = baseApi.injectEndpoints({
         data,
       }),
     }),
-    verifyRegisterOtp: builder.mutation<TResponse<any>, { mobile: string; otp: string }>({
+    verifyRegisterOtp: builder.mutation<TResponse<ILoginData>, { mobile: string; otp: string }>({
       query: (data) => ({
         url: '/users/verify-otp',
         method: 'POST',
         data,
       }),
     }),
-    resendRegisterOtp: builder.mutation<TResponse<any>, { mobile: string }>({
+    resendRegisterOtp: builder.mutation<TResponse<any>, { mobile: string; appHash?: string }>({
       query: (data) => ({
         url: '/users/resend-otp',
         method: 'POST',
@@ -43,7 +43,7 @@ export const authApi = baseApi.injectEndpoints({
         data,
       }),
     }),
-    forgotPassword: builder.mutation<TResponse<any>, { mobile: string }>({
+    forgotPassword: builder.mutation<TResponse<any>, { mobile: string; appHash?: string }>({
       query: (data) => ({
         url: '/auth/forget-password',
         method: 'POST',

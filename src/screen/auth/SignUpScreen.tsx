@@ -19,6 +19,7 @@ import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { toast } from '@/src/utils/ToastConfig';
 import { normalizeEmail, normalizeMobile, trimLeading } from '@/src/utils/commonFunction';
 import { cancelAutofillSession } from '@/modules/autofill-control';
+import { prepareSmsOtp } from '@/modules/sms-otp';
 
 const createRegisterSchema = (t: (key: string) => string) =>
   z
@@ -111,7 +112,7 @@ const SignUpScreen = ({
     }
 
     try {
-      const res = await register(payload).unwrap();
+      const res = await register({ ...payload, ...(await prepareSmsOtp()) }).unwrap();
       if (res) {
         toast.success(t('auth.otpSent'));
         setAuthMobile(payload.mobile || res?.data?.mobile || '');

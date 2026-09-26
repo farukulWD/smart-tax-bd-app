@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SCREEN_NAME, TAuth, TVerifyPurpose } from '@/src/types/authTypes';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
@@ -11,7 +11,7 @@ const AuthScreen = ({ initialScreen }: { initialScreen: TAuth }) => {
   const [authMobile, setAuthMobile] = useState('');
   const [resetToken, setResetToken] = useState('');
   const [verifyType, setVerifyType] = useState<TVerifyPurpose>('register');
-  const prevScreenRef = useRef<TAuth>(SCREEN_NAME.SIGNIN);
+  const [prevScreen, setPrevScreen] = useState<TAuth>(SCREEN_NAME.SIGNIN);
 
   useEffect(() => {
     if (initialScreen) {
@@ -22,16 +22,15 @@ const AuthScreen = ({ initialScreen }: { initialScreen: TAuth }) => {
     };
   }, [initialScreen]);
 
-  useEffect(() => {
+  // Set during render, not in an effect: VerifyOTPScreen must mount with the
+  // right purpose, since an SMS already received is autofilled and submitted
+  // on its first render.
+  if (screen !== prevScreen) {
     if (screen === SCREEN_NAME.VERIFY_USER) {
-      if (prevScreenRef.current === SCREEN_NAME.FORGOT_PASSWORD) {
-        setVerifyType('forgotPassword');
-      } else {
-        setVerifyType('register');
-      }
+      setVerifyType(prevScreen === SCREEN_NAME.FORGOT_PASSWORD ? 'forgotPassword' : 'register');
     }
-    prevScreenRef.current = screen;
-  }, [screen]);
+    setPrevScreen(screen);
+  }
 
   if (screen === SCREEN_NAME.SIGNIN) {
     return <SignInScreen setScreen={setScreen} />;

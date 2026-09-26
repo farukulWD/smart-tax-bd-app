@@ -20,6 +20,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/comp
 import { SCREEN_NAME, TAuth } from '@/src/types/authTypes';
 import { useThemeColors } from '@/src/theme/useThemeColors';
 import { useForgotPasswordMutation } from '@/src/services/auth';
+import { prepareSmsOtp } from '@/modules/sms-otp';
 import { globalErrorHandler } from '@/src/services/globalErrorHandler';
 import { toast } from '@/src/utils/ToastConfig';
 import { BackButton } from '@/src/components/global/BackButton';
@@ -58,7 +59,10 @@ const ForgotPasswordScreen = ({
 
   const onSubmit = async (data: ForgotPasswordFormValues) => {
     try {
-      const res = await forgotPassword({ mobile: data.mobile }).unwrap();
+      const res = await forgotPassword({
+        mobile: data.mobile,
+        ...(await prepareSmsOtp()),
+      }).unwrap();
       if (res) {
         setAuthMobile(data.mobile);
         toast.success(res?.message ?? t('auth.otpSent'));

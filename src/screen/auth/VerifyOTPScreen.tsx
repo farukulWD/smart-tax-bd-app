@@ -26,6 +26,8 @@ import {
 } from '@/src/services/auth';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { prepareSmsOtp, useSmsOtpListener } from '@/modules/sms-otp';
+import useCompleteLogin from '@/src/hook/useCompleteLogin';
 
 const RESEND_COOLDOWN = 240; // 4 minutes
 const OTP_LENGTH = 6;
@@ -48,6 +50,8 @@ const VerifyOTPScreen = ({
   const [isFocused, setIsFocused] = useState(false);
   const [timer, setTimer] = useState(RESEND_COOLDOWN);
   const inputRef = useRef<TextInput>(null);
+  // The complete code last sent for verification, so autofill submits it once.
+  const submittedOtpRef = useRef('');
 
   const [verifyRegisterOtp, { isLoading: isVerifyingRegister }] = useVerifyRegisterOtpMutation();
   const [resendRegisterOtp, { isLoading: isResendingRegister }] = useResendRegisterOtpMutation();
@@ -56,6 +60,9 @@ const VerifyOTPScreen = ({
 
   const isVerifying = verifyType === 'register' ? isVerifyingRegister : isVerifyingForgot;
   const isResending = verifyType === 'register' ? isResendingRegister : isResendingForgot;
+
+  const { completeLogin, isFetchingUser } = useCompleteLogin();
+  useSmsOtpListener(setOtp, OTP_LENGTH);
 
   useEffect(() => {
     if (timer > 0) {
@@ -74,11 +81,10 @@ const VerifyOTPScreen = ({
   const handleVerify = async () => {
     try {
       if (verifyType === 'register') {
-        await verifyRegisterOtp({ mobile, otp }).unwrap();
+        const res = await verifyRegisterOtp({ mobile, otp }).unwrap();
         toast.success(t('auth.otpVerified'));
-        setOtp('');
-        setTimer(RESEND_COOLDOWN);
-        setScreen(SCREEN_NAME.SIGNIN);
+        // Verification returns a session, so the new user is signed in directly.
+        await completeLogin(res.data);
       } else {
         const res = await verifyForgotOtp({ mobile, otp }).unwrap();
         setResetToken(res.data.resetToken);
@@ -92,6 +98,17 @@ const VerifyOTPScreen = ({
     }
   };
 
+  // Verify as soon as the code is complete, whether typed or autofilled.
+  useEffect(() => {
+    if (otp.length < OTP_LENGTH) {
+      submittedOtpRef.current = '';
+      return;
+    }
+    if (isVerifying || submittedOtpRef.current === otp) return;
+    submittedOtpRef.current = otp;
+    handleVerify();
+  }, [otp, isVerifying]);
+
   const handleResend = async () => {
     if (!mobile) {
       toast.error(t('auth.mobileMissing'));
@@ -100,10 +117,11 @@ const VerifyOTPScreen = ({
     }
 
     try {
+      const smsOtp = await prepareSmsOtp();
       if (verifyType === 'register') {
-        await resendRegisterOtp({ mobile }).unwrap();
+        await resendRegisterOtp({ mobile, ...smsOtp }).unwrap();
       } else {
-        await forgotPassword({ mobile }).unwrap();
+        await forgotPassword({ mobile, ...smsOtp }).unwrap();
       }
       setTimer(RESEND_COOLDOWN);
       setOtp('');
@@ -205,9 +223,9 @@ const VerifyOTPScreen = ({
 
           <Button
             onPress={handleVerify}
-            disabled={!isOtpComplete || isVerifying}
+            disabled={!isOtpComplete || isVerifying || isFetchingUser}
             className={`mt-6 ${CONTROL_HEIGHT} items-center justify-center rounded-xl ${isOtpComplete ? 'bg-primary' : 'bg-muted'}`}>
-            {isVerifying ? (
+            {isVerifying || isFetchingUser ? (
               <ActivityIndicator color="#ffffff" />
             ) : (
               <Text
