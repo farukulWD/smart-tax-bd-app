@@ -67,6 +67,7 @@ export interface ITaxStepThreeResponse {
   payable_amount: number;
   gatewayPageURL: string | null;
   paid?: boolean;
+  reason?: 'coupon' | 'previous_payment';
   transaction_id: string;
 }
 
@@ -118,13 +119,6 @@ const orderApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['orders'],
     }),
-    placeManualOrder: builder.mutation<TResponse<{ tax_order: IOrder }>, string>({
-      query: (taxId) => ({
-        url: `/tax-orders/${taxId}/place-manual`,
-        method: 'POST',
-      }),
-      invalidatesTags: ['orders'],
-    }),
     initTaxStepThreePayment: builder.mutation<TResponse<ITaxStepThreeResponse>, string>({
       query: (taxId) => ({
         url: `/tax-orders/${taxId}/step-3`,
@@ -148,7 +142,6 @@ export const {
   useUpdateTaxStepOneMutation,
   useUploadTaxStepTwoDocumentsMutation,
   useSkipUploadStepTwoMutation,
-  usePlaceManualOrderMutation,
   useInitTaxStepThreePaymentMutation,
   useGetMyOrdersQuery,
 } = orderApi;

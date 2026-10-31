@@ -6,7 +6,7 @@ export interface IPayment {
   orderId: string;
   amount: number;
   currency: string;
-  status: 'pending' | 'completed' | 'failed';
+  status: 'pending' | 'completed' | 'failed' | 'cancelled';
   transaction_id?: string;
   paymentMethod?: string;
   gatewayPageURL?: string;
@@ -26,16 +26,27 @@ const paymentApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['payments'],
     }),
-    paymentSuccess: builder.mutation<TResponse<IPayment>, { tran_id: string; paymentFor?: string }>(
-      {
-        query: ({ tran_id, paymentFor }) => ({
-          url: paymentFor === 'fee_amount' ? '/tax-orders/payment/success' : '/payments/success',
-          method: 'POST',
-          data: { tran_id },
-        }),
-        invalidatesTags: ['payments'],
-      }
-    ),
+    // The server asks EPS for the real outcome; it fails unless EPS confirms
+    // the payment, whatever URL the gateway redirected to.
+    paymentSuccess: builder.mutation<TResponse<IPayment>, { tran_id: string }>({
+      query: ({ tran_id }) => ({
+        url: '/payments/success',
+        method: 'POST',
+        data: { tran_id },
+      }),
+      invalidatesTags: ['payments', 'orders'],
+    }),
+    paymentClosed: builder.mutation<
+      TResponse<IPayment>,
+      { tran_id: string; status: 'fail' | 'cancel' }
+    >({
+      query: ({ tran_id, status }) => ({
+        url: `/payments/${status}`,
+        method: 'POST',
+        data: { tran_id },
+      }),
+      invalidatesTags: ['payments', 'orders'],
+    }),
     getMyPayments: builder.query<TResponse<IPayment[]>, void>({
       query: () => ({
         url: '/payments/user-payment',
@@ -46,5 +57,9 @@ const paymentApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useCreatePaymentMutation, useGetMyPaymentsQuery, usePaymentSuccessMutation } =
-  paymentApi;
+export const {
+  useCreatePaymentMutation,
+  useGetMyPaymentsQuery,
+  usePaymentSuccessMutation,
+  usePaymentClosedMutation,
+} = paymentApi;

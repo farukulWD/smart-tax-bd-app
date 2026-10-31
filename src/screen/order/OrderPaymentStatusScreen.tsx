@@ -1,10 +1,13 @@
-import { View, TouchableOpacity, ScrollView, ActivityIndicator, Alert, Modal } from 'react-native';
+import { View, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import AppText from '@/src/components/common/AppText';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { skipToken } from '@reduxjs/toolkit/query';
-import { useGetTaxOrderByIdQuery, usePlaceManualOrderMutation } from '@/src/services/orderApi';
+import {
+  useGetTaxOrderByIdQuery,
+  useInitTaxStepThreePaymentMutation,
+} from '@/src/services/orderApi';
 import { useApplyCouponMutation, useRemoveCouponMutation } from '@/src/services/couponApi';
 import { Input } from '@/components/ui/input';
 import { getApiErrorMessage } from '@/src/services/globalErrorHandler';
@@ -59,11 +62,11 @@ const OrderPaymentStatusScreen = () => {
   const { t } = useTranslation();
   const { colors } = useThemeColors();
 
-  const [showBkashModal, setShowBkashModal] = useState(false);
   const [couponInput, setCouponInput] = useState('');
 
   const { data, isLoading, isError, refetch } = useGetTaxOrderByIdQuery(taxId ?? skipToken);
-  const [placeManualOrder, { isLoading: isPlacingOrder }] = usePlaceManualOrderMutation();
+  const [initTaxStepThreePayment, { isLoading: isStartingPayment }] =
+    useInitTaxStepThreePaymentMutation();
   const [applyCoupon, { isLoading: isApplyingCoupon }] = useApplyCouponMutation();
   const [removeCoupon, { isLoading: isRemovingCoupon }] = useRemoveCouponMutation();
 
@@ -136,16 +139,30 @@ const OrderPaymentStatusScreen = () => {
     }
   };
 
-  const handlePlaceManualOrder = async () => {
+  const handleStartPayment = async () => {
     try {
-      await placeManualOrder(taxId).unwrap();
-      setShowBkashModal(false);
-      navigation.replace('OrderSuccess', { taxId });
-    } catch (error: any) {
-      setShowBkashModal(false);
-      const message =
-        error?.data?.message || error?.data?.error || error?.message || 'Failed to place order';
-      Alert.alert('Error', message);
+      const res = await initTaxStepThreePayment(taxId).unwrap();
+      // Nothing to pay: a coupon covered the whole fee, or an earlier payment
+      // turned out to have gone through. The order is already placed.
+      if (res?.data?.paid) {
+        toast.success(
+          t(
+            res.data.reason === 'previous_payment'
+              ? 'payment.previousPaymentConfirmed'
+              : 'payment.couponCoveredFee'
+          )
+        );
+        navigation.replace('OrderSuccess', { taxId });
+        return;
+      }
+      const gatewayUrl = res?.data?.gatewayPageURL;
+      if (!gatewayUrl) {
+        toast.error(t('payment.paymentLinkNotFound'));
+        return;
+      }
+      navigation.navigate('OrderPayment', { gatewayUrl, taxId });
+    } catch (error) {
+      toast.error(getApiErrorMessage(error) || t('payment.paymentInitFailed'));
     }
   };
 
@@ -273,10 +290,17 @@ const OrderPaymentStatusScreen = () => {
                 {!isPaid && (
                   <>
                     <TouchableOpacity
-                      onPress={() => setShowBkashModal(true)}
+                      onPress={handleStartPayment}
+                      disabled={isStartingPayment}
                       activeOpacity={0.8}
-                      className="h-10 flex-row items-center justify-center gap-2 rounded-2xl bg-primary">
-                      <CreditCard size={18} color="#fff" />
+                      className={`h-10 flex-row items-center justify-center gap-2 rounded-2xl bg-primary ${
+                        isStartingPayment ? 'opacity-70' : ''
+                      }`}>
+                      {isStartingPayment ? (
+                        <ActivityIndicator size="small" color="#fff" />
+                      ) : (
+                        <CreditCard size={18} color="#fff" />
+                      )}
                       <AppText className="text-base font-bold text-white">
                         {t('payment.startPayment')}
                       </AppText>
@@ -308,38 +332,6 @@ const OrderPaymentStatusScreen = () => {
           </View>
         </ScrollView>
 
-        <Modal
-          visible={showBkashModal}
-          transparent
-          animationType="fade"
-          onRequestClose={() => setShowBkashModal(false)}>
-          <View className="flex-1 items-center justify-center bg-black/50 px-6">
-            <View className="w-full rounded-3xl bg-card px-6 pb-6 pt-8 shadow-lg">
-              <AppText className="mb-1 text-center text-lg font-bold text-foreground">
-                {t('payment.bkashModalTitle')}
-              </AppText>
-              <AppText className="mb-6 text-center text-sm leading-5 text-mutedForeground">
-                {t('payment.bkashModalDescription')}
-              </AppText>
-              <View className="flex-row gap-3">
-                <TouchableOpacity
-                  onPress={() => setShowBkashModal(false)}
-                  className="h-10 flex-1 items-center justify-center rounded-2xl border border-border bg-muted">
-                  <AppText className="text-sm font-semibold text-mutedForeground">
-                    {t('payment.cancel')}
-                  </AppText>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handlePlaceManualOrder}
-                  disabled={isPlacingOrder}
-                  className="h-10 flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-primary">
-                  {isPlacingOrder ? <ActivityIndicator size="small" color="#fff" /> : null}
-                  <AppText className="text-sm font-bold text-white">{t('payment.ok')}</AppText>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
       </View>
     </ProtectedScreen>
   );

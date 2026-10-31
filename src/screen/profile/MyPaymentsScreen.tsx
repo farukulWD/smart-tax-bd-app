@@ -48,6 +48,13 @@ const statusConfig = {
     borderAccent: 'border-l-destructive',
     amountText: 'text-destructive',
   },
+  cancelled: {
+    label: 'Cancelled',
+    pillBg: 'bg-muted',
+    pillText: 'text-mutedForeground',
+    borderAccent: 'border-l-border',
+    amountText: 'text-mutedForeground',
+  },
 };
 
 const SummaryBar = ({ payments }: { payments: IPayment[] }) => {

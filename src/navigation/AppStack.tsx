@@ -44,7 +44,11 @@ export type AppStackParamList = {
     redirectTo?: { stack: string; screen: string };
     canGoBack?: boolean;
   };
-  OrderPayment: { gatewayUrl: string; redirectTo?: { stack: string; screen: string } };
+  OrderPayment: {
+    gatewayUrl: string;
+    taxId?: string;
+    redirectTo?: { stack: string; screen: string };
+  };
   OrderSuccess: { taxId: string } | undefined;
 };
 
