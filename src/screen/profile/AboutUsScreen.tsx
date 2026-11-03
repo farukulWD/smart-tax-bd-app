@@ -1,5 +1,5 @@
-import { View, ScrollView, TouchableOpacity } from 'react-native';
-import { CheckCircle2, ShieldCheck, Users, Zap } from 'lucide-react-native';
+import { View, ScrollView, TouchableOpacity, Linking } from 'react-native';
+import { CheckCircle2, ExternalLink, Info, ShieldCheck, Users, Zap } from 'lucide-react-native';
 import { Text } from '@/components/ui/text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/src/theme/useThemeColors';
@@ -30,6 +30,11 @@ const whyUs = [
   'Personalized support for salaried professionals, freelancers, and businesses.',
   'Clear process from document collection to final filing.',
   'Secure, transparent communication throughout every step.',
+];
+
+const officialSources = [
+  { label: 'National Board of Revenue (NBR)', url: 'https://nbr.gov.bd' },
+  { label: 'NBR e-Return Portal', url: 'https://etaxnbr.gov.bd' },
 ];
 
 const AboutUsScreen = () => {
@@ -110,6 +115,35 @@ const AboutUsScreen = () => {
               activeOpacity={0.8}>
               <Text className="text-sm font-semibold text-primary">Contact Us</Text>
             </TouchableOpacity>
+          </View>
+        </View>
+
+        <View className="mx-5 mb-12 rounded-3xl border border-border bg-card p-6">
+          <View className="mb-3 flex-row items-center gap-2">
+            <Info size={20} color={colors.primary} />
+            <Text className="text-lg font-bold text-foreground">Disclaimer</Text>
+          </View>
+          <Text className="mb-5 text-sm leading-relaxed text-mutedForeground">
+            Smart Tax BD is a private tax-filing service. It is not affiliated with, endorsed by, or
+            representing the National Board of Revenue (NBR) or any Government of Bangladesh entity.
+            Tax information in this app is based on the official sources below.
+          </Text>
+
+          <Text className="mb-3 text-sm font-semibold text-foreground">Official sources</Text>
+          <View className="gap-3">
+            {officialSources.map((source) => (
+              <TouchableOpacity
+                key={source.url}
+                onPress={() => Linking.openURL(source.url)}
+                className="flex-row items-center gap-3 rounded-xl border border-border px-4 py-3"
+                activeOpacity={0.8}>
+                <View className="flex-1">
+                  <Text className="text-sm font-semibold text-foreground">{source.label}</Text>
+                  <Text className="text-xs text-primary">{source.url}</Text>
+                </View>
+                <ExternalLink size={16} color={colors.primary} />
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
       </ScrollView>
