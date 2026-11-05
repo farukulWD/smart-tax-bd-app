@@ -45,10 +45,20 @@ export default {
     version: 'Version {{version}}',
   },
   appUpdate: {
-    readyTitle: 'Update ready',
-    readyMessage: 'A new version has been downloaded. Restart the app to finish installing it.',
-    restart: 'Restart now',
-    later: 'Later',
+    requiredTitle: 'Update Required',
+    requiredMessage:
+      'A new version of the app is available. Please update to the latest version to continue using the app.',
+    updateNow: 'Update Now',
+    starting: 'Starting update...',
+    buildAvailable: 'Build {{build}} is available',
+    inProgressMessage:
+      'Your update is being installed. Please wait — the app will restart automatically.',
+    storeHint: 'You will be taken to Google Play to complete the update.',
+    errorTitle: "Couldn't start the update",
+    errorMessage:
+      'Please check your internet connection and try again, or update the app from Google Play.',
+    storeErrorTitle: "Couldn't open Google Play",
+    openStoreError: 'Please open the Play Store and update Smart Tax BD manually to continue.',
   },
   common: {
     yes: 'Yes',
@@ -143,12 +153,14 @@ export default {
     refreshStatus: 'Refresh Status',
     backToStep2: 'Back to Step 2',
     couponCoveredFee: 'The coupon covered the full service fee. Your order is placed.',
-    previousPaymentConfirmed: 'Your earlier payment went through. Your order is updated — no need to pay again.',
+    previousPaymentConfirmed:
+      'Your earlier payment went through. Your order is updated — no need to pay again.',
     paymentLinkNotFound: 'Payment link was not found. Please try again.',
     paymentInitFailed: 'Could not start the payment. Please try again.',
     verifying: 'Verifying your payment…',
     loadingGateway: 'Loading payment gateway…',
-    notVerified: 'We could not verify this payment. If money was deducted, it will be confirmed automatically within a few minutes.',
+    notVerified:
+      'We could not verify this payment. If money was deducted, it will be confirmed automatically within a few minutes.',
     noPaymentUrl: 'No payment URL found.',
     goHome: 'Go to Home',
     goToOrders: 'Go To Orders',

@@ -11,6 +11,7 @@ import useAppUpdate from '../hook/useAppUpdate';
 import useSessionBootstrap from '../hook/useSessionBootstrap';
 import useNetworkStatus from '../hook/useNetworkStatus';
 import OfflineBanner from '../components/global/OfflineBanner';
+import ForceUpdateScreen from '../screen/update/ForceUpdateScreen';
 import { scaleVars } from '../utils/scale';
 
 const hslToRgbChannels = (color: string) => {
@@ -78,7 +79,7 @@ const ThemedApp = () => {
   const { setColorScheme } = useColorScheme();
   const colors = theme === 'dark' ? darkColors : lightColors;
 
-  useAppUpdate();
+  const appUpdate = useAppUpdate();
   useSessionBootstrap();
   useNetworkStatus();
 
@@ -129,8 +130,22 @@ const ThemedApp = () => {
         ...scaleVars,
       })}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} backgroundColor="transparent" />
-      <Navigation />
-      <OfflineBanner />
+      {/*
+        A confirmed mandatory update replaces the navigator entirely, so no
+        route (including auth screens) can be reached until the app is updated.
+      */}
+      {appUpdate.isUpdateRequired ? (
+        <ForceUpdateScreen
+          availableVersionCode={appUpdate.availableVersionCode}
+          isStarting={appUpdate.isStarting}
+          isUpdateInProgress={appUpdate.isUpdateInProgress}
+          error={appUpdate.error}
+          onUpdate={appUpdate.onUpdatePress}
+        />
+      ) : (
+        <Navigation />
+      )}
+      {!appUpdate.isUpdateRequired ? <OfflineBanner /> : null}
       <Toast config={createToastConfig(colors)} />
     </View>
   );
